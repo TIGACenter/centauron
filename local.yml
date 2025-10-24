@@ -1,0 +1,197 @@
+version: '3'
+
+volumes:
+  centauron_local_postgres_data: {}
+  centauron_local_postgres_data_backups: {}
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: docker.cytoslider.com/centauron/centauron:latest
+    container_name: centauron_local_django
+    depends_on:
+      - postgres
+      - rabbitmq
+    volumes:
+      - .:/app:z
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    ports:
+      - '8888:8000'
+    command: /start
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: docker.cytoslider.com/centauron/postgres:latest
+    container_name: centauron_local_postgres
+    volumes:
+      - ./.pg-data/:/var/lib/postgresql/data
+      - ./pg-backups/:/backups
+    env_file:
+      - ./.envs/.local/.postgres
+
+  #  docs:
+  #    image: centauron_local_docs
+  #    container_name: centauron_local_docs
+  #    build:
+  #      context: .
+  #      dockerfile: ./compose/local/docs/Dockerfile
+  #    env_file:
+  #      - ./.envs/.local/.django
+  #    volumes:
+  #      - ./docs:/docs:z
+  #      - ./config:/app/config:z
+  #      - ./centauron:/app/centauron:z
+  #    ports:
+  #      - '9000:9000'
+  #    command: /start-docs
+
+#  redis:
+#    image: redis:6
+#    container_name: centauron_local_redis
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - 5674:5672
+
+  rabbitmq2:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - 5675:5672
+
+  celeryworker:
+    <<: *django
+    image: docker.cytoslider.com/centauron/centauron:latest
+    container_name: centauron_local_celeryworker
+    depends_on:
+      - rabbitmq
+      - postgres
+    ports: []
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *django
+    image: docker.cytoslider.com/centauron/centauron:latest
+    container_name: centauron_local_celerybeat
+    depends_on:
+      - rabbitmq
+      - postgres
+    ports: []
+    command: /start-celerybeat
+
+  aria2:
+    image: p3terx/aria2-pro:latest
+#    command: aria2c --conf-path /config/aria2.conf --content-disposition
+    ports:
+      - 6801:6800
+    environment:
+      - RPC_PORT=6800
+      - RPC_SECRET=si4hfkwn3uifhn
+      - UPDATE_TRACKERS=false
+      - TZ=UTC
+      - PUID=$(id -u)
+      - GUID=$(id -g)
+    volumes:
+      - ./aria2.conf:/config/aria2.conf
+      - ./aria2_config:/config/
+      - ./aria2_downloads/:/downloads/
+#      - /opt/centauron/dsf/secrets/:/certs:ro
+#    networks:
+#      - centauron-internal
+    secrets:
+      - app_client_certificate.pem
+      - app_client_certificate_private_key.pem
+#  aria2_dev:
+#    image: p3terx/aria2-pro:latest
+##    command: --certificate=/certificate.pem --private-key=/private_key.pem
+##    command: aria2c --private-key=/keys/ak.goe.centauron.net-1.key --certificate=/certs/ak.user.goe.centauron.net-ak.user.ak.dev.centauron.net-c49064e9-28fe-482a-81f4-2772a735fb70.pem http://129.206.73.95:3000/federation/transfer/download/?id=ak.dev.centauron.net%23file%3A%3A5cd7c8e7-ce96-444a-90ad-24dea95076b1
+#    ports:
+#      - 6801:6800
+#    environment:
+#      - RPC_PORT=6800
+#      - RPC_SECRET=qwerasdf
+#      - UPDATE_TRACKERS=false
+#      - TZ=UTC
+#      - PUID=$(id -u)
+#      - GUID=$(id -g)
+#    volumes:
+#      - ./aria2_config/:/config
+#      - ./aria2_downloads/:/downloads/
+##      - ./certs/certificate.pem:/certificate.pem:ro
+##      - ./certs/private_key.pem:/private_key.pem:ro
+#    secrets:
+#      - client_certificate.pem
+#      - client_certificate_private_key.pem
+  aria2ng:
+    image: p3terx/ariang
+    command: --port 6880 --ipv6
+    network_mode: host
+
+  ipfs:
+    image: ipfs/kubo:v0.34.1
+    ports:
+      - "127.0.0.1:5001:5001"
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ./.ipfs/:/data/ipfs
+    # port is 6880
+#    ports:
+#      - 6880:6880
+  #  flower:
+  #    <<: *django
+  #    image: centauron_local_flower
+  #    container_name: centauron_local_flower
+  #    ports:
+  #      - '5555:5555'
+  #    command: /start-flower
+
+  node:
+    build:
+      context: .
+      dockerfile: ./compose/local/node/Dockerfile
+    image: centauron_local_node
+    container_name: centauron_local_node
+    depends_on:
+      - django
+    volumes:
+      - .:/app:z
+      # http://jdlm.info/articles/2016/03/06/lessons-building-node-app-docker.html
+      - /app/node_modules
+    command: npm run dev
+    ports:
+      - '3001:3000'
+  iipsrv-nginx:
+    image: docker.cytoslider.com/iipsrv/nginx:latest
+    ports:
+      - "8282:80"
+    depends_on:
+      - iipsrv
+  iipsrv:
+    image: docker.cytoslider.com/iipsrv/iipsrv:latest
+    entrypoint: ["spawn-fcgi", "-u", "1000", "-n", "-f", "/usr/lib/iipimage-server/iipsrv.fcgi", "-p", "9000"]
+    environment:
+      - LOGFILE=/dev/stdout
+      - PROCESSES=4
+      - VERBOSITY=5
+      - JPEG_QUALITY=75
+      - MAX_IMAGE_CACHE_SIZE=300
+      - MAX_CVT=5000
+      - FILESYSTEM_PREFIX=/opt/media/
+    volumes:
+      - /home/ak/Desktop/centauron_data/data/:/opt/media/
+
+secrets:
+  app_client_certificate.pem:
+    file: ./certificate_goe.pem
+  app_client_certificate_private_key.pem:
+    file: ./private_key_goe.pem
+  client_certificate.pem:
+    file: ./certs/certificate.pem
+  client_certificate_private_key.pem:
+    file: ./certs/private_key.pem

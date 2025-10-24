@@ -1,0 +1,11 @@
+{% block navbar %}
+  <header class="navbar-expand-md">
+    <div class="collapse navbar-collapse" id="navbar-menu">
+      <div class="navbar navbar-light">
+        <div class="container-xl">
+          {% include site_navigation|default:'challenge/challenge_client/site-navigation.html' %}
+        </div>
+      </div>
+    </div>
+  </header>
+{% endblock %}

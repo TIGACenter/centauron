@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block header %}
+  {% with title='federation/title.html' site_navigation='federation/site-navigation.html' %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}

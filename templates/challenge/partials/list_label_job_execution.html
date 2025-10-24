@@ -1,0 +1,4 @@
+{% if execution.definition.is_batched %}
+  ({{ execution.batch_number|add:1 }}/{{ execution.definition.total_batches }})
+{% endif %}
+{{ execution.started_at|date:'SHORT_DATETIME_FORMAT' }}

@@ -1,0 +1,82 @@
+{% extends 'study_management/arm_detail_tab_base.html' %}
+{% block buttons_top %}
+  <a href="{% url 'study_management:create-case' study.pk arm.pk %}" class="btn btn-primary">New Case</a>
+  {{ block.super }}
+{% endblock %}
+{% block javascript %}
+  {% include 'includes/datatables-js.html' %}
+  <script>
+    $(document).ready(function () {
+      let columns = [
+        {#{className: 'select-checkbox'},#}
+        {
+          className: 'dt-control',
+          orderable: false,
+          data: null,
+          defaultContent: '',
+        },
+        {data: 'name', title: 'Name'},
+        {data: 'codes', title: 'Terms'},
+        {#{data: 'case', title: 'Case'},#}
+        {data: 'origin', title: 'Origin'},
+        {
+          data: null, defaultContent: '<button class="btn-link"><i class="ti ti-edit"></i></button>',
+          className: 'dt-center btn-edit',
+          orderable: false
+        }
+        {#{data: 'identifier', title: 'Identifier'},#}
+      ];
+      const table = dataTable('#table', '{% url 'study_management:study-arm-cases-list' %}?study={{ study.pk }}&arm={{ arm.pk }}', {
+        columns,
+        order: [[2, 'desc']],
+        fullRowLink: true
+      });
+
+      $('#table tbody').on('click', 'td.btn-edit button', e => {
+        const b = e.target.closest('tr')
+        const data = table.row(b).data();
+        location.href = data.href;
+      })
+
+      function format(d) {
+        return new Promise((resolve) => {
+          let csrftoken = getCookie('csrftoken')
+          if (csrftoken === null) {
+            csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+          }
+          // TODO ajax call to retrieve rendered table
+          let url = `{% url 'study_management:case-files' study.pk arm.pk %}?case=${d.id}`;
+
+          fetch(url, {method: 'get', headers: {'X-CSRFToken': csrftoken, 'Content-Type': 'text/html'}}).then(data => {
+            data.text().then(data => {
+              resolve(data);
+            })
+          });
+        });
+      }
+
+      // Add event listener for opening and closing details
+      $('#table tbody').on('click', 'td.dt-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row(tr);
+        console.log(row)
+
+        if (row.child.isShown()) {
+          // This row is already open - close it
+          row.child.hide();
+          tr.removeClass('shown');
+        } else {
+          // Open this row
+
+          const d = format(row.data());
+          d.then(data => {
+            row.child(data).show();
+            tr.addClass('shown');
+          })
+        }
+      });
+
+    });
+  </script>
+{% endblock %}
+

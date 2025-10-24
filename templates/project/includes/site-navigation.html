@@ -1,0 +1,24 @@
+{% load core_tags %}
+<ul class="navbar-nav">
+  <li class="nav-item {% active_link 'project:list' %}">
+    <a class="nav-link" href="{% url 'project:list' %}">
+                            <span class="nav-link-title">
+                                My projects
+                              </span>
+    </a>
+  </li>
+{#  <li class="nav-item {% active_link 'project:data-shared-with-me' %}">#}
+{#    <a class="nav-link" href="{% url 'project:data-shared-with-me' %}">#}
+{#                            <span class="nav-link-title">#}
+{#                                Shared with me#}
+{#                              </span>#}
+{#    </a>#}
+{#  </li>#}
+  <li class="nav-item {% active_link 'project:invites' %}">
+    <a class="nav-link" href="{% url 'project:invites' %}">
+                            <span class="nav-link-title">
+                      Invites
+                              </span>
+    </a>
+  </li>
+</ul>

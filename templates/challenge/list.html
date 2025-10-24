@@ -1,0 +1,45 @@
+{% extends 'challenge/base.html' %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              My challenges
+            </h2>
+          </div>
+          <div class="col-auto">
+            <div class="btn-list">
+              <a href="{% url 'challenge:create' %}" class="btn btn-primary"><i class="ti ti-plus"></i> New</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="card">
+          <div id="table-default" class="table-responsive">
+            <table class="table">
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>Project</th>
+              </tr>
+              </thead>
+              <tbody class="table-tbody">
+              {% for o in objects %}
+                <tr>
+                  <td><a href="{% url 'challenge:detail' o.pk %}">{{ o.name }}</a></td>
+                  <td><a href="{% url 'project:detail' o.project.pk %}">{{ o.project.name }}</a></td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

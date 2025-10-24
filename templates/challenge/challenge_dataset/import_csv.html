@@ -1,0 +1,43 @@
+{% extends 'challenge/base_detail.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <div class="mb-1">
+            </div>
+            <h2 class="page-title">
+              Import from CSV
+            </h2>
+          </div>
+          <div class="col-auto ms-auto d-print-none">
+            <div class="btn-list">
+              <a href="{% static 'templates/template-metadata-project-files.csv' %}" class="btn">Download template</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="card">
+          <div class="card-body">
+            <p>Import files from a project:
+            <ol>
+              <li>Select the project.</li>
+              <li>In the Options Menu select <em>Export imported files as CSV</em>.</li>
+              <li>Edit that file and leave all rows in that you want to import here.</li>
+              <li>Upload the csv file below.</li>
+            </ol>
+            <div class="mt-2 mb-1">
+              {% crispy form %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

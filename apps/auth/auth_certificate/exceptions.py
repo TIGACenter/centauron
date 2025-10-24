@@ -1,0 +1,3 @@
+
+class  UserNotImportedException(Exception):
+    pass

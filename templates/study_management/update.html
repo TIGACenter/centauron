@@ -1,0 +1,63 @@
+{% extends 'study_management/base_detail.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <div class="page-wrapper">
+  <div class="page-header d-print-none">
+    <div class="container-xl">
+      <div class="row g-2 align-items-center">
+        <div class="col">
+          <div class="mb-1">
+            <ol class="breadcrumb" aria-label="breadcrumbs">
+              <li class="breadcrumb-item"><a href="{% url 'study_management:list' %}">Local Cohorts</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'study_management:detail' study.pk %}">{{ study.name }}</a>
+              </li>
+            </ol>
+          </div>
+          <h2 class="page-title">
+            Batch Update Local Cohort
+          </h2>
+        </div>
+        {#          <div class="col-auto ms-auto d-print-none">#}
+        {#            <div class="btn-list">#}
+        {#              <a href="{% static 'templates/template-metadata-project-files.csv' %}" class="btn">Download template</a>#}
+        {#            </div>#}
+        {#          </div>#}
+      </div>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="container-xl">
+      <div class="card">
+        <div class="card-body">
+          Batch Update a Local Cohort:
+          <ol>
+            <li>Select the Local Cohort.</li>
+            <li>In the Options Menu select <em>Export as CSV</em>.</li>
+            <li>Do you changes.</li>
+            <li>Upload the csv file below.</li>
+          </ol>
+          For <strong>imported</strong> files, the following fields will be updated:
+          <ul>
+            <li>Original file name</li>
+            <li>Original path</li>
+            <li>Terms</li>
+            <li>Case</li>
+          </ul>
+          For <strong>not imported</strong> files, the following fields will be additionally updated:
+          <ul>
+            <li>Size</li>
+            <li>Path
+              <p><strong>Cave:</strong> This imports the file manually i.e. the file must exist under this path in the
+                Centauron data directory.</p>
+            </li>
+          </ul>
+
+          <div class="mt-2 mb-1">
+            {% crispy form %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

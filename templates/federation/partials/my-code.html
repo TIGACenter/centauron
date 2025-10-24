@@ -1,0 +1,19 @@
+<h3>Your code</h3>
+Send this code to your collaborators:
+<pre id="token">{{ token }}</pre>
+<div>
+  <button type="button" id="btnCopy" class="btn btn-primary"><i class="ti ti-copy"></i>Copy</button>
+</div>
+
+<script>
+  const btn = document.querySelector('#btnCopy')
+  const token = document.querySelector('#token').textContent
+  btn.addEventListener('click', () => {
+    navigator.permissions.query({name: 'clipboard-write'}).then(res => {
+      if (res.state === 'granted' || res.state === 'prompt') {
+        navigator.clipboard.writeText(token).then(() => console.log('copy success.'))
+        {# TODO show some success notification #}
+      }
+    })
+  })
+</script>

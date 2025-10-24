@@ -1,0 +1,114 @@
+{% extends 'study_management/base_detail.html' %}
+{% block content %}
+  {% csrf_token %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-fluid">
+        <div class="row align-items-center">
+          <div class="col">
+            <div class="page-pretitle">
+              {{ arm.name }}
+            </div>
+            <h2 class="page-title">
+              Files
+            </h2>
+          </div>
+          <div class="col-auto ms-auto">
+            <div class="btn-list">
+              {% block buttons_top %}
+                <a href="{% url 'study_management:import_data:form' study.pk arm.pk %}"
+                   class="btn btn-primary d-none d-sm-inline-block">
+                  <i class="ti ti-plus"></i> Import
+                </a>
+                <span class="dropdown">
+              <a href="#" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">Export</a>
+              <div class="dropdown-menu">
+                  <div class="dropdown-item">
+
+                <form action="{% url 'study_management:arm-export' study.pk arm.pk %}"
+                      method="post">
+                  {% csrf_token %}
+                  <button class="dropdown-item btn btn-light" type="submit" name="export_browser">CSV Download</button>
+                </form>
+                  </div>
+                <div class="dropdown-item">
+                <form action="{% url 'study_management:arm-export' study.pk arm.pk %}"
+                      method="post">
+                  {% csrf_token %}
+                  <button class="dropdown-item btn btn-light" type="submit" name="export_file">CSV file</button>
+                </form>
+                  </div>
+              </div>
+            </span>
+                <a href="{% url 'study_management:import_data:list' study.pk arm.pk %}" class="btn btn-light">Import jobs</a>
+                <span class="dropdown">
+{#              <a href="#" class="btn dropdown-toggle"#}
+{#                 data-bs-toggle="dropdown"><i#}
+{#                class="ti ti-layout-collage"></i> Create tileset</a>#}
+{#              <div class="dropdown-menu">#}
+{#                <a class="dropdown-item" href="{% url 'study_management:tile_management:create' study.pk arm.pk %}">From algorithm</a>#}
+{#                <a class="dropdown-item" href="#">From query</a>#}
+{#                <a class="dropdown-item"#}
+{#                   href="{% url 'study_management:tile_management:file-upload' study.pk arm.pk %}">From file upload</a>#}
+{#              </div>#}
+            </span>
+                <span class="dropdown">
+              <a href="#" class="btn btn-icon btn-light" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical"></i> </a>
+              <div class="dropdown-menu">
+                  <a class="dropdown-item"
+                     href="{% url 'study_management:arm-update' study.pk arm.pk %}">Batch Update</a>
+                <form class="dropdown-item" action="{% url 'study_management:arm-import-folder' study.pk arm.pk %}"
+                      method="post">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-link">Create import folder</button>
+                </form>
+                <form class="dropdown-item" action="{% url 'study_management:arm-export-csv' study.pk arm.pk %}"
+                      method="post">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-link">Export imported files as CSV</button>
+                </form>
+              </div>
+            </span>
+                </div>
+                </div>
+              {% endblock %}
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs">
+                  <li class="nav-item">
+                    <a href="{% url 'study_management:arm-detail-cases' study.pk arm.pk %}?tab=files"
+                       class="nav-link {% if current_tab == 'cases' %}active{% endif %}">Cases</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{% url 'study_management:arm-detail' study.pk arm.pk %}?tab=files"
+                       class="nav-link {% if current_tab == 'files' %}active{% endif %}">Files</a>
+                  </li>
+                  {#                  <li class="nav-item">#}
+                  {#                    <a href="{% url 'study_management:arm-detail-tilesets' study.pk arm.pk %}?tab=tilesets"#}
+                  {#                       class="nav-link {% if current_tab == 'tilesets' %}active{% endif %}">Tilesets</a>#}
+                  {#                  </li>#}
+                </ul>
+              </div>
+              <div class="card-body">
+                <div class="tab-content">
+                  <div class="tab-pane active show">
+                    {% block table-top %}{% endblock %}
+                    <table id="table" class="table-sm table table-hover table-bordered"
+                           style="width:100%"></table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

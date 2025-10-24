@@ -1,0 +1,57 @@
+{% extends 'challenge/challenge_client/detail.html' %}
+{% load core_tags viewer_tags %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Export List
+            </h2>
+          </div>
+          <div class="col-auto ms-auto d-print-none">
+            {#            <div class="btn-list">#}
+            {#              <form method="post" action="{% url 'challenge_client:challenge-datasets-detail-action' challenge.pk dataset.pk %}">{% csrf_token %}#}
+            {#                <button class="btn" name="button_download">Download</button>#}
+            {#                <button class="btn" name="button_export">Export</button>#}
+            {#              </form>#}
+            {#            </div>#}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row mt-2">
+          <div class="col-12">
+            <div class="card">
+              <table class="table table-hover table-striped">
+                <thead>
+                <tr>
+                  <th>Created</th>
+                  <th>Status</th>
+                  <th># files</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for j in jobs %}
+                  <tr>
+                    <td><a
+                      href="{% url 'challenge_client:challenge-datasets-exports-detail' challenge.pk j.pk %}">{{ j.date_created }}</a>
+                    </td>
+                    <td>{{ j.status }}</td>
+                    <td>{{ j.files.count }}</td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+

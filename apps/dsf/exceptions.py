@@ -1,0 +1,3 @@
+
+class DSFException(Exception):
+    pass

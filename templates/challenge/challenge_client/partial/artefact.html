@@ -1,0 +1,27 @@
+{% if artefacts.count == 0 %}
+  <div class="ms-2">No artefacts.</div>
+{% else %}
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Filename</th>
+      <th>Date created</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for artefact in artefacts %}
+      <tr>
+        <td>
+          {% if artefact.file.imported %}
+            <a
+              href="{% url 'computing:computing_artefact:download' challenge.pk submission.pk artefact.pk %}">
+          {% endif %}
+          {{ artefact.file.name }}
+          {% if artefact.file.imported %}</a>{% endif %}
+        </td>
+        <td>{{ artefact.date_created|date:'SHORT_DATETIME_FORMAT' }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endif %}

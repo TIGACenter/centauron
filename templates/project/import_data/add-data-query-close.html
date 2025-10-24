@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block header %}{% endblock %}
+{% block content %}
+  <div class="alert alert-success m-0">
+    Data will be imported. This window will be closed in 5 seconds.
+  </div>
+
+  <script>
+    setTimeout(() => window.close(), 5000)
+  </script>
+{% endblock %}

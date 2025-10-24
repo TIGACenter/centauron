@@ -1,0 +1,49 @@
+{% extends 'federation/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Federation
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="card">
+          <div class="card-body">
+            <h2>My data</h2>
+            <div class="row">
+              <div><strong>Node name</strong>
+                <pre>{{ node_name }}</pre>
+              </div>
+              <div><strong>Identifier</strong>
+                <pre>{{ identifier }}</pre>
+              </div>
+              <div><strong>Address</strong>
+                <pre>{{ centauron_server }}</pre>
+              </div>
+              <div><strong>Firefly DID</strong>
+                <pre>{{ did }}</pre>
+              </div>
+              <div><strong>Certificate Thumbprint</strong>
+                <pre>{{ certificate_thumbprint }}</pre>
+              </div>
+              <div><strong>Common Name</strong>
+                <pre>{{ common_name }}</pre>
+              </div>
+              <div><strong>CDN Address</strong>
+                <pre>{{ cdn_address }}</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

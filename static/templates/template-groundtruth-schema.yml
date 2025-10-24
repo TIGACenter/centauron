@@ -1,0 +1,11 @@
+id:
+  name: id
+  required: true
+  type: identifier # groundtruth | reference
+  # if type is identifier: the csv colum can only have string or number type
+  # if type is groundtruth or reference: the csv colum can only have values specified in the following `values` key.
+  values:
+    - val 1
+    - val 2
+    - val3
+

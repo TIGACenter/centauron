@@ -1,0 +1,31 @@
+{% extends 'challenge/tab_base.html' %}
+{% block detail_header %}
+  <div class="row g-2 align-items-center">
+    <div class="col">
+      <h2 class="page-title">
+        Submissions
+      </h2>
+    </div>
+  <div class="col-auto">
+    <div class="btn-list">
+      <a href="{% url 'challenge_client:challenge-submission-create' challenge.pk %}?type=local" class="btn"><i class="ti ti-plus"></i>Create</a>
+    </div>
+  </div>
+  </div>
+{% endblock %}
+{% block javascript %}
+    {% include 'includes/datatables-js.html' %}
+    <script>
+        $(document).ready(function () {
+            let columns = [
+                {data: 'name', title: 'Name'},
+                {data: 'created_by', title: 'Submitter'},
+                {data: 'date_created', title: 'Created at', render: DataTable.render.datetime()},
+            ];
+            dataTable('#table', '{% url 'challenge:challenge_submission:submission-list' object.pk %}', {
+                columns,
+              order: [[3, 'desc']]
+            });
+        });
+    </script>
+{% endblock %}

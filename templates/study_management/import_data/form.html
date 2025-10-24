@@ -1,0 +1,40 @@
+{% extends 'study_management/base_detail.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row align-items-center">
+          <div class="col">
+{#            <div class="page-pretitle">#}
+{#              {{ arm.name }}#}
+{#            </div>#}
+            <h2 class="page-title">
+              Upload metadata csv
+            </h2>
+          </div>
+          <div class="col-auto ms-auto">
+            <div class="btn-list">
+              <a href="{% static 'templates/template-metadata.csv' %}" class="btn">Download template</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <a href="#"></a>
+                {% crispy form %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

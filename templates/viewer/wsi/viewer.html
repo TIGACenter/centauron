@@ -1,0 +1,161 @@
+{% extends 'viewer/base_viewer.html' %}
+{% load static viewer_tags %}
+{% block css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css">
+
+  <style>
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+
+    .map-wrapper {
+      flex: 1 0 0;
+    }
+
+    .row {
+      height: 100%;
+    }
+
+    .list-group-item.annotation:hover {
+      cursor: pointer;
+    }
+  </style>
+{% endblock %}
+{% block content %}
+  <div class="container-fluid map-wrapper p-0">
+    <div class="row">
+      <div class="col-2 sidebar pe-0">
+      <div class="card mb-2">
+        <div class="card-body">
+          <div>File: {{ object.name }}</div>
+          <div>Terms: {{ object.code_list_string_rep|join:", " }}</div>
+
+        </div>
+      </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Annotations</h3>
+          </div>
+          <div class="list-group list-group-flush list-group-hoverable">
+            {% if annotations.count == 0 %}
+              <div class="list-group-item">
+                <div class="row">
+                  <div class="col text-truncate">
+                    <span class="text-body d-block">No annotations found.</span>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          <ul class="mt-3">
+            {% for a in annotations %}
+              <li><a href="#" onclick="goToAnnotation('{{ a.data.properties.id }}')">{{ a.data.properties.annotation_type }}</a> ({{ a.origin.human_readable }}) <div class="text-secondary text-truncate">({{ a.application_identifier }})</div></li>
+            {% endfor %}
+          </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-10 ps-0">
+        <div id="map"></div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+  {{ block.super }}
+  {% for a in annotations %}
+    {% with a.id|file_id_to_html_id as id %}
+      {{ a.data|json_script:id }}
+    {% endwith %}
+  {% endfor %}
+  <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
+  {#  <script src="{% static 'js/openlayers.js' %}"></script>#}
+  <script type="text/javascript">
+
+    const annotationStyle = new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: 'rgba(255, 255, 255, 0.2)',
+      }),
+      stroke: new ol.style.Stroke({
+        color: '#ffcc33',
+        width: 2,
+      })
+      {#image: new ol.style.Circle({#}
+      {#  radius: 7,#}
+      {#  fill: new ol.style.Fill({#}
+      {#    color: '#ffcc33',#}
+      {#  }),#}
+      {# }),#}
+    })
+
+    let annotationSource = new ol.source.Vector();
+    const slide_url = '{{ iipsrv_url }}{{ object.path }}/info.json';
+
+    fetch(slide_url).then(data => data.json())
+      .then(imageInfo => {
+        console.log(imageInfo)
+        imageInfo['@id'] = imageInfo['@id'].replace('http:', 'https:')
+        const options = new ol.format.IIIFInfo(imageInfo).getTileSourceOptions();
+        if (options === undefined || options.version === undefined) {
+          console.log('no image info')
+          return;
+        }
+        options.zDirection = -1;
+        const source = new ol.source.IIIF(options);
+
+        let layer = new ol.layer.Tile();
+        let layerAnnotations = new ol.layer.Vector({
+          source: annotationSource,
+          style: annotationStyle
+        });
+
+        window.MAP = new ol.Map({
+          layers: [layer, layerAnnotations],
+          target: 'map',
+          keyboardEventTarget: document,
+          controls: ol.control.defaults.defaults().extend([
+            new ol.control.FullScreen(),
+          ]),
+          units: 'pixels',
+          logo: false,
+          loadTilesWhileAnimating: true,
+          loadTilesWhileInteracting: true,
+        });
+
+        layer.setSource(source);
+        window.MAP.setView(
+          new ol.View({
+            resolutions: source.getTileGrid().getResolutions(),
+            {#extent: source.getTileGrid().getExtent(),#}
+            constrainOnlyCenter: true,
+            zoom: 3
+          }),
+        );
+        window.MAP.getView().fit(source.getTileGrid().getExtent());
+      });
+
+    function drawAnnotation(geojson) {
+      const feature = new ol.Feature(new ol.geom.Polygon(geojson.geometry.coordinates));
+      feature.set('id', geojson.properties.id);
+      annotationSource.addFeature(feature);
+    }
+
+    {% for a in annotations %}
+      drawAnnotation(JSON.parse(document.querySelector('#{{ a.id|file_id_to_html_id }}').innerText))
+    {% endfor %}
+
+    function goToAnnotation(annotationId) {
+      const annotation = annotationSource.getFeatures().find((e) => e.get('id') === annotationId);
+      if (annotation != null) {
+        const ext = annotation.getGeometry().getExtent();
+        if (!ol.extent.isEmpty(ext)) {
+          window.MAP.getView().fit(annotation.getGeometry().getExtent());
+        } else {
+          console.warn('Annotation extent is empty.')
+        }
+      }
+    }
+  </script>
+{% endblock %}

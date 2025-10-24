@@ -1,0 +1,74 @@
+{% extends 'challenge/challenge_client/base.html' %}
+{% load humanize challenge_client_tags %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Challenges on this hub
+            </h2>
+          </div>
+          <div class="col-auto ms-auto d-print-none">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <table id="table" class="table table-striped table-hover" style="width:100%">
+                <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Organizer</th>
+                  <th>Open since</th>
+                  <th>Open until</th>
+                  {#                  <th>Dataset</th>#}
+                  {#                  <th></th>#}
+                  {#                    <th class="">Tags</th>#}
+                  <th class="w-1"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for c in challenges %}
+                  <tr>
+                    <td>
+                      <a href="{% url 'challenge_client:challenge-detail' c.pk %}">{{ c.name }}</a>
+                      {% is_enrolled request c as en %}
+                      {% if en %}
+                        <span class="badge">Enrolled</span>
+                      {% endif %}
+                    </td>
+                  <td>
+                    {{ c.origin.human_readable }}
+                    {% if c.origin.organization|length > 0 %}
+                      ({{ c.origin.organization }})
+                    {% endif %}
+                  </td>
+                    <td>{{ c.open_from|naturalday }}</td>
+                    <td>{{ c.open_until|naturalday }}</td>
+                    {#                    <td>{{ c.dataset_name }}</td>#}
+                    {#                    <td>#}
+                    {#                      {{ c.tags }}#}
+                    {#                        {% for tag in c.tags_arr %}<kbd>{% if not forloop.first %}{% endif %}{{ tag }}</kbd>{% endfor %}</td>#}
+                    <td>
+                      <a href="{% url 'challenge_client:challenge-detail' c.pk %}" class="btn btn-secondary btn-icon"><i
+                        class="ti ti-arrow-right"></i></a>
+                    </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block navbar %}
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'project/base_detail.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <!-- Page pre-title -->
+            <div class="page-pretitle">
+              {{ project.name }}
+            </div>
+            <h2 class="page-title">
+              Send files to annotator
+            </h2>
+          </div>
+          <div class="col-auto ms-auto d-print-none">
+            <div class="btn-list">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="tab-content">
+                  {% if annotation_backend is None %}
+                    No annotation backend configured.
+                  {% else %}
+                    <p>Annotation backend deployed at {{ annotation_backend }}</p>
+                    {% crispy form %}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'project/base_detail.html' %}
+{% load share_tags %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <!-- Page pre-title -->
+{#            <div class="">#}
+{#              <div class="mb-2">#}
+{#                <ol class="breadcrumb" aria-label="breadcrumbs">#}
+{#                  <li class="breadcrumb-item"><a href="{% url 'project:list' %}">My Projects</a>#}
+{#                  </li>#}
+{#                  <li class="breadcrumb-item"><a#}
+{#                    href="{% url 'project:detail' project.id %}">{{ project.name }}</a></li>#}
+                  {#                  <li class="breadcrumb-item">Shares</li>#}
+{#                </ol>#}
+{#              </div>#}
+{#            </div>#}
+            <h2 class="page-title">
+              Data Releases
+            </h2>
+          </div>
+          <div class="col-auto ms-auto">
+            <div class="btn-list">
+              <a href="{% url 'project:create-share-query' project.pk %}" class="btn btn-primary"><i
+                class="ti ti-plus"></i>New</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Origin</th>
+                  <th>Shared with</th>
+                  <th>Created at</th>
+                  <th class="w-1"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for s in shares %}
+                  <tr>
+                    <td>{{ s.name }}</td>
+                    <td>{{ s.origin.human_readable }}</td>
+                    <td>{{ s|shared_with_list }}</td>
+                    <td>{{ s.date_created|date:"SHORT_DATETIME_FORMAT" }}</td>
+                    <td><a href="{% url 'project:share-detail' project.pk s.pk %}" class="btn btn-icon"
+                           title="View"><i class="ti ti-eye" title="View"></i></a></td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

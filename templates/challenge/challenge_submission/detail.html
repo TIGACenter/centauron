@@ -1,0 +1,302 @@
+{% extends 'challenge/base_detail.html' %}
+{% load humanize %}
+{% load core_tags computing_tags %}
+{% block meta %}
+  {% if refresh_page %}
+    {#    if selected execution is running, refresh page every 5s to load latest log. #}
+    <meta http-equiv="refresh" content="5">
+  {% endif %}
+{% endblock %}
+{% block content %}
+  <style>
+  </style>
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              {{ object.name }}
+              {% if object.is_part_submission %}
+                <span class="ms-2 badge bg-blue text-blue-fg">Part Submission</span>
+              {% endif %}
+            </h2>
+          </div>
+          <div class="col-auto ms-auto d-print-none">
+            <div class="btn-list">
+              {% if definition and execution %}
+                <a class="btn btn-primary"
+                   href="{% url 'challenge:challenge_submission:send' challenge.pk object.pk definition.pk execution.pk %}"><i
+                  class="ti ti-send"></i> Send</a>
+              {% endif %}
+              {% if has_data_from_multiple_nodes and not object.is_part_submission %}
+                <form action="{% url 'challenge:challenge_submission:distribute' challenge.pk object.pk %}"
+                      method="POST">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-primary">Distribute</button>
+                </form>
+              {% endif %}
+              {% if request.user.is_superuser %}
+                <a class="btn btn-icon" href="{% url 'admin:challenge_submission_submission_change' object.pk %}">
+                  <i class="ti ti-settings"></i>
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="datagrid">
+                  <div class="datagrid-item">
+                    <div class="datagrid-title">Submitter</div>
+                    <div class="datagrid-content">{{ object.submitter.human_readable }}
+                      ({{ object.origin.human_readable }})
+                    </div>
+                  </div>
+                  {% for key, value in object.fields.template.items %}
+                    {% if key == 'script' or key == 'image' %}
+                      <div class="datagrid-item">
+                        <div class="datagrid-title">{{ key }}</div>
+                        <div class="datagrid-content">{{ value|truncatechars:25 }}
+                          <i class="ti ti-info-circle" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                             title="{{ value }}"></i>
+                        </div>
+                      </div>
+                    {% elif key == 'credentials' %}
+                      {% comment %}do not display credentials in UI{% endcomment %}
+                    {% else %}
+                      <div class="datagrid-item">
+                        <div class="datagrid-title">{{ key }}</div>
+                        <div class="datagrid-content">{{ value }}</div>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                  <div class="datagrid-item">
+                    <div class="datagrid-title">Received</div>
+                    <div class="datagrid-content">{{ object.date_created|naturaltime|naturalday }}</div>
+                  </div>
+                  <div class="datagrid-item">
+                    <div class="datagrid-title">Type</div>
+                    <div class="datagrid-content">{{ object.fields.type }}</div>
+                  </div>
+                  <div class="datagrid-item">
+                    <div class="datagrid-title">Executed</div>
+                    <div class="datagrid-content">{{ pipeline|pipeline_was_executed:request.user.profile }}</div>
+                  </div>
+                  {% if has_data_from_multiple_nodes %}
+                    <div class="datagrid-item">
+                      <div class="datagrid-title">Status</div>
+                      <div class="datagrid-content">
+                        <ul>
+                          {% for e in submission_nodes %}
+                            <li>{% if e.has_results %}<i class="ti ti-check"></i>{% elif e.has_error %}
+                              <i class="ti ti-exclamation-mark"></i>{% elif e.is_pending %}
+                              <i class="ti ti-hourglass"></i>{% elif e.is_sent %}
+                              <i class="ti ti-send"></i> {% endif %}{{ e.node }}</li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                      <a class="btn btn-primary {% if not sendable %}disabled{% endif %}"
+                         href="{% url 'challenge:challenge_submission:send-aggregated' challenge.pk object.pk %}"><i
+                        class="ti ti-send"></i> Send</a>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hr-text hr-text-center">
+          <span>EXECUTION</span>
+        </div>
+
+        {#        refresh_page: {{ refresh_page }}#}
+        {#        pipeline_was_executed: {{ pipeline|pipeline_was_executed:request.user.profile }}#}
+        {% if not pipeline|pipeline_was_executed:request.user.profile and not refresh_page %}
+          <div class="row mt-3">
+            <div class="col">
+              <div class="card">
+                <div class="card-body text-center">
+                  {% if not has_data_from_multiple_nodes %}
+                    <form method="post"
+                          action="{% url 'challenge:challenge_submission:detail' challenge.pk object.pk %}">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-primary" name="run_computing_job"><i
+                        class="ti ti-player-play"></i></button>
+                    </form>
+                  {% else %}
+                    {% if part_submission_on_same_node %}
+                      <div>Please execute the submission designated to your node.</div>
+                      <a href="{{ part_submission_on_same_node.get_absolute_url }}" class="btn btn-primary mt-2">Go to
+                        submission</a>
+                    {% else %}
+                      {#                      FIXME repeated code here #}
+                      <form method="post"
+                            action="{% url 'challenge:challenge_submission:detail' challenge.pk object.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary" name="run_computing_job"><i
+                          class="ti ti-player-play"></i></button>
+                      </form>
+                    {% endif %}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {#      {% elif not pipeline|pipeline_was_executed:request.user.profile and refresh_page %}#}
+          {#        <div class="row mt-3">#}
+          {#        <div class="col">#}
+          {#          <div class="card">#}
+          {#            <div class="card-body text-center">#}
+          {#              <div class="spinner-border" role="status">#}
+          {#                <span class="visually-hidden">Loading...</span>#}
+          {#              </div>#}
+          {#            </div>#}
+          {#          </div>#}
+          {#        </div>#}
+        {% else %}
+          <div class="row mt-3">
+            <div class="col-9">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">
+                    {{ definition.name }}
+                  </h3>
+                  <div class="card-actions">
+                    {% if execution is not None %}
+                      <a
+                        href="{% url 'challenge:challenge_submission:export-log' challenge.pk object.pk execution.pk %}"
+                        class="btn btn-primary">Download</a>
+                    {% endif %}
+                    {#                  {% if execution and challenge and object and definition %}#}
+                    {#                    <a class="btn btn-primary"#}
+                    {#                       href="{% url 'challenge:challenge_submission:send' challenge.pk object.pk definition.pk execution.pk %}">Send</a>#}
+                    {#                  {% endif %}#}
+                  </div>
+                </div>
+                {#                <div class="card-body">#}
+                {% if execution.definition.execution_type_is_auto %}
+                  {% with output=execution.log_entries.all|slice:200 %}
+                    {% if output.count > 0 %}
+                      <div class="log">
+                        {% for log in output %}
+                          <div class="log-{{ log.type }}">
+                            [{{ log.logged_at|date:'d.m.Y H:i:s' }}] {{ log.content }}</div>
+                        {% endfor %}
+                        {% if execution.is_running %}
+                          <div class="text-center mt-4">
+                            <div class="spinner-grow small" role="status"></div>
+                          </div>
+                        {% endif %}
+                      </div>
+                    {% else %}
+                      No log output.
+                    {% endif %}
+
+                  {% endwith %}
+                {% elif not execution.definition.execution_type_is_auto and execution.is_created %}
+                  {% include 'challenge/challenge_submission/manual.html' %}
+
+                {% endif %}
+                {#                </div>#}
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="mb-2">
+                <div class="mt">
+                  <form method="GET" action="" class="w-100">
+                    <select class="form-select w-100" name="cjd" onchange="this.form.submit();">
+                      {% for job in stages %}
+                        <option value="{{ job.pk }}"
+                                {% if job.id == definition.id %}selected{% endif %}>{{ job.name }}</option>
+                      {% endfor %}
+                    </select>
+                  </form>
+                  <div class="card border-top-0">
+                    <div class="card-body">
+                      <form action="{% url 'challenge:challenge_submission:detail' challenge.pk object.pk %}"
+                            method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="computing_definition" value="{{ definition.pk }}">
+                        <input type="hidden" name="execution_pk" value="{{ execution.pk }}">
+                        <button type="submit" name="run_computing_definition" class="btn btn-primary"><i
+                          class="ti ti-repeat"></i></button>
+                      </form>
+                      <div class="mt-1">
+                        <strong>Node:</strong> {{ execution.k8s_data.k8s_node }}<br>
+                        {% if execution.is_success or execution.is_running or execution.is_failed %}
+                          <strong>Duration:</strong> {{ execution.started_at|duration:execution.finished_at }}
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="list-group list-group-flush list-executions">
+                {% for job in executions %}
+                  <a href="?cjd={{ definition.pk }}&cje={{ job.pk }}"
+                     class="list-group-item list-group-item-action  {% if job.id == execution.id %}active{% endif %}">
+                    {% include 'includes/computing-job-execution-icon.html' with job=job %} {{ job.definition.name }}
+                    {% if definition.is_batched %}
+                      ({{ job.batch_number|add:1 }}/{{ definition.total_batches }})
+                    {% endif %}
+                    ({{ job.started_at|date:'SHORT_DATETIME_FORMAT' }})</a>
+                {% endfor %}
+              </div>
+              <div class="hr-text hr-text-center">
+                <span>ARTEFACTS
+                  {% if execution.has_artefacts %}({{ execution.artifacts.count }}){% endif %}</span>
+              </div>
+
+              {% if not execution.has_artefacts %}
+                No artefacts.
+              {% else %}
+                <div class="list-group list-group list-artefacts">
+                  {% for artefact in execution.artifacts.all|slice:50 %}
+                    <a
+                      href="{% url 'computing:computing_artefact:download' challenge.pk object.pk artefact.pk %}"
+                      class="list-group-item list-group-item-action">{{ artefact.file.original_path }}</a>
+                  {% endfor %}
+                </div>
+                <div class="text-right mt-1">
+                  <form method="POST"
+                        action="{% url 'challenge:challenge_submission:export-artifacts' challenge.pk object.pk execution.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-secondary">Export all</button>
+                  </form>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <style>
+    .log {
+      height: 500px;
+      overflow-y: scroll;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+  </style>
+  <script>
+    {# always scroll to the bottom #}
+    document.addEventListener("DOMContentLoaded", function () {
+      const myDiv = document.querySelector(".log");
+      if (myDiv != null) {
+        myDiv.scrollTop = myDiv.scrollHeight;
+      }
+    });
+  </script>
+{% endblock %}
+
+

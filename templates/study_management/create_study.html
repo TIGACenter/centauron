@@ -1,0 +1,30 @@
+{% extends 'study_management/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Create a Local Cohort
+            </h2>
+          </div>
+          {#          <div class="col-auto">#}
+          {#            <a href="{% url 'study_management:create' %}" class="btn btn-primary">New</a>#}
+          {#          </div>#}
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="card">
+          <div class="card-body">
+            {% crispy form %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

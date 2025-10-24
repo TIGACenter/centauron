@@ -1,0 +1,6 @@
+{% load event_tags %}
+<div class="divide-y">
+  {% for event in events %}
+    {% render_event event %}
+  {% endfor %}
+</div>

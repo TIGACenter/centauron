@@ -1,0 +1,24 @@
+{% extends 'challenge/tab_base.html' %}
+{% block card-actions %}
+<a href="{% url 'challenge:challenge_dataset:create' object.pk %}" class="btn btn-primary">
+  <i class="ti ti-plus"></i>
+  New
+</a>
+{% endblock %}
+{% block javascript %}
+    {% include 'includes/datatables-js.html' %}
+    <script>
+        $(document).ready(function () {
+            let columns = [
+                {#{className: 'select-checkbox'},#}
+                {data: 'name', title: 'Name'},
+                {data: 'type', title: 'Type'},
+                {data: 'is_public', title: 'Public'},
+                {data: 'date_created', title: 'Created at', render: DataTable.render.datetime()},
+            ];
+            dataTable('#table', '{% url 'challenge:challenge_dataset:dataset-list' object.pk %}', {
+                columns
+            });
+        });
+    </script>
+{% endblock %}

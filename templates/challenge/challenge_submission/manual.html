@@ -1,0 +1,85 @@
+<div class="mb-3">
+  <input type="hidden" id="ground_truth" value="{{ ground_truth.content }}">
+  <div id="canvas">
+    <label for="passphrase" class="form-label">Enter the passphrase for the ground truth for
+      dataset {{ ground_truth.dataset.name }}</label>
+    <form autocomplete="off">
+      <input type="password" class="form-control" id="passphrase">
+      <div class="text-danger d-none" id="encryptionMessage">Wrong passphrase.</div>
+    </form>
+    <button type="button" id="btnRun" class="btn mt-2 btn-primary">Run</button>
+  </div>
+  <div class="output">
+    <div id="app">
+      <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#pyscript-output">
+        Toggle
+      </button>
+    </div>
+    <div class="collapse show" id="pyscript-output">
+    </div>
+  </div>
+  <div class="results">
+    <form method="post"
+          action="{% url 'challenge:challenge_submission:pyscript-store' challenge.pk object.pk %}?cje={{ execution.pk }}">
+      {% csrf_token %}
+      <textarea class="form-control" rows="7" name="result" v-model="results"></textarea>
+      <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+  </div>
+</div>
+
+<div class="progress progress-sm d-none" id="loading">
+  <div class="progress-bar progress-bar-indeterminate"></div>
+</div>
+
+
+<style>
+  #loading {
+    outline: none;
+    border: none;
+    background: transparent
+  }
+</style>
+
+<script type="text/javascript">
+
+  document.body.addEventListener('htmx:configRequest', (event) => {
+    event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+  })
+  const elPassphrase = document.getElementById('passphrase');
+  const elCipher = document.getElementById('ground_truth');
+  const target = '#pyscript-output';
+
+  const loading = document.getElementById('loading');
+  const encryptionMessage = document.getElementById('encryptionMessage');
+  window.addEventListener('py:ready', () => loading.classList.add('d-none'));
+
+  document.querySelector('#btnRun').onclick = e => {
+    try {
+      loading.classList.remove('d-none');
+      {# empty htmx target to allow multiple executions #}
+      {#$(target).textContent = '';#}
+      const text = C.decrypt(elCipher.value, elPassphrase.value);
+      encryptionMessage.classList.add('d-none');
+      if (text.length === 0) {
+        {# show error message and remove progress bar #}
+        encryptionMessage.classList.remove('d-none');
+        loading.classList.add('d-none');
+        console.warn('Cleartext has length 0 (wrong passphrase?).')
+        return;
+      }
+      htmx.ajax('POST', '{% url 'challenge:challenge_submission:pyscript' challenge.pk object.pk %}?cje={{ execution.pk }}', {
+        target,
+        swap: 'innerHTML'
+      })
+    } catch (e) {
+      console.error(e);
+      encryptionMessage.classList.remove('d-none');
+    } finally {
+      {#loading.classList.add('d-none');#}
+    }
+  }
+
+</script>
+<style>
+</style>

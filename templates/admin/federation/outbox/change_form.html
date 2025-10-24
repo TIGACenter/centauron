@@ -1,0 +1,12 @@
+{% extends "admin/change_form.html" %}
+
+{% block object-tools %}
+  {{ block.super }}
+  <div class="object-tools">
+    <ul class="object-tools">
+      <li>
+        <a href="{% url 'admin:outbox_outboxmessage_replay' original.pk %}" class="button">Replay</a>
+      </li>
+    </ul>
+  </div>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'challenge/challenge_client/detail.html' %}
+{% load core_tags %}
+{% load humanize %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Submission {{ submission.name }}
+            </h2>
+          </div>
+          <div class="col-auto ms-auto d-print-none">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="datagrid">
+                  <div class="datagrid-item">
+                    <div class="datagrid-title">Name</div>
+                    <div class="datagrid-content">{{ submission.name }}</div>
+                  </div>
+                  <div class="datagrid-item">
+                    <div class="datagrid-title">Docker Image</div>
+                    <div class="datagrid-content">{{ submission.fields.template.image }}</div>
+                  </div>
+                  <div class="datagrid-item">
+                    <div class="datagrid-title">Entrypoint</div>
+                    <div class="datagrid-content">{{ submission.fields.template.script }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-12">
+            <ul class="timeline">
+              {% for status in submission.status_ordered %}
+                <li class="timeline-event">
+                  <div class="timeline-event-icon">
+                    <i class="ti {{ status.icon }}"></i>
+                  </div>
+                  <div class="card timeline-event-card">
+                    <div class="card-body">
+                      <div class="text-muted float-end">{{ status.date_created|naturaltime }}</div>
+                      <h4>{{ status.title }}</h4>
+                      <p class="text-muted">
+                        {% if status.is_pending %}
+                          Your submission is sent to the challenge organizer shortly.
+                        {% endif %}
+                        {% if status.is_executed %}
+                          Your submission was executed. Once the results and log arrive, you'll be able to view them here.
+                        {% endif %}
+                        {% if status.is_sent %}
+                          Your submission was successfully sent to the challenge organizer. It will
+                          shortly be executed and you will be able to see your scored results here soon.
+                        {% endif %}
+                      {% if status.is_results_received %}
+                        <a href="{% url 'challenge_client:challenge-submission-result-detail' challenge.pk submission.pk status.pk %}" class="btn btn-primary"><i class="ti ti-arrow-right"></i> View</a>
+                      {% endif %}
+                      </p>
+
+                      {% if status.has_message %}
+                        <p class="text-muted">
+                          You received an additional message. TODO open modal here
+                        </p>
+                      {% endif %}
+                    </div>
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+

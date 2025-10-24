@@ -1,0 +1,24 @@
+# General
+# ------------------------------------------------------------------------------
+USE_DOCKER=yes
+IPYTHONDIR=/app/.ipython
+# Redis
+# ------------------------------------------------------------------------------
+REDIS_URL=redis://redis:6379/0
+
+# Celery
+# ------------------------------------------------------------------------------
+
+# Flower
+CELERY_FLOWER_USER=debug
+CELERY_FLOWER_PASSWORD=debug
+
+KEYCLOAK_URL=http://129.206.73.91:8686/auth/
+KEYCLOAK_REALM=master
+KEYCLOAK_CLIENT_ID=centauron-computing-master
+KEYCLOAK_CLIENT_SECRET=TUdlcwjhiqFOmY3vAqNolnL7l7Lo7RnE
+KEYCLOAK_PUBLIC_KEY=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhN0PDeEM9zFmhbDm2NXKowbnQAlajJMmMABRH3a0fe4yY/zSznuldsnTxTOpixw8jVHRZt0l4TVIhuuWPFdmU1Fel4c1qtBpRdKGGrLd8plRAMt27wS5JtrpALWU/wJ6v0kTZDr7u121jdn4AoCziye3subJSuYh6BWJLUcnTPFUwrdcPAIbjb2y9T9zz+6c391bjgUGasWhwtdzUo5mYnEccD8x+jm3z6n0uU4pLmj9NCjsGGCQjoHc8B8g64LYenpSSrRvJGnsInVjvV76yC12hgp2HPyK6FBCxfJWSsl956l8qy2mopB2SihQVF3r/bEjFuQcVBqg878lkbwmVwIDAQAB
+TMP_FOLDER=/home/ak/Desktop/centauron_data/tmp/
+IDENTIFIER=ak.dev.centauron.net
+
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/centauron-monolith

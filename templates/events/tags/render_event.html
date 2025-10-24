@@ -1,0 +1,12 @@
+<div>
+  <div class="row">
+    <div class="col">
+      <div class="text-truncate">
+        {{ st|safe }}
+      </div>
+      <div class="text-secondary">{{ event.date_created|timesince }} ago
+        ({{ event.date_created|date:'SHORT_DATETIME_FORMAT' }})
+      </div>
+    </div>
+  </div>
+</div>

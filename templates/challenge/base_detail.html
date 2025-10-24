@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block header %}
+  {% with title='challenge/title_detail.html' site_navigation='challenge/detail_navigation.html' %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}

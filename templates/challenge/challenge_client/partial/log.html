@@ -1,0 +1,13 @@
+{% with output=log_entries %}
+  {% if output.count > 0 %}
+    <div class="log">
+      {% for log in output %}
+        <div class="log-{{ log.type }}">
+          [{{ log.logged_at|date:'d.m.Y H:i:s' }}] {{ log.content }}
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    No log output.
+  {% endif %}
+{% endwith %}

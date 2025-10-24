@@ -1,0 +1,54 @@
+{% extends 'federation/base.html' %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Nodes
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="card">
+          <div class="card-body">
+            <table class="table">
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>Identifier</th>
+                <th>CN</th>
+                <th>API</th>
+                <th>FHIR</th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for c in nodes %}
+                <tr>
+                  <td>{{ c.human_readable }}</td>
+                  <td>{{ c.identifier }}</td>
+                  <td>{{ c.common_name }}</td>
+                  <td>{{ c.address_centauron }}</td>
+                  <td>{{ c.address_fhir_server }}</td>
+                  <td>
+                    <form action="{% url 'federation:delete-node' c.pk %}" method="post">{% csrf_token %}
+                      <button type="submit" class="btn btn-icon btn-danger" title="Revoke access"><i
+                        class="ti ti-trash"></i></button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

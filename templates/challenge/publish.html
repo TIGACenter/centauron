@@ -1,0 +1,144 @@
+{% extends 'challenge/base_detail.html' %}
+{% load core_tags %}
+{% block stylesheet %}
+  {% include 'includes/datatables-css.html' %}
+{% endblock %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <div class="mb-2">
+              <ol class="breadcrumb" aria-label="breadcrumbs">
+                <li class="breadcrumb-item"><a href="{% url 'challenge:list' %}">My challenges</a></li>
+                <li class="breadcrumb-item"><a
+                  href="{% url 'challenge:detail' challenge.id %}">{{ challenge.name }}</a></li>
+              </ol>
+            </div>
+            <h2 class="page-title">
+              Publish {{ challenge.name }}
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Overview</h3>
+              </div>
+              <div class="card-body">
+
+                <div class="datagrid">
+                  <div class="datagrid-item">
+                    <div class="datagrid-title">Name</div>
+                    <div class="datagrid-content">{{ challenge.name }}</div>
+                  </div>
+                  <div class="datagrid-item">
+                    <div class="datagrid-title">Identifier</div>
+                    <div class="datagrid-content">{{ challenge.identifier }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <form action="{% url 'challenge:publish'  challenge.id %}" method="post">
+          {% csrf_token %}
+          <div class="row mt-3">
+            <div class="col">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Datasets</h3>
+                </div>
+                <table class="table card-table table-vcenter table-striped table-hover">
+                  <thead>
+                  <tr>
+                    <th class="w-1"></th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th># cases</th>
+                    <th># files</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for d in public_datasets %}
+                    <tr>
+                      <td><input type="checkbox" class="form-check-input" name="datasets" checked
+                                 value="{{ d.id }}"></td>
+                      <td>{{ d.name }}</td>
+                      <td>{{ d.type }}</td>
+                      <td>{{ d.cases.count }}</td>
+                      <td>{{ d.files.count }}</td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Target Metrics</h3>
+                </div>
+                <table class="table card-table table-vcenter table-striped table-hover">
+                  <thead>
+                  <tr>
+                    <th>Metric</th>
+                    <th>Sort</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for tm in target_metrics %}
+                    <tr>
+                      <td>{{ tm.key }}</td>
+                      <td>{{ tm.sort }}</td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col">
+              <div class="d-flex">
+                <div class="form-label flex-1" for="publishingEndpoint">Share with:</div>
+                <select class="form-select" id="publishingEndpoint" name="publishing-endpoint">
+                  {% for e in publishing_endpoints %}
+                    <option value="{{ e.user.id }}">{{ e.user.human_readable }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="col">
+              <button class="btn btn-primary me-2" type="submit">Publish</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  {% include 'includes/datatables-js.html' %}
+  <script>
+    $(document).ready(function () {
+      let columns = [
+        {className: 'select-checkbox'},
+        {data: 'name', title: 'Name'},
+        {data: 'date_created', title: 'Created at'},
+      ];
+      dataTable('#table', '{% url 'challenge:datatable-challenge-list-list' %}', {
+        columns
+      });
+    });
+  </script>
+{% endblock %}

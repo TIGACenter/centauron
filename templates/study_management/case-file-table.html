@@ -1,0 +1,17 @@
+{% load viewer_tags %}
+{% spaceless %}
+  <table class="table">
+    <tr>
+      <th>File</th>
+      <th>Terms</th>
+      <th>Origin</th>
+    </tr>
+    {% for row in files %}
+      <tr>
+        <td>{% viewer_link_file row %}</td>
+        <td>{{ row.code_list_string_rep|join:", " }}</td>
+        <td>{{ row.origin }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endspaceless %}

@@ -1,0 +1,91 @@
+{% if total == 0 and total_extra_data == 0 %}
+  No files or extra data found. Please choose another csv file.
+{% else %}
+  <div>Total cases found: {{ cases|length }}</div>
+  <div>Total files found: {{ total }}</div>
+  <div>Total extra data found: {{ total_extra_data }}</div>
+
+  Select the permissions:
+  {% for action in actions %}
+    <th class="w-1"><input type="checkbox" class="form-check-input" value="{{ action }}" name="actions" checked
+                           id="action-{{ action }}"> <label
+      for="action-{{ action }}">{{ action }}</label></th>
+  {% endfor %}
+  {% for file in files %}
+    <input type="hidden" name="file" value="{{ file.id }}">
+  {% endfor %}
+
+  {% if total > 0 %}
+    <div>
+      Ground Truth last updated: {{ ground_truth.last_modified|date:'c' }}.
+    <div><a href="{% url 'project:my_data_ground_truth' project.pk %}">Update now</a></div>
+    </div>
+    {#    <div class="row mt-2" id="app">#}
+    {#      <div class="col-6">#}
+    {#        <div class="mb-3">#}
+    {#          <label for="id_csv" class="form-label">CSV</label><span v-if="csvformatmessage"#}
+    {#                                                                  class="text-danger ms-3">[[ csvformatmessage ]]</span>#}
+    {#          <textarea :disabled="encrypted" class="form-control" id="id_csv" @paste="checkCSVFormat"#}
+    {#                    rows="25" name="ground_truth" v-model="csv"></textarea>#}
+    {#        </div>#}
+    {#        <div class="mb-3">#}
+    {#          <label for="passphrase" class="form-label">Passphrase</label>#}
+    {#          <input type="password" class="form-control" id="passphrase" v-model="passphrase">#}
+    {#          <button type="button" :disabled="encrypted" id="btnEncrypt"#}
+    {#                  class="btn mt-2 btn-primary" @click="encrypt">Encrypt#}
+    {#            <!-- in :disabled: || !validated -->#}
+    {#          </button>#}
+    {#          <button type="button" :disabled="!encrypted" id="btnDecrypt" class="btn mt-2 ms-2 btn-primary"#}
+    {#                  @click="decrypt">Decrypt#}
+    {#          </button>#}
+    {#          <span v-if="message" class="ms-3">[[ message ]]</span>#}
+    {#        </div>#}
+    {##}
+    {#      </div>#}
+    {#      <div class="col-6">#}
+    {#        <label for="csv_schema" class="form-label">CSV Schema</label>#}
+    {#        <textarea disabled id="csv_schema" class="form-control" value="{{ csv_schema.yaml }}" rows="20"></textarea>#}
+    {#      </div>#}
+    {#      <input type="hidden" name="nr_rows" class="form-control" value="{{ total }}">#}
+    {#    </div>#}
+  {% endif %}
+
+  <div class="row mt-2">
+    <div class="mb-3">
+      <button type="submit" :disabled="!encrypted" value="Save" id="submit-id-submit"
+              class="btn btn-primary">Release my data
+      </button>
+      <div class="spinner-border text-primary htmx-indicator" role="status"></div>
+
+    </div>
+  </div>
+  {% if total > 0 %}
+    <script type="text/javascript">
+      {% autoescape off %}
+        $(document).ready(() => {
+          let encrypted = {% if ground_truth is not None %}true{% else %}false{% endif %};
+          const app = C.createLabelVueApp('#app', {
+            csv: '{{ ground_truth.content|escapejs }}',
+            encrypted,
+            nr_rows: {{ total }}
+          });
+        })
+      {% endautoescape %}
+
+      $('form').submit(function (e) {
+        $(':disabled').each(function (e) {
+          $(this).removeAttr('disabled');
+        })
+      });
+
+      function copyText(text) {
+        if (navigator.clipboard) {
+          const type = "text/plain";
+          const blob = new Blob([text], {type});
+          const data = [new ClipboardItem({[type]: blob})];
+          navigator.clipboard.write(data);
+        }
+      }
+    </script>
+  {% endif %}
+{% endif %}

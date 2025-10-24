@@ -1,0 +1,48 @@
+{% extends 'project/base_detail.html' %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Transfer Jobs
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row mt-2">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="tab-content">
+                  <table class="table table-hover table-striped">
+                    <thead>
+                    <tr>
+                      <th>Created at</th>
+                      <th>Items #</th>
+                      <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for j in items %}
+                      <tr>
+                        <td><a href="{% url 'project:transfer-job' project.pk j.pk %}">{{ j.date_created }}</a></td>
+                        <td>{{ j.items_count }}</td>
+                        <td>{{ j.status }}</td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block header %}
+  {% with title='users/title.html' site_navigation='users/site-navigation.html' %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                {% crispy form %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <div><strong>Identifier</strong>
+                  <pre>{{ profile.identifier }}</pre>
+                </div>
+                <div><strong>DID</strong>
+                  <pre>{{ profile.identity }}</pre>
+                </div>
+                <div><strong>Published</strong>
+                  <pre>{{ profile.is_published }}</pre>
+                </div>
+                <div><strong>Node</strong>
+                  <pre>{{ profile.node.identifier }}</pre>
+                </div>
+                <div><strong>Communication Allow List</strong>
+                  <pre>{% for p in profile.communication_allowed_with_users.all %}{{ p.human_readable }}{% if p.organization %} ({{ p.organization }}){% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}</pre>
+                </div>
+                <div><strong>ETH Address</strong>
+                  <pre>{{ profile.eth_address }}</pre>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

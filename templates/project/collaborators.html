@@ -1,0 +1,112 @@
+{% extends 'project/base_detail.html' %}
+{% load crispy_forms_tags %}
+{% load project_tags %}
+{% block css %}
+  <style>
+    .htmx-indicator {
+      opacity: 0;
+      transition: opacity 500ms ease-in;
+    }
+
+    .htmx-request .htmx-indicator {
+      opacity: 1
+    }
+
+    .htmx-request.htmx-indicator {
+      opacity: 1
+    }
+  </style>
+{% endblock %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            {#            <div class="page-pretitle">#}
+            {#              View#}
+            {#            </div>#}
+            <h2 class="page-title">
+              Collaborators
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <div class="tab-content">
+                  <table id="table" class="table" style="width:100%">
+                    <tr>
+                      <th>Name</th>
+                      <th>Organization</th>
+                      <th>Status</th>
+                      <th>Added at</th>
+                      {% if project|user_is_project_owner:request.user.profile %}
+                        <th></th>
+                      {% endif %}
+                    </tr>
+                    {% for m in project_members %}
+                      <tr>
+                        <td>{{ m.user.display }}</td>
+                        <td>{{ m.user.organization|default_if_none:'-' }}</td>
+                        <td>{{ m.invite.status }}</td>
+                        <td>{{ m.date_created }}</td>
+                        {% if project|user_is_project_owner:request.user.profile %}
+
+                          <td>
+                            <form method="post"
+                                  action="{% url 'project:collaborator-delete' project.pk %}">{% csrf_token %}<input
+                              type="hidden" name="member" value="{{ m.pk }}">
+                              <button type="submit" class="btn btn-danger btn-icon"><i class="ti ti-trash"></i></button>
+                            </form>
+                          </td>
+                        {% endif %}
+
+                      </tr>
+                    {% endfor %}
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% if project|user_is_project_owner:request.user.profile %}
+          <div class="row mt-2">
+            <div class="col">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Add collaborator</h3>
+                </div>
+                <div class="card-body">
+                  <div>
+                    {% csrf_token %}
+                    <input class="form-control"
+                           type="search"
+                           name="query"
+                           placeholder="Search for name"
+                           hx-post="{% url 'federation:invitation:query' %}?project={{ project.pk }}"
+                           hx-trigger="input changed delay:500ms, search"
+                           hx-target="#search-results"
+                           hx-include="input[name='csrfmiddlewaretoken']"
+                           hx-indicator=".htmx-indicator">
+                  </div>
+                  <div class="progress progress-sm htmx-indicator">
+                    <div class="progress-bar progress-bar-indeterminate"></div>
+                  </div>
+                  <div class="mt-2">
+                    <div id="search-results"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block header %}
+  {% with title='users/title.html' site_navigation='users/site-navigation.html' %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}
+{% block content %}
+  <ul>
+    <li>Number of files</li>
+    <li>Corresponding number of cases</li>
+    <li>Number of annotations</li>
+    <li>Labels of annotations</li>
+    <li>Model, Model runs</li>
+  </ul>
+  <div class="page-wrapper">
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-3">
+            <div class="card card-sm">
+              <div class="card-body">
+                <div class="subheader mb-2">Cases</div>
+                <div class="row">
+                  <div class="col-3">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-briefcase"></i></span>
+                  </div>
+                  <div class="col-auto">
+                    <div class="d-flex align-items-center">
+                      <div class="h1 mb-0">{{ cases_total }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="subheader mb-2">Files</div>
+                <div class="row">
+                  <div class="col-3">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-files"></i></span>
+                  </div>
+                  <div class="col-auto">
+                    <div class="d-flex align-items-center">
+                      <div class="h1 mb-0">{{ files_total }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="card">
+              <div class="card-body">
+                <div class="subheader mb-2">Annotations</div>
+                <div class="row">
+                  <div class="col-3">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-polygon"></i></span>
+                  </div>
+                  <div class="col-auto">
+                    <div class="d-flex align-items-center">
+                      <div class="h1 mb-0">{{ annotation_total }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="card">
+              <div class="card-body">
+                <div class="subheader mb-2">Challenges</div>
+                <div class="row">
+                  <div class="col-3">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-school"></i></span>
+                  </div>
+                  <div class="col-auto">
+                    <div class="d-flex align-items-center">
+                      <div class="h1 mb-0">{{ challenges_total }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="card">
+              <div class="card-body">
+                <div class="subheader mb-2">Challenge Submissions</div>
+                <div class="row">
+                  <div class="col-3">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-submarine"></i></span>
+                  </div>
+                  <div class="col-auto">
+                    <div class="d-flex align-items-center">
+                      <div class="h1 mb-0">{{ challenge_submissions_total }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

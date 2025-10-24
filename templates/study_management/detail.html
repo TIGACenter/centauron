@@ -1,0 +1,30 @@
+{% extends 'study_management/base_detail.html' %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Study
+            </h2>
+          </div>
+          <div class="col-auto">
+              <a class="btn btn-primary" href="{% url 'admin:study_management_studyarm_add' %}">New study arm</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="card">
+          <div class="card-body">
+            Some stats here or so? Pick study arm above.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

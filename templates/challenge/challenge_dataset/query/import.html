@@ -1,0 +1,12 @@
+{% if success %}
+  Data will be imported.
+  {{ filter|json_script:"query_filter" }}
+  <script>
+    window.opener.postMessage(JSON.parse(document.getElementById('query_filter').textContent), '*');
+    setTimeout(() => window.close(), 1000);
+  </script>
+
+{% else %}
+
+
+{% endif %}

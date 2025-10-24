@@ -1,0 +1,17 @@
+<a href="#" class="my-2 ms-2" id="linkToggleAllLog">Toggle all</a>
+{% if logs.count > 0 %}
+  <div class="log">
+    {% for log in logs %}
+      <div class="log-{{ log.type }}">
+        <input type="checkbox" class="form-checkbox" checked
+               value="{{ e.pk }}.{{ log.pk }}"
+               id="{{ log.pk }}"
+               name="log"><label
+        for="{{ log.pk }}">[{{ log.logged_at|date:'d.m.Y H:i:s' }}] {{ log.content }}</label>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  No log output.
+{% endif %}
+</div>

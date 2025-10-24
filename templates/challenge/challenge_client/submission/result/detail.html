@@ -1,0 +1,116 @@
+{% extends 'challenge/challenge_client/detail.html' %}
+{% load core_tags %}
+{% load humanize %}
+{% load challenge_client_tags %}
+{% block content %}
+  <style>
+    .nav-link.active {
+      font-weight: bold;
+    }
+  </style>
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Submission {{ submission.name }}
+            </h2>
+          </div>
+          <div class="col-auto ms-auto d-print-none">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="datagrid">
+                  <div class="datagrid-item">
+                    <div class="datagrid-title">Name</div>
+                    <div class="datagrid-content">{{ submission.name }}</div>
+                  </div>
+                  <div class="datagrid-item">
+                    <div class="datagrid-title">Created</div>
+                    <div class="datagrid-content">{{ submission.date_created|date:"SHORT_DATETIME_FORMAT" }}</div>
+                  </div>
+                  <div class="datagrid-item">
+                    <div class="datagrid-title">Docker Image</div>
+                    <div class="datagrid-content">{{ submission.fields.template.image }}</div>
+                  </div>
+                  <div class="datagrid-item">
+                    <div class="datagrid-title">Entrypoint</div>
+                    <div class="datagrid-content">{{ submission.fields.template.script }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-12">
+            <ul class="nav" data-bs-toggle="tabs" role="tablist">
+              {% for e in definitions %}
+                <li class="nav-item" role="presentation">
+                  <a href="#def-{{ e.pk }}" class="nav-link {% if forloop.first %}active{% endif %}"
+                     data-bs-toggle="tab" role="tab">{{ e.name }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="tab-content">
+          {% for stage in definitions %}
+            <div class="tab-pane {% if forloop.first %}active show{% endif %}" id="def-{{ stage.pk }}">
+              <div class="row">
+                <div class="col-2">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="list-group list-group-flush" data-bs-toggle="tabs">
+                        {% for e in stage|execution_for_definition:executions %}
+                          <div class="list-group-item list-group-item-action {% if forloop.first %}active{% endif %}">
+                            {% include 'includes/computing-job-execution-icon.html' with job=e %}
+                            <a href="#res-{{ e.pk }}" data-bs-toggle="tab">
+                              {% include 'challenge/partials/list_label_job_execution.html' with execution=e %}
+                            </a>
+                          </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-10">
+                  <div class="tab-content">
+                    {% for e in stage.executions.all %}
+                      <div class="tab-pane" role="tabpanel" id="res-{{ e.pk }}">
+                        <div class="card">
+                          <div class="card-header">
+                            <h3 class="card-title">Artefacts</h3>
+                          </div>
+                          <div
+                            hx-get="{% url 'challenge_client:artifact' challenge.pk submission.pk %}?id={{ e.id_as_str }}"
+                            hx-trigger="load" hx-swap="innerHTML" hx-target="this"></div>
+                        </div>
+                        <div class="card mt-2">
+                          <div class="card-header">
+                            <h3 class="card-title">Logs</h3>
+                          </div>
+                          <div
+                            hx-get="{% url 'challenge_client:log' challenge.pk %}?id={{ e.id_as_str }}"
+                            hx-trigger="load" hx-swap="innerHTML" hx-target="this"></div>
+                        </div>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

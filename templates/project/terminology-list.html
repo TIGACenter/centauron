@@ -1,0 +1,96 @@
+{% extends 'project/base_detail.html' %}
+
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Terminology
+            </h2>
+          </div>
+          {#          <div class="col-auto ms-auto d-print-none">#}
+          {#            <div class="btn-list">#}
+          {#              {% if request.user.is_superuser %}#}
+          {#                <a href="{% url 'admin:project_dataview_change' current_view.pk %}" class="btn btn-icon"><i#}
+          {#                  class="ti ti-settings"></i></a>#}
+          {#              {% endif %}#}
+          {#              <div class="dropdown">#}
+          {#                <a href="#" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">#}
+          {#                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"#}
+          {#                       viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"#}
+          {#                       stroke-linecap="round" stroke-linejoin="round">#}
+          {#                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>#}
+          {#                    <path d="M12 5l0 14"></path>#}
+          {#                    <path d="M5 12l14 0"></path>#}
+          {#                  </svg>#}
+          {#                  Import data</a>#}
+          {#                <div class="dropdown-menu">#}
+          {#                  <a class="dropdown-item" href="{% url 'project:import_data:csv' object.pk %}">From CSV</a>#}
+          {#                  <a class="dropdown-item" href="{% url 'project:import_data:node' object.pk %}">From#}
+          {#                    CENTAURON node</a>#}
+          {#                </div>#}
+          {#              </div>#}
+          {#            </div>#}
+          {#          </div>#}
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="tab-content">
+                  {% if codes %}
+                    <table class="table table-striped table-hover">
+                      <tr>
+                        <th>Term</th>
+                        <th>Description</th>
+                        <th>Code System</th>
+                        <th class="w-1"></th>
+                      </tr>
+                      {% for code in codes %}
+                        <tr>
+                          <td>{{ code.code }}</td>
+                          <td>{{ code.human_readable }}</td>
+                          <td>{{ code.codesystem_name }}</td>
+                          <td class="w-1"><form method="post" action="{% url 'project:terminology-action' project.pk %}">{% csrf_token %}<input type="hidden" name="code_id" value="{{ code.pk }}"> <button type="submit" class="btn btn-icon btn-danger" title="Delete from project"><i class="ti ti-trash"></i></button></form></td>
+                        </tr>
+                      {% endfor %}
+                    </table>
+                  {% else %}
+                    No codes yet.
+                  {% endif %}
+                  <a href="#" class="btn btn-primary btn-add-code">Add code</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+  <script>
+    document.querySelector('.btn-add-code').onclick = () => {
+      htmx.ajax('GET', '{% url 'project:terminology-dialog-add' project.pk %}', {
+        target: 'body',
+        swap: 'beforeend'
+      }).then(
+        () => {
+          const selector = '#modalCode';
+          const modalEl = document.querySelector(selector);
+          const modal = C.createModal(selector);
+          // remove modal from dom once it's closed
+          modalEl.addEventListener('hidden.bs.modal', _ => modalEl.remove());
+          modal.show();
+        }
+      );
+    };
+  </script>
+{% endblock %}

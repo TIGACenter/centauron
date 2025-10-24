@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static account socialaccount crispy_forms_tags core_tags %}
+{% block header %}{% endblock %}
+{% block content %}
+  <div class="row g-0 flex-fill">
+    <div class="col-12 col-lg-6 col-xl-4 d-flex flex-column justify-content-center">
+      <div class="container container-tight my-5 px-lg-5">
+        <h2 class="h3 text-center mb-3">
+          SIGN IN
+        </h2>
+        <form class="text-center" action="{% provider_login_url "keycloak" process="login" %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary">Sign In with CENTAURON</button>
+          {% settings 'IS_CHALLENGE_HUB' as is_hub %}
+          {% settings 'HUB_ENABLE_REGISTRATION' as registration_enabled %}
+          {% if is_hub and registration_enabled %}
+          <div class="mt-3">
+            or <a href="{% url 'challenge_client:register' %}">register here</a>
+          </div>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+    <div class="col-12 col-lg-6 col-xl-8 d-none d-lg-block">
+      <div id="particles-js" class="bg-cover h-100 vh-100"></div>
+    </div>
+  </div>
+  <script src="{% static 'js/particles.min.js' %}"></script>
+  <script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', (event) => {
+      particlesJS.load('particles-js', '{% static 'particles.json' %}', function () {
+        console.log('callback - particles.js config loaded');
+      });
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'project/base_detail.html' %}
+{% load crispy_forms_tags static project_tags %}
+{% block page-heading %}{{ object }}{% endblock %}
+{% block content %}
+  <div class="page-wrapper" id="app">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <div class="mb-1">
+            </div>
+            <h2 class="page-title">
+              Ground Truth Schema
+            </h2>
+          </div>
+          <div class="col-auto ms-auto d-print-none">
+            <div class="btn-list">
+              {% if object %}
+                <div class="d-flex">
+                  <input type="text" disabled value="{{ object.identifier }}" class="form-control">
+                  <button class="btn btn-icon" onclick="window.copyText('{{ object.identifier }}')"><i
+                    class="ti ti-copy"></i>
+                  </button>
+                </div>
+              {% endif %}
+              {% if project|user_is_project_owner:request.user.profile %}
+                <a href="{% static 'templates/template-groundtruth-schema.yml' %}" class="btn"><i
+                  class="ti ti-download"></i>Template</a>
+                {% if object %}
+                  <form method="POST" action="{% url 'project:ground_truth:send-to-collaborators' project.pk %}">
+                    {% csrf_token %}
+                    <button class="btn" type="submit"><i class="ti ti-send"></i>Distribute</button>
+                  </form>
+                {% endif %}
+              {% endif %}
+              {% if request.user.is_superuser %}
+                {% if object %}
+                  <a class="btn btn-icon"
+                     href="{% url 'admin:project_ground_truth_groundtruthschema_change' object.pk %}">
+                    <i class="ti ti-settings"></i>
+                  </a>
+                {% endif %}
+              {% endif %}
+              {% if project|user_is_project_owner:request.user.profile %}
+                <button id="buttonImport" class="btn btn-primary d-none d-sm-inline-block"
+                        onclick="document.getElementById('form').submit()">
+                  <i class="ti ti-save"></i>
+                  Save
+                </button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                  <pre>{{ object.yaml }}</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block javascript %}
+  <script type="text/javascript">
+
+  </script>
+{% endblock %}
+

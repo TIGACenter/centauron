@@ -1,0 +1,55 @@
+{% extends 'study_management/base.html' %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              My local cohorts
+            </h2>
+          </div>
+          <div class="col-auto ms-auto d-print-none">
+            <a href="{% url 'study_management:create' %}" class="btn btn-primary">New</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="tab-content">
+                  <div class="tab-pane active show">
+                    <table id="table" class="table table-sm table-bordered"
+                           style="width:100%"></table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block stylesheet %}
+  {% include 'includes/datatables-css.html' %}
+{% endblock %}
+{% block javascript %}
+  {% include 'includes/datatables-js.html' %}
+  <script>
+    $(document).ready(function () {
+      let columns = [
+        {data: 'name', title: 'Name'},
+        {data: 'date_created', title: 'Created at', render: DataTable.render.datetime()},
+      ];
+      dataTable('#table', '{% url 'study_management:studies-list' %}', {
+        columns,
+        fullRowLink: true
+      });
+    });
+  </script>
+{% endblock %}

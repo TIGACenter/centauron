@@ -1,0 +1,87 @@
+{% extends 'blockchain/base.html' %}
+{% load blockchain_tags %}
+{% block content %}
+  <div class="page-wrapper">
+  <div class="page-body">
+    <div class="container-xl">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <div id="cy"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://unpkg.com/cytoscape@3.24.0/dist/cytoscape.min.js"></script>
+
+  <script>
+    // Create a Cytoscape instance
+    let cy = cytoscape({
+      container: document.getElementById('cy'), // The container for the graph
+
+      elements: [ // List of elements (nodes and edges)
+        // Nodes (profiles connected to the nodes)
+        {data: {id: '1', label: 'Node 1\nProfile: John Doe'}},
+        {data: {id: '2', label: 'Node 2\nProfile: Jane Smith'}},
+        {data: {id: '3', label: 'Node 3\nProfile: Alice Brown'}},
+        {data: {id: '4', label: 'Node 4\nProfile: Bob Johnson'}},
+        
+        // Edges (connections between nodes)
+        {data: {id: 'e1', source: '1', target: '4'}},
+        {data: {id: 'e2', source: '1', target: '4'}},
+        {data: {id: 'e3', source: '2', target: '4'}},
+        {data: {id: 'e4', source: '3', target: '4'}},
+      ],
+
+      style: [ // Styles for the graph
+        {
+          selector: 'node',
+          style: {
+            'background-color': '#007bff',
+            'label': 'data(label)',
+            'color': '#fff',
+            'text-valign': 'center',
+            'text-halign': 'center',
+            'width': 40,
+            'height': 40,
+            'font-size': '12px',
+            'border-color': '#000',
+            'border-width': 2
+          }
+        },
+        {
+          selector: 'edge',
+          style: {
+            'width': 2,
+            'line-color': '#ccc',
+            'target-arrow-color': '#ccc',
+            'target-arrow-shape': 'triangle'
+          }
+        },
+      ],
+
+      layout: { // Layout of the graph
+        name: 'cose', // 'cose' is a force-directed layout
+        idealEdgeLength: 100,
+        nodeRepulsion: 4000,
+        gravity: 1,
+        fit: true
+      }
+    });
+    console.log(cy)
+    // Add interaction: e.g., click event listener for nodes
+    cy.on('tap', 'node', function (event) {
+      var node = event.target;
+      alert('You clicked on ' + node.data('label'));
+    });
+  </script>
+  <style>
+    #cy {
+      height: 800px;
+      width: 800px;
+    }
+  </style>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends 'challenge/challenge_client/detail.html' %}
+{% load core_tags viewer_tags challenge_client_tags %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Dataset: {{ dataset.name }}
+            </h2>
+          </div>
+          {% if request.user.is_authenticated %}
+            <div class="col-auto ms-auto d-print-none">
+              <div class="btn-list">
+                <form method="post"
+                      action="{% url 'challenge_client:challenge-datasets-detail-action' challenge.pk dataset.pk %}">{% csrf_token %}
+                  {% if request.user.is_superuser %}
+                    <button class="btn btn-secondary" name="button_download">Import</button>
+                  {% endif %}
+                  {% is_enrolled request challenge as en %}
+                  {% if en or request.user.is_superuser %}
+                    <button class="btn btn-secondary" name="button_export">Download</button>
+                  {% else %}
+                    Download is available once enrolled.
+                  {% endif %}
+                </form>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        {% if dataset.description|length > 0 %}
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body">
+                  {{ dataset.description|markdownify|safe }}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        <div class="row mt-2">
+          <div class="col-3">
+            <div class="card card-sm">
+              <div class="card-body">
+                <div class="subheader mb-2">Cases</div>
+                <div class="row">
+                  <div class="col-3">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-briefcase"></i></span>
+                  </div>
+                  <div class="col-auto">
+                    <div class="d-flex align-items-center">
+                      <div class="h1 mb-0">{{ number_of_cases }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="card card-sm">
+              <div class="card-body">
+                <div class="subheader mb-2">Files</div>
+                <div class="row">
+                  <div class="col-3">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-files"></i></span>
+                  </div>
+                  <div class="col-auto">
+                    <div class="d-flex align-items-center">
+                      <div class="h1 mb-0">{{ dataset.files.count }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {#          <div class="col-12">#}
+          {#            <div class="card">#}
+          {#              <div class="card-body">#}
+          {#                List some files, show label distribution, show number of total files, show number of cases....#}
+          {#                <div>Cases: {{ dataset.cases.count }}</div>#}
+          {#                <div>Files: {{ dataset.files.count }}</div>#}
+          {#              </div>#}
+          {#            </div>#}
+          {#          </div>#}
+        </div>
+        <div class="row mt-2">
+          <div class="col-12">
+            <div class="card">
+              <table class="table table-hover-table-striped">
+                <thead>
+                <tr>
+                  <th>Filename</th>
+                  <th>
+                    Case
+                  </th>
+                  <th>Terms</th>
+                  <th>Origin</th>
+                  {#                  <th>Identifier</th>#}
+                </tr>
+                </thead>
+                <tbody>
+                {% for f in dataset.files.all %}
+                  <tr>
+                    <td>
+                      {% if f.imported %}
+                        <strong><a href="{% viewer_url f %}">{% endif %}{{ f.name }}{% if f.imported %}</a>
+                      </strong>{% endif %}</td>
+                    <td>{{ f.case.name }}</td>
+                    <td>{{ f.code_list_string_rep|join:", " }}</td>
+                    <td>{{ f.origin.display }}</td>
+                    {#                    <td>{{ f.identifier }}</td>#}
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+

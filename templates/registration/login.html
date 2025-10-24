@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block header %}{% endblock %}
+{% block content %}
+  <div class="row g-0 flex-fill">
+    <div class="col-12 col-lg-6 col-xl-4 d-flex flex-column justify-content-center">
+      <div class="container container-tight my-5 px-lg-5">
+        <h2 class="h3 text-center mb-3">
+          CENTAURON SIGN IN
+        </h2>
+        <form action="{% url 'login' %}" method="post" autocomplete="off" novalidate>
+          {% csrf_token %}
+          {{ form.errors | as_crispy_errors }}
+          {{ form.username | as_crispy_field }}
+          {{ form.password | as_crispy_field }}
+          <div class="form-footer">
+            <button type="submit" class="btn btn-primary w-100">Sign in</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col-12 col-lg-6 col-xl-8 d-none d-lg-block">
+      <div id="particles-js" class="bg-cover h-100 vh-100"></div>
+    </div>
+  </div>
+  <script src="{% static 'js/particles.min.js' %}"></script>
+  <script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', (event) => {
+      particlesJS.load('particles-js', '{% static 'particles.json' %}', function () {
+        console.log('callback - particles.js config loaded');
+      });
+    });
+  </script>
+{% endblock %}

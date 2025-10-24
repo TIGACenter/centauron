@@ -1,0 +1,148 @@
+{% extends 'project/base_detail.html' %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Transfer Job
+              {% if transfer_job.status_is_active %}
+                <span class="badge bg-info ms-2">Active</span>
+              {% endif %}
+              {% if transfer_job.status_is_error %}
+                <span class="badge bg-danger ms-2">Error</span>
+              {% endif %}
+              {% if transfer_job.status_is_pending %}
+                <span class="badge bg-dribbble ms-2">Pending</span>
+              {% endif %}
+              {% if transfer_job.status_is_complete %}
+                <span class="badge bg-success ms-2">Complete</span>
+              {% endif %}
+            </h2>
+          </div>
+          <div class="col-auto">
+            <div class="btn-list">
+              <form action="{% url 'project:transfer-job-action' project.pk transfer_job.pk %}" method="post">{% csrf_token %}
+                <button type="submit" class="btn btn-primary" name="restart">Restart</button>
+                <button type="submit" class="btn btn-danger" name="kill">Kill</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-2">
+            <div class="card card-sm">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-files"></i></span>
+                  </div>
+                  <div class="col">
+                    <div class="font-weight-medium">
+                      {{ items_count }} items
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="card">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-hourglass-empty"></i></span>
+                  </div>
+                  <div class="col">
+                    <div class="font-weight-medium">
+                      {{ items_pending }} pending
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="card">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-run"></i></span>
+                  </div>
+                  <div class="col">
+                    <div class="font-weight-medium">
+                      {{ items_active }} active
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="card">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-circle-check"></i></span>
+                  </div>
+                  <div class="col">
+                    <div class="font-weight-medium">
+                      {{ items_complete }} complete
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="card">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-file-alert"></i></span>
+                  </div>
+                  <div class="col">
+                    <div class="font-weight-medium">
+                      {{ items_error }} error
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="card">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-ruler"></i></span>
+                  </div>
+                  <div class="col">
+                    <div class="font-weight-medium">
+                      {{ items_filesize|filesizeformat }} (total)
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="tab-content">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,156 @@
+<form action="{% url 'project:create-share-action' project.pk %}" method="post">
+  {% csrf_token %}
+  <input type="hidden" name="query" value="{{ query }}">
+  <div class="row mt-2">
+    <div class="col">
+      <label for="" class="form-label">Share Name</label>
+      <input type="text" name="share_name" value="{{ share_name }}" class="form-control">
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div class="col">
+      Select collaborators to share with:
+      {% for member in members %}
+        <div class="form-check">
+          <input class="form-control form-check-input" type="checkbox" value="{{ member.user.pk }}"
+                 id="node-{{ member.user.pk }}" checked name="nodes">
+          <label for="node-{{ member.user.pk }}" class="form-check-label">{{ member.user.human_readable }}</label>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="col">
+      <label for="terms">Select terms to share:</label>
+      {#      <select name="codes" id="terms" class="form-control form-select" multiple>#}
+      {% for c in codes %}
+        <div class="form-check">
+          <input class="form-control form-check-input" type="checkbox" value="{{ c.id }}" id="c-{{ c.id }}" checked
+                 name="codes">
+          <label for="c-{{ c.id }}" class="form-check-label">{{ c.human_readable }} ({{ c.code }})</label>
+        </div>
+        {#          <option value="{{ c.id }}" selected>{{ c.human_readable }} ({{ c.code }})</option>#}
+      {% endfor %}
+      {#      </select>#}
+      <div>Unselected terms will not be shared.</div>
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div class="col">
+      <label for="terms">Share annotations from application:</label>
+      {% for c in extra_data_applications %}
+        <div class="form-check">
+          <input class="form-control form-check-input" type="checkbox" value="{{ c }}" id="ed-{{ c }}" checked
+                 name="extra_data_applications">
+          <label for="ed-{{ c }}" class="form-check-label">{{ c }}</label>
+        </div>
+      {% endfor %}
+      <div>Data from unselected applications will not be shared.</div>
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div class="col">
+      {#      Search for terms:#}
+      {#      <div class="d-flex">#}
+      {#        {% for c in codes %}#}
+      {#          <div class="form-check">#}
+      {#            <input class="form-control form-check-input" type="checkbox" value="{{ c.id }}" id="s-{{ c.id }}" checked#}
+      {#                   name="codes-filter">#}
+      {#            <label for="s-{{ c.id }}" class="form-check-label">{{ c.human_readable }} ({{ c.code }})</label>#}
+      {#          </div>#}
+      {#        {% endfor %}#}
+      {#      </div>#}
+      <div>
+        <div class="mb-3">
+          <label for="formFile" class="form-label">CSV File</label>
+          {#            <input class="form-control" name="file" required type="file" id="formFile">#}
+          <input
+            class="form-control"
+            name="csvfile"
+            required
+            type="file"
+            id="formFile"
+            hx-post="{% url 'project:create-share-query-filter' project.pk %}"
+            hx-trigger="change"
+            hx-encoding="multipart/form-data"
+            hx-target="#filter-result"
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            hx-swap="innerHTML"
+            hx-indicator=".htmx-indicator-filter">
+        </div>
+        {#        <button class="btn btn-primary" type="button" hx-target="#filter-result" hx-swap="innerHTML"#}
+        {#                hx-trigger="load, click"#}
+        {#                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'#}
+        {#                hx-indicator=".htmx-indicator-filter"#}
+        {#                hx-post="{% url 'project:create-share-query-filter' project.pk %}">Filter#}
+        {#        </button>#}
+      </div>
+      <style>
+        .htmx-indicator-filter {
+          display: none;
+        }
+
+        .htmx-request .htmx-indicator-filter {
+          display: inline;
+        }
+
+        .htmx-request.htmx-indicator-filter {
+          display: inline;
+        }
+
+      </style>
+      <div class="spinner-border text-primary htmx-indicator-filter" role="status"></div>
+      <div id="filter-result">
+
+      </div>
+      {#      <table class="table table-hover table-striped">#}
+      {#        <thead>#}
+      {#        <tr>#}
+      {#          <th class="w-1">#}
+      {#            <input type="checkbox" class="form-check-input" checked name="cases_all">#}
+      {#          </th>#}
+      {#          <th class="w-100">Case</th>#}
+      {#          <th>Terms</th>#}
+      {#          {% for action in actions %}#}
+      {#            <th class="w-1"><input type="checkbox" class="form-check-input" value="{{ action }}" name="actions" checked#}
+      {#                                   id="action-{{ action }}"> <label#}
+      {#              for="action-{{ action }}">{{ action }}</label></th>#}
+      {#          {% endfor %}#}
+      {#        </tr>#}
+      {#        </thead>#}
+      {#        {% for c in qs %}#}
+      {#          <tr class="">#}
+      {#            <td><input type="checkbox" class="form-check-input" disabled checked name="cases" id="case-{{ c.pk }}"#}
+      {#                       value="{{ c.pk }}"></td>#}
+      {#            <td><label for="case-{{ c.pk }}">{{ c.name }}</label></td>#}
+      {#            <td>{{ c.code_list_string_rep|join:", " }}</td>#}
+      {#            {% for action in actions %}#}
+      {#              <td><input type="checkbox" class="form-check-input" disabled checked#}
+      {#                         name="cases.{{ c.pk }}" value="{{ action }}">#}
+      {#              </td>#}
+      {#            {% endfor %}#}
+      {#          </tr>#}
+      {#        {% endfor %}#}
+      {#        {% with diff=total|add:max %}#}
+      {#          {% if diff > 0 %}#}
+      {#            <tr>#}
+      {#              <td></td>#}
+      {#              <td colspan="5">... {{ diff }} cases more. Refine query for a more finegrained selection.</td>#}
+      {#            </tr>#}
+      {#          {% endif %}#}
+      {#        {% endwith %}#}
+      {#      </table>#}
+    </div>
+  </div>
+  {#  <div class="row mt-2">#}
+  {#    <div class="col">#}
+  {#      <label for="share_name" class="form-label">Share Name</label>#}
+  {#      <input type="text" class="form-control" name="share_name" id="share_name">#}
+  {#    </div>#}
+  {#  </div>#}
+
+  {#  <div class="row mt-2">#}
+  {#    <div class="col">#}
+  {#      <button type="submit" class="btn btn-primary">Create share</button>#}
+  {#    </div>#}
+  {#  </div>#}
+</form>
+

@@ -1,0 +1,61 @@
+{
+  "name": "centauron",
+  "version": "0.1.0",
+  "devDependencies": {
+    "@babel/core": "^7.16.5",
+    "@babel/preset-env": "^7.16.5",
+    "@babel/preset-react": "^7.22.5",
+    "@popperjs/core": "^2.11.7",
+    "autoprefixer": "^10.4.0",
+    "babel-loader": "^9.1.2",
+    "bootstrap": "^5.3.0",
+    "css-loader": "^6.5.1",
+    "gulp-concat": "^2.6.1",
+    "mini-css-extract-plugin": "^2.4.5",
+    "node-sass-tilde-importer": "^1.0.2",
+    "pixrem": "^5.0.0",
+    "postcss": "^8.3.11",
+    "postcss-loader": "^7.0.2",
+    "postcss-preset-env": "^8.0.1",
+    "sass": "^1.43.4",
+    "sass-loader": "^13.2.0",
+    "webpack": "^5.65.0",
+    "webpack-bundle-tracker": "^1.4.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.6.0",
+    "webpack-merge": "^5.8.0"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "browserslist": [
+    "last 2 versions"
+  ],
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ]
+  },
+  "scripts": {
+    "dev": "webpack serve --config webpack/dev.config.js",
+    "build": "webpack --config webpack/prod.config.js"
+  },
+  "dependencies": {
+    "@react-awesome-query-builder/bootstrap": "^6.3.0",
+    "@tabler/core": "^1.0.0-beta17",
+    "@tabler/icons": "^3.2.0",
+    "@trevoreyre/autocomplete-js": "^2.4.1",
+    "apexcharts": "^3.44.0",
+    "crypto-js": "^4.1.1",
+    "csv-parse": "^5.4.0",
+    "csv-parser": "^3.2.0",
+    "cytoscape": "^3.30.2",
+    "highlight.js": "^11.9.0",
+    "jquery": "^3.7.0",
+    "js-yaml": "^4.1.0",
+    "papaparse": "^5.5.2",
+    "vue": "^3.3.4",
+    "web3": "^4.16.0"
+  }
+}

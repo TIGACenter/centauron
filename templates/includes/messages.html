@@ -1,0 +1,10 @@
+{% if messages %}
+    <div class="row row-messages mt-0">
+        <div class="col">
+            {% for message in messages %}
+                <div{% if message.tags %}
+                    class="p-3 message message-{{ message.tags }}"{% endif %}>{{ message }}</div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

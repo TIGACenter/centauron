@@ -1,0 +1,5 @@
+{% if file.imported %}
+  <strong><a href="{{ url }}">{{ file.name }}</a></strong>
+{% else %}
+  {{ file.name }}
+{% endif %}

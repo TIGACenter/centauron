@@ -1,0 +1,32 @@
+{% extends 'challenge/challenge_client/base.html' %}
+{% block content %}
+
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Registration successful
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                You registered successfully! Check your emails for instructions on how to set your password.
+                You can also reset your password by <a href="{% url 'account_login' %}">clicking "Forgot Password" at the login page.</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

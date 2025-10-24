@@ -1,0 +1,18 @@
+{% for v in widget.queryset %}
+  <span class="badge text-small text-bg-secondary">{{ v.human_readable }}
+      <i class="ti ti-trash btn-delete-code" data-term-id="{{ v.id_as_str }}" data-file-id="{{ widget.file.id }}"
+         data-index="{{ widget.index }}"
+         title="Remove code from file"
+         onclick="deleteTermFromFile(this)"></i>
+</span>
+{% endfor %}
+<style>
+  .btn-close {
+    width: .25rem;
+    height: .25rem;
+  }
+
+  .btn-delete-code:hover {
+    cursor: pointer;
+  }
+</style>

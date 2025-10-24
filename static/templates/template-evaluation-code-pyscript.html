@@ -1,0 +1,69 @@
+<link rel="stylesheet" href="https://pyscript.net/releases/2024.10.2/core.css">
+<script type="module" src="https://pyscript.net/releases/2024.10.2/core.js"></script>
+<!--
+to manage the file size use RLE encoding in case of masks:
+binary_array must be a multi-dim np array. you have to store the original image height and width in the ground truth csv as well to make it work.
+use like this:
+
+  rle_decode('...').reshape(width, height)
+
+
+def rle_decode(rle_text):
+    # Decode the RLE string into a 1D list
+    decoded_array = []
+    for run in rle_text.split(","):
+        count, value = map(int, run.split(":"))
+        decoded_array.extend([value] * count)
+
+    return np.array(decoded_array)  # Return as a NumPy array
+
+def rle_encode(binary_array):
+    # Flatten the array
+    flat_array = binary_array.flatten()
+
+    result = []
+    count = 1
+
+    # Perform RLE on the flattened array
+    for i in range(1, len(flat_array)):
+        if flat_array[i] == flat_array[i - 1]:
+            count += 1
+        else:
+            result.append(f"{count}:{flat_array[i - 1]}")
+            count = 1
+    result.append(f"{count}:{flat_array[-1]}")  # Add the last run
+
+    return ",".join(result)  # Return as a single string for the entire array
+
+
+-->
+<py-config>
+  {
+  "packages": ["numpy", "matplotlib", "pandas", "scikit-learn"]
+  }
+</py-config>
+<py-script>
+from js import document
+import json
+from pyscript import fetch
+import asyncio
+
+async def start():
+    # ground_truth is a multiline string with your inputted csv ground truth in clear text
+    ground_truth = document.querySelector("input[name='groundtruth_data']").value
+    # a dictionary with key = path to file and value = url to download the file
+    processing_results = json.loads(document.querySelector('#processing_results').textContent)
+
+    for path,url in processing_results.items():
+      response = await fetch(url)
+      text = await response.text()
+
+    # TODO do your calculations
+    results = {}
+    # write results into textbox for review like this:
+    document.querySelector("textarea[name='result']").value = json.dumps(results)
+
+asyncio.create_task(start())
+
+</py-script>
+

@@ -1,0 +1,228 @@
+{% extends 'study_management/base_detail.html' %}
+{% load humanize %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row align-items-center">
+          <div class="col">
+            <div class="page-pretitle">
+              <ol class="breadcrumb" aria-label="breadcrumbs">
+                <li class="breadcrumb-item"><a href="{{ study.get_absolute_url }}">{{ study.name }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ arm.get_absolute_url }}">{{ arm.name }}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'study_management:arm-detail-tilesets' study.pk arm.pk %}">Tilesets</a>
+                </li>
+              </ol>
+            </div>
+            <h2 class="page-title">
+              {{ object.name }}
+              {% if computing_job %}
+                <a href="{% url 'computing:computing_execution:log' computing_job.first_execution.pk %}"
+                   target="_blank"><span
+                  class="badge bg-secondary">{{ computing_job.first_execution.status }}</span></a>{% endif %}
+              {% if not object.is_idle %}
+                <span class="badge bg-secondary">{{ object.status }}</span>
+              {% endif %}
+            </h2>
+          </div>
+
+          <div class="col-auto ms-auto">
+            {% if request.user.is_superuser %}
+              <a class="btn btn-icon" href="{% url 'admin:tile_management_tileset_change' object.pk %}">
+                <i class="ti ti-settings"></i>
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-9">
+            <div class="card">
+              <div class="card-body">
+                <table id="table" class="table-sm table table-striped table-bordered"
+                       style="width:100%"></table>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="mb-2">
+              <div class="btn-list">
+                <div>
+                  <form action="{% url 'study_management:tile_management:export' study.pk arm.pk object.pk %}"
+                        method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Export</button>
+                  </form>
+                </div>
+                <div>
+                  <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalExportCSV">
+                    Export CSV
+                  </button>
+                  <div class="modal" id="modalExportCSV" tabindex="-1">
+                    <div class="modal-dialog modal-sm" role="document">
+                      <div class="modal-content">
+                        <form action="{% url 'study_management:tile_management:export-csv' study.pk arm.pk object.pk %}"
+                              method="post">
+                          {% csrf_token %}
+                          <div class="modal-header">
+                            <h5 class="modal-title">Choose export fields</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="form-selectgroup">
+                              <label class="form-selectgroup-item">
+                                <input type="checkbox" name="columns" value="name" class="form-selectgroup-input"
+                                       checked/>
+                                <span class="form-selectgroup-label">name</span>
+                              </label>
+                              <label class="form-selectgroup-item">
+                                <input type="checkbox" name="columns" value="identifier" class="form-selectgroup-input"
+                                       checked/>
+                                <span class="form-selectgroup-label">identifier</span>
+                              </label>
+                              <label class="form-selectgroup-item">
+                                <input type="checkbox" name="columns" value="path" class="form-selectgroup-input"
+                                       checked/>
+                                <span class="form-selectgroup-label">path</span>
+                              </label>
+                              <label class="form-selectgroup-item">
+                                <input type="checkbox" name="columns" value="case" class="form-selectgroup-input"
+                                       checked/>
+                                <span class="form-selectgroup-label">case</span>
+                              </label>
+                              <label class="form-selectgroup-item">
+                                <input type="checkbox" name="columns" value="content_type"
+                                       class="form-selectgroup-input"
+                                       checked/>
+                                <span class="form-selectgroup-label">content_type</span>
+                              </label>
+                              <label class="form-selectgroup-item">
+                                <input type="checkbox" name="columns" value="size" class="form-selectgroup-input"
+                                       checked/>
+                                <span class="form-selectgroup-label">size</span>
+                              </label>
+                              <label class="form-selectgroup-item">
+                                <input type="checkbox" name="columns" value="codes" class="form-selectgroup-input"
+                                       checked/>
+                                <span class="form-selectgroup-label">codes</span>
+                              </label>
+                              <label class="form-selectgroup-item">
+                                <input type="checkbox" name="columns" value="src" class="form-selectgroup-input"
+                                       checked/>
+                                <span class="form-selectgroup-label">src</span>
+                              </label>
+                              <label class="form-selectgroup-item">
+                                <input type="checkbox" name="columns" value="metadata" class="form-selectgroup-input"
+                                       checked/>
+                                <span class="form-selectgroup-label">metadata</span>
+                              </label>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <div class="w-100">
+                              <div class="row">
+                                <div class="col"><a href="#" class="btn w-100" data-bs-dismiss="modal">
+                                  Cancel
+                                </a></div>
+                                <div class="col">
+                                  <button type="submit" class="btn btn-primary w-100" data-bs-dismiss="modal">
+                                    Export
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% if not object.is_locked %}
+                  <div>
+                    <a href="{% url 'study_management:tile_management:update' study.pk arm.pk object.pk %}"
+                       class="btn btn-primary">
+                      Update
+                    </a>
+                  </div>
+                {% endif %}
+                <div>
+                  <form action="{% url 'study_management:tile_management:copy' study.pk arm.pk object.pk %}"
+                        method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn">
+                      Copy
+                    </button>
+                  </form>
+                  {% if object.is_idle or object.is_locked %}
+                    <form action="{% url 'study_management:tile_management:lock' study.pk arm.pk object.pk %}"
+                          method="post">
+                      {% csrf_token %}
+                      <button type="submit" class="btn">
+                        {% if object.is_idle %}Lock{% elif object.is_locked %}Unlock{% endif %}
+                      </button>
+                    </form>
+                  {% endif %}
+                  <button class="btn btn-share">Share
+                  </button>
+                  {#                  <a href="{% url 'study_management:tile_management:share' study.pk arm.pk object.pk %}" class="btn">Share</a>#}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <strong>Created:</strong> {{ object.date_created|date:'SHORT_DATETIME_FORMAT' }}<br>
+                <strong>Last modified:</strong> {{ object.last_modified|date:'SHORT_DATETIME_FORMAT' }}<br>
+                <strong>Files:</strong> {{ object.files_count|intcomma }}
+                ({{ object.files_imported_count|intcomma }})<br>
+                <strong>Size:</strong> {{ object.files_total_size|filesizeformat }}
+                ({{ object.files_imported_total_size|filesizeformat }})<br>
+                <strong>Terms:</strong> {{ object.terms.all|join:', ' }}<br>
+                <strong>Study:</strong> {{ object.study_arm.study.name }} ({{ object.study_arm.name }}) <br>
+                {% if object.is_copy %}
+                  <strong>From:</strong> <a href="{{ object.source.get_absolute_url }}">{{ object.source.name }}</a><br>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="modal-dialog-wrapper"></div>
+{% endblock %}
+
+{% block javascript %}
+  {% include 'includes/datatables-js.html' %}
+  <script>
+    $(document).ready(function () {
+      let columns = [
+        {className: 'select-checkbox'},
+        {data: 'name', title: 'Name'},
+        {data: 'case', title: 'Case'},
+        {data: 'origin', title: 'Origin'},
+        {data: 'originating_from', title: 'Source'},
+      ];
+      dataTable('#table', '{% url 'study_management:tile_management:tileset-files-list' study.pk arm.pk %}?tileset_pk={{ object.pk }}', {
+        columns
+      });
+
+    });
+
+    document.querySelector('.btn-share').onclick = () => {
+      htmx.ajax('GET', '{% url 'share:create' %}?object=tileset&pk={{ object.pk }}', {target: 'body', swap: 'beforeend'}).then(
+        () => {
+          const selector = '#modalShare';
+          const modalEl = document.querySelector(selector);
+          const modal = C.createModal(selector);
+          // remove modal from dom once it's closed
+          modalEl.addEventListener('hidden.bs.modal', _ => modalEl.remove());
+          modal.show();
+        }
+      );
+    };
+
+  </script>
+{% endblock %}

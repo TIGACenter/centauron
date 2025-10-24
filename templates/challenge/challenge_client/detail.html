@@ -1,0 +1,50 @@
+{% extends 'challenge/challenge_client/base.html' %}
+{% load core_tags challenge_client_tags %}
+{% block title %}{{ challenge.name }} | {{ block.super }}{% endblock %}
+{% block header %}
+  {% with site_title='challenge/challenge_client/challenge_title.html' %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}
+{% block navbar %}
+  {% with site_navigation='challenge/challenge_client/navigation-challenge.html' %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Welcome to {{ challenge.name }}
+            </h2>
+          </div>
+          <div class="col-auto ms-auto d-print-none">
+            {% is_enrolled request challenge as en %}
+            {% if not en %}
+              <a href="{% url 'challenge_client:challenge-enroll' challenge.pk %}"
+                 class="btn btn-primary d-none d-sm-inline-block">Enroll</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                {{ challenge.description|markdownify|safe }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+

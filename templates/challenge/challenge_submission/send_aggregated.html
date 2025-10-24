@@ -1,0 +1,79 @@
+{% extends 'challenge/base.html' %}
+{% load core_tags %}
+{% block content %}
+  <style>
+    .nav-link.active {
+      font-weight: bold;
+    }
+  </style>
+  <form action="{% url 'challenge:challenge_submission:send-aggregated' challenge.pk object.pk %}"
+        method="post">
+    {% csrf_token %}
+    <div class="page-wrapper">
+      <div class="page-header d-print-none">
+        <div class="container-xl">
+          <div class="row g-2 align-items-center">
+            <div class="col">
+              <div class="mb-1">
+                <ol class="breadcrumb" aria-label="breadcrumbs">
+                  <li class="breadcrumb-item"><a href="{% url 'challenge:list' %}">My challenges</a></li>
+                  <li class="breadcrumb-item"><a
+                    href="{% url 'challenge:detail' challenge.id %}">{{ challenge.name }}</a>
+                  <li class="breadcrumb-item"><a href="{% url 'challenge:challenge_submission:list' challenge.id %}">Submissions</a>
+                  </li>
+                  <li class="breadcrumb-item"><a
+                    href="{% url 'challenge:challenge_submission:detail' challenge.id object.id %}">{{ object.name }}</a>
+                  </li>
+                </ol>
+              </div>
+              <h2 class="page-title">
+                Send submission results <i class="mx-2">{{ object.name }}</i> to submitter.
+              </h2>
+            </div>
+            <div class="col-auto ms-auto d-print-none">
+              <div class="btn-list">
+                {% if request.user.is_superuser %}
+                  <a class="btn btn-icon" href="{% url 'admin:challenge_submission_submission_change' object.pk %}">
+                    <i class="ti ti-settings"></i>
+                  </a>
+                {% endif %}
+                <button type="submit" class="btn btn-primary">Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="container-xl">
+          <div class="row">
+            <div class="col-12">
+            </div>
+          </div>
+          <div class="row">
+            <div class="tab-content">
+              <div class="card">
+                <div class="card-body">
+                  <h3>Nodes:</h3>
+                  <ul>
+                    {% for node in submission_to_nodes %}
+                      <li>{{ node.node.human_readable }} Status: {{ node.status }}</li>
+                    {% endfor %}
+                  </ul>
+                  <div>
+                    <h3>Metrics:</h3>
+                    {{ metrics }}
+                  </div>
+                  <form action="{% url 'challenge:challenge_submission:send-aggregated' challenge.pk object.pk %}"
+                        method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Send to submitter</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+{% endblock %}

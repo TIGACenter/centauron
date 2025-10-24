@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block header %}{% endblock %}
+{% block css %}
+  <style>
+    .htmx-indicator {
+      opacity: 0;
+      transition: opacity 500ms ease-in;
+    }
+
+    .htmx-request .htmx-indicator {
+      opacity: 1
+    }
+
+    .htmx-request.htmx-indicator {
+      opacity: 1
+    }
+
+    .autocomplete-suggestions {
+      border: 1px solid #999;
+      background: #FFF;
+      overflow: auto;
+    }
+
+    .autocomplete-suggestion {
+      padding: 2px 5px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .autocomplete-selected {
+      background: #F0F0F0;
+    }
+
+    .autocomplete-suggestions strong {
+      font-weight: normal;
+      color: #3399FF;
+    }
+
+    .autocomplete-group {
+      padding: 2px 5px;
+    }
+
+    .autocomplete-group strong {
+      display: block;
+      border-bottom: 1px solid #000;
+    }
+  </style>
+{% endblock %}
+{% block content %}
+  <div>
+    {{ lookups }}
+  </div>
+  <div>
+    <div>
+      <h3>Import</h3>
+      <div>Challenge: {{challenge.name}}</div>
+      <div>Dataset: {{ dataset.name }}</div>
+    </div>
+
+    {% crispy form %}
+
+    {#  <form hx-post="{% url 'project:query' object.pk %}" hx-target=".results" hx-swap="innerHTML">#}
+    {#    {% csrf_token %}#}
+    {#    <input type="radio" name="model" value="case"> Case#}
+    {#    <input type="radio" name="model" value="file" checked> File#}
+    {##}
+    {#    <textarea name="query" id="textboxQuery" rows="2"></textarea>#}
+    {#    <input type="submit" name="query" class="btn btn-primary" value="Query">#}
+    {#    <input class="btn btn-primary" type="submit" name="import" id="buttonImport" value="Import">#}
+    {#    <input type="hidden" name="dataset_id">#}
+    {#    <input type="hidden" name="challenge_id">#}
+    {#  </form>#}
+
+
+  </div>
+
+  <div class="results">
+
+  </div>
+  <div class="import"></div>
+
+  {#<script src="https://unpkg.com/htmx.org@1.9.0"></script>#}
+  <script>
+    const params = new Proxy(new URLSearchParams(window.location.search), {
+      get: (searchParams, prop) => searchParams.get(prop),
+    });
+    const challenge_id = params.challenge_id;
+    const dataset_id = params.dataset_id;
+
+    document.getElementsByClassName('challenge')[0].textContent = params.challenge;
+    document.getElementsByClassName('dataset')[0].textContent = params.dataset;
+    document.getElementsByName('dataset_id')[0].value = dataset_id;
+    document.getElementsByName('challenge_id')[0].value = challenge_id;
+  </script>
+{% endblock %}
+{% block javascript %}
+  <script src="{% static 'js/jquery.autocomplete.min.js' %}"></script>
+  <script>
+    const form = document.querySelector('#formQuery');
+    $('#term-autocomplete').autocomplete({
+      serviceUrl: '{% url 'terminology:api-search' %}',
+      minChars: 2,
+      onSelect: function (suggestion) {
+        const termIdHiddenField = document.createElement('input');
+        termIdHiddenField.type = 'hidden';
+        termIdHiddenField.value = suggestion.data;
+        termIdHiddenField.name = 'term_ids';
+        {#termIdHiddenField.id = 'id_form-1-term_ids_1';#}
+        form.appendChild(termIdHiddenField);
+
+        const badge = document.createElement('span');
+        badge.textContent = suggestion.value;
+        badge.dataset.termId = `parent-${suggestion.data}`
+        badge.classList.add('badge', 'text-bg-secondary');
+        const badge_icon = document.createElement('i');
+        badge_icon.classList.add('ti', 'ti-trash', 'btn-delete-code');
+        badge_icon.dataset.termId = suggestion.data;
+        badge_icon.dataset.fileId = '{{ form.file.id }}';
+        badge_icon.title = 'Remove term from query';
+        badge.appendChild(badge_icon);
+        badge_icon.addEventListener('click', e => deleteTermFromFile(e));
+        document.querySelector('#div_id_form-terms').appendChild(badge);
+        document.querySelector('#term-autocomplete').value = '';
+      }
+    });
+
+    const btnDeleteCode = document.querySelectorAll('.btn-delete-code');
+    for (const btn of btnDeleteCode) {
+      btn.addEventListener('click', e => deleteTermFromFile(e))
+    }
+
+    function deleteTermFromFile(e) {
+      if (e.target === undefined) {
+        return
+      }
+      const termId = e.target.dataset.termId;
+      for (const el of document.getElementsByName(`term_ids`)) {
+        if (el.value === termId) {
+          el.remove();
+        }
+      }
+      {# remove the badge itself #}
+      const i = document.querySelector(`span[data-term-id="parent-${termId}"]`)
+      i.remove();
+    }
+
+  </script>
+{% endblock %}

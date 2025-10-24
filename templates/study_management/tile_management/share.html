@@ -1,0 +1,48 @@
+{% extends 'study_management/base_detail.html' %}
+{% load humanize %}
+{% load crispy_forms_filters %}
+{% load render_bundle from webpack_loader %}
+
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row align-items-center">
+          <div class="col">
+            <div class="page-pretitle">
+              <ol class="breadcrumb" aria-label="breadcrumbs">
+                <li class="breadcrumb-item"><a href="{{ study.get_absolute_url }}">{{ study.name }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ arm.get_absolute_url }}">{{ arm.name }}</a></li>
+                <li class="breadcrumb-item"><a
+                  href="{% url 'study_management:arm-detail-tilesets' study.pk arm.pk %}">Tilesets</a>
+                </li>
+              </ol>
+            </div>
+            <h2 class="page-title">
+              Share <em class="ms-1">{{ object.name }}</em>
+            </h2>
+          </div>
+          <div class="col-auto ms-auto">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div id="queryBuilder"></div>
+                {% crispy form %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{ codes|json_script:'codes' }}
+  {% render_bundle 'queryBuilder' 'js' %}
+{% endblock %}
+

@@ -1,0 +1,20 @@
+A total of {{ cases|length }} cases found.
+Preview of max. 10 cases:
+<table class="table table-striped table-hovered">
+  <thead>
+  <tr>
+    <th>Case</th>
+    <th>Terms</th>
+    <th>Cohort</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for c in cases|slice:":10" %}
+    <tr>
+    <td>{{ c.name }}</td>
+    <td>{{ c.code_list_string_rep|join:"," }}</td>
+    <td>{{ c.contained_in_studies|join:"," }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>

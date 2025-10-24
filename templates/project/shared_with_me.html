@@ -1,0 +1,55 @@
+{% extends 'project/base.html' %}
+{% block content %}
+    <div class="page-wrapper">
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <!-- Page pre-title -->
+                        <div class="">
+                            <div class="mb-2">
+                                <ol class="breadcrumb" aria-label="breadcrumbs">
+                                    <li class="breadcrumb-item"><a href="{% url 'project:list' %}">My data</a>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                        <h2 class="page-title">
+                            Shared with Me
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="card">
+                            <div class="card-body">
+                                <table id="table" class="table table-striped table-bordered" style="width:100%">
+                                  <thead>
+                                    <tr>
+                                      <th>Name</th>
+                                      <th>Origin</th>
+                                      <th class="w-1"></th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% for share in shares %}
+                                    <tr>
+                                    <td>{{ share.name }}</td>
+                                    <td>{{ share.origin }}</td>
+                                    <td><form action="{% url 'project:data-shared-with-me' %}" method="post">{% csrf_token %}<input type="hidden" name="share_pk" value="{{ share.pk }}"><button type="submit" class="btn btn-icon"><i class="ti ti-download"></i></button></form></td>
+                                    </tr>
+                                  {% endfor %}
+                                  </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

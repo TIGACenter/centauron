@@ -1,0 +1,49 @@
+{% load core_tags %}
+<table id="searchResults" class="table table-hover table-striped">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Organization</th>
+    <th>Orcid</th>
+    <th>PubMed</th>
+    <th>Google Scholar</th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for r in data %}
+    <tr>
+      <td>{{ r.human_readable }}</td>
+      <td>{{ r.organization|default_if_none:'-' }}</td>
+      <td>
+        {% if r.orcid is not None %}
+          <a href="{{ r.orcid }}" target="_blank">ORCID</a>
+        {% else %}
+          -
+        {% endif %}
+      </td>
+      <td>
+          {% if r.pubmed is not None %}
+          <a href="{{ r.pubmed }}" target="_blank">PubMed</a>
+        {% else %}
+          -
+        {% endif %}</td>
+      <td>
+        {% if r.google_scholar is not None %}
+          <a href="{{ r.google_scholar }}" target="_blank">Google Scholar</a>
+        {% else %}
+          -
+        {% endif %}</td>
+      <td>
+        <form method="post" action="{% url 'federation:invitation:create' %}">
+          {% csrf_token %}
+          <input type="hidden" name="from_user" value="{{ r.pk }}">
+          <input type="hidden" name="project" value="{{ project.pk }}">
+          <button class="btn btn-primary btn-sm">Invite</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+Total: {{ data.count }}

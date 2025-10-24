@@ -1,0 +1,37 @@
+@import '@tabler/core';
+@import '@react-awesome-query-builder/bootstrap/css/styles.css';
+@import '@trevoreyre/autocomplete-js/dist/style.css';
+@import 'highlight.js/styles/stackoverflow-dark.min.css';
+
+.log {
+  background-color: var(--tblr-bg-surface-dark);
+  border-radius: var(--tblr-border-radius);
+  color: var(--tblr-light);
+  padding: 1rem;
+  font-size: 85.714285%;
+  font-family: var(--tblr-font-monospace);
+
+  max-height: 800px;
+  overflow-y: scroll;
+  //scrollbar-color: var(--tblr-light);
+  //scrollbar-color: rebeccapurple green;
+
+}
+
+.log-error {
+  color: red;
+}
+
+.list-executions, .list-artefacts {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+.dropdown-menu.show {
+  z-index: 9999 !important;
+}
+
+
+#table tbody td:hover, .table-row-clickable tbody td:hover {
+  cursor: pointer;
+}

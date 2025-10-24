@@ -1,0 +1,69 @@
+{% load static i18n %}
+{% load render_bundle from webpack_loader %}
+<!doctype html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+  <title>{% block title %}CENTAURON{% endblock title %} | CENTAURON</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  {% block meta %}{% endblock %}
+  {% include 'includes/styles.html' %}
+  {% block css %}
+    <!-- Your stuff: Third-party CSS libraries go here -->
+
+    <!-- This file stores project-specific CSS -->
+    {% render_bundle 'project' 'css' %}
+  {% endblock %}
+
+  {% include 'includes/scripts.html' %}
+
+  <!-- Le javascript
+    ================================================== -->
+  {# Placed at the top of the document so pages load faster with defer #}
+  <!-- Vendor dependencies bundled as one file -->
+  {% render_bundle 'vendors' 'js' %}
+
+
+</head>
+
+<body>
+<div class="page">
+  {% block header %}
+    {% include 'includes/header.html' %}
+  {% endblock %}
+  {% if messages %}
+    <div class="container-xl">
+      {% for message in messages %}
+        <div
+          class="alert {% if message.tags %} alert-{{ message.tags }} {% if 'error' in message.tags %} alert-danger {% endif %} {% endif %}">
+          <div class="container">{{ message }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+  {% block content %}
+    <p>Default content...</p>
+  {% endblock content %}
+
+</div>
+<!-- /container -->
+
+{% block modal %}{% endblock modal %}
+{% block inline_javascript %}
+  {%comment %} Script tags with only code, no src (defer by default). To run
+    with a "defer" so that you run inline code:
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        /* Run whatever you want */
+      });
+    </script>
+    {% endcomment %} {% endblock inline_javascript %}
+
+<!-- place project specific Javascript in this file -->
+{% render_bundle 'project' 'js' %}
+{% block javascript %}
+{% endblock javascript %}
+</body>
+</html>

@@ -1,0 +1,79 @@
+{% extends 'study_management/arm_detail_tab_base.html' %}
+{% block javascript %}
+  {% include 'includes/datatables-js.html' %}
+  <script>
+    $(document).ready(function () {
+      let columns = [
+        {className: 'select-checkbox'},
+        /*{
+          className: 'dt-control',
+          orderable: false,
+          data: null,
+          defaultContent: '',
+        },*/
+        {data: 'name', title: 'Name'},
+        {#{data: 'tiling_params', title: 'tiling_params'},#}
+        {
+          data: 'files_count', title: 'files_count', render: (data, type, row) => new Intl.NumberFormat().format(data)
+        },
+        {data: 'files_total_size', title: 'Size', render: (data, type, row) => humanFileSize(data)},
+        {#{data: 'tiling_params', title: 'tiling_params'},#}
+        {#{data: 'tiling_params', title: 'tiling_params'},#}
+        {data: 'date_created', title: 'Created at', render: DataTable.render.datetime()},
+        {#{data: 'concepts', title: 'Terms'},#}
+        {#{data: 'case', title: 'Case'},#}
+        {#{data: 'origin', title: 'Origin'},#}
+      ];
+      dataTable('#table', '{% url 'study_management:study-arm-tilesets-list' %}?study={{ study.pk }}&arm={{ arm.pk }}', {
+        columns,
+        order: [[4, 'desc']]
+      });
+
+      {#function format(d) {#}
+      {#  return new Promise((resolve) => {#}
+      {##}
+      {##}
+      {#    let csrftoken = getCookie('csrftoken')#}
+      {#    if (csrftoken === null) {#}
+      {#      csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;#}
+      {#    }#}
+      {#    let url = `{% url 'study_management:study-arm-case-files-list' %}?case=${d.id}`;#}
+      {##}
+      {#    fetch(url, {method: 'post', headers: {'X-CSRFToken': csrftoken}}).then(data => {#}
+      {#      console.log(data)#}
+      {#      data.json().then(data => {#}
+      {#        console.log(data);#}
+      {#        let rows = '';#}
+      {#        for (let row of data.results) {#}
+      {#          rows += `<tr><td>${row.name}</td><td>${row.origin}</td><td>${row.concepts}</td></tr>`;#}
+      {#        }#}
+      {#        resolve(`<table class="table"><tr><th>Filename</th><th>Origin</th><th>Concepts</th></tr>${rows}</table>`)#}
+      {#      });#}
+      {#    });#}
+      {#  });#}
+      // }
+      {##}
+      {#// Add event listener for opening and closing details#}
+      {#$('#table tbody').on('click', 'td.dt-control', function () {#}
+      {#  var tr = $(this).closest('tr');#}
+      {#  var row = table.row(tr);#}
+      {#  console.log(row)#}
+      {##}
+      {#  if (row.child.isShown()) {#}
+      {#    // This row is already open - close it#}
+      {#    row.child.hide();#}
+      {#    tr.removeClass('shown');#}
+      {#  } else {#}
+      {#    // Open this row#}
+      {##}
+      {#    const d = format(row.data());#}
+      {#    d.then(data => {#}
+      {#      row.child(data).show();#}
+      {#      tr.addClass('shown');#}
+      {#    })#}
+      {#  }#}
+      //{#});#}
+    });
+  </script>
+{% endblock %}
+

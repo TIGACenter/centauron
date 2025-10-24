@@ -1,0 +1,21 @@
+<a href="#" class="my-2 ms-2" id="linkToggleAllArtifact">Toggle
+  all</a>
+<table class="table table-striped table-artefacts">
+  <thead>
+  <tr>
+    <th class="w-1"></th>
+    <th>Filename</th>
+    <th>Origin</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for artefact in artefacts %}
+    <tr>
+      <td><input type="checkbox" class="form-checkbox" id="{{ artefact.pk }}"
+                 value="{{ e.pk }}.{{ artefact.pk }}" name="artefact"></td>
+      <td><label for="{{ artefact.pk }}">{{ artefact.file.name }}</label></td>
+      <td>{{ artefact.origin }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>

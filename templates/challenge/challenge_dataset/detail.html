@@ -1,0 +1,141 @@
+{% extends 'challenge/base_detail.html' %}
+{% block page-heading %}{{ object }}{% endblock %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              {{ object.name }}
+            </h2>
+          </div>
+          <div class="col-auto ms-auto d-print-none">
+            <div class="btn-list">
+              <div class="d-flex">
+                <input type="text" disabled value="{{ object.identifier }}" class="form-control">
+                <button class="btn btn-secondary btn-icon" onclick="copyText('{{ object.identifier }}')"><i
+                  class="ti ti-copy"></i>
+                </button>
+              </div>
+
+              {% if request.user.is_superuser %}
+                <a class="btn btn-icon btn-secondary"
+                   href="{% url 'admin:challenge_dataset_dataset_change' object.pk %}">
+                  <i class="ti ti-settings"></i>
+                </a>
+              {% endif %}
+              {#              <button id="buttonImport" class="btn btn-primary d-none d-sm-inline-block" onclick="openPopup()">#}
+              {#                <i class="ti ti-plus"></i>#}
+              {#                Import data#}
+              {#              </button>#}
+
+              <div class="dropdown">
+                <a href="#" data-bs-toggle="dropdown" class="btn btn-primary">
+                  <i class="ti ti-chevron-down"></i>
+                  Add from project</a>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" onclick="openPopup()" href="#">Query</a>
+                  <a class="dropdown-item"
+                     href="{% url 'challenge:challenge_dataset:import_csv' challenge.pk object.pk %}">CSV</a>
+                </div>
+              </div>
+              <div class="dropdown">
+                <a href="#" class="btn btn-icon btn-secondary" data-bs-toggle="dropdown"><i
+                  class="ti ti-dots-vertical"></i></a>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="{% url 'project:ground_truth:ground-truth-schema' challenge.project.pk %}">Ground
+                    Truth Schema</a>
+                  <a class="dropdown-item disabled" href="{% url 'project:send-to-annotater' object.pk %}">Send to
+                    annotater</a>
+                  <a class="dropdown-item" href="{% url 'challenge:challenge_dataset:update' challenge.pk object.pk %}">Edit</a>
+                  <form method="post" action="{% url 'challenge:challenge_dataset:export' challenge.pk object.pk %}">
+                    {% csrf_token %}
+                    <button class="btn btn-link dropdown-item" type="submit">Export as CSV</button>
+                  </form>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="mb-2">
+                  <form method="post"
+                        action="{% url 'challenge:challenge_dataset:table-action' challenge.pk dataset.pk %}"
+                        id="formTableAction">
+                    {% csrf_token %}
+                    <button class="btn btn-danger disabled" type="submit" name="remove_files" id="removeFiles">Remove
+                      from dataset
+                    </button>
+                  </form>
+                </div>
+                <table id="table" class="table table-hover table-sm table-bordered" style="width:100%"></table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="d-none">
+    <form id="importQueryFilter" action="{% url 'challenge:challenge_dataset:import' challenge.pk object.pk %}"
+          method="post">
+      {% csrf_token %}
+      <input type="hidden" name="query_filter">
+    </form>
+  </div>
+{% endblock %}
+{% block javascript %}
+  {% include 'includes/datatables-js.html' %}
+  <script>
+    function select(nodes) {
+      document.querySelector('#removeFiles').classList.remove('disabled');
+    }
+
+    function deselect(nodes) {
+      if (window.DT_SELECTED_ROWS.length === 0) {
+        document.querySelector('#removeFiles').classList.add('disabled');
+      }
+    }
+
+    let table = null;
+    $(document).ready(function () {
+      let columns = [
+        {
+          orderable: false,
+          render: DataTable.render.select(),
+          targets: 0
+        },
+        {data: 'name', title: 'Name'},
+        {data: 'date_created', title: 'Created at', render: DataTable.render.datetime()},
+        {data: 'case', title: 'Case', sortable: false, searchable: false},
+        {data: 'origin', title: 'Origin', sortable: false, searchable: false},
+      ];
+      table = dataTable('#table', '{% url 'challenge:challenge_dataset:file-list' challenge.pk object.pk %}', {
+        columns,
+      }, select, deselect);
+    });
+
+    function openPopup() {
+      const params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=800,height=600`;
+      const w = window.open(`{% url 'challenge:challenge_dataset:project-query' challenge.pk dataset.pk %}`, 'sub', params);
+    }
+
+    function copyText(text) {
+      if (navigator.clipboard) {
+        const type = "text/plain";
+        const blob = new Blob([text], {type});
+        const data = [new ClipboardItem({[type]: blob})];
+        navigator.clipboard.write(data);
+      }
+    }
+  </script>
+{% endblock %}

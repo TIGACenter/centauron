@@ -1,0 +1,349 @@
+{% extends 'project/base_detail.html' %}
+{% load project_tags %}
+{% block content %}
+  <div class="page-wrapper">
+  <div class="page-header d-print-none">
+    <div class="container-xl">
+      <div class="row g-2 align-items-center">
+        <div class="col">
+          <h2 class="page-title">
+            Dashboard
+          </h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="container-xl">
+      <div class="row">
+        <div class="col-3">
+          <div class="card card-sm">
+            <div class="card-body">
+              <div class="subheader mb-2">Cases</div>
+              <div class="row">
+                <div class="col-3">
+                  <span class="bg-primary text-white avatar"><i class="ti ti-briefcase"></i></span>
+                </div>
+                <div class="col-auto">
+                  <div class="d-flex align-items-center">
+                    <div class="h1 mb-0">{{ cases_total }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="card">
+            <div class="card-body">
+              <div class="subheader mb-2">Files</div>
+              <div class="row">
+                <div class="col-3">
+                  <span class="bg-primary text-white avatar"><i class="ti ti-files"></i></span>
+                </div>
+                <div class="col-auto">
+                  <div class="d-flex align-items-center">
+                    <div class="h1 mb-0">{{ files_total }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="card">
+            <div class="card-body">
+              <div class="subheader mb-2">Annotations</div>
+              <div class="row">
+                <div class="col-3">
+                  <span class="bg-primary text-white avatar"><i class="ti ti-polygon"></i></span>
+                </div>
+                <div class="col-auto">
+                  <div class="d-flex align-items-center">
+                    <div class="h1 mb-0">{{ annotation_total }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="card">
+            <div class="card-body">
+              <div class="subheader mb-2">Challenges</div>
+              <div class="row">
+                <div class="col-3">
+                  <span class="bg-primary text-white avatar"><i class="ti ti-school"></i></span>
+                </div>
+                <div class="col-auto">
+                  <div class="d-flex align-items-center">
+                    <div class="h1 mb-0">{{ challenges_total }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="card">
+            <div class="card-body">
+              <div class="subheader mb-2">Challenge Submissions</div>
+              <div class="row">
+                <div class="col-3">
+                  <span class="bg-primary text-white avatar"><i class="ti ti-submarine"></i></span>
+                </div>
+                <div class="col-auto">
+                  <div class="d-flex align-items-center">
+                    <div class="h1 mb-0">{{ challenge_submissions_total }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-6">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Collaborators</h3>
+            </div>
+            <table class="table card-table table-vcenter table-striped table-hover">
+              <thead>
+              <tr>
+                <th>User</th>
+                <th>#cases</th>
+                <th>#files</th>
+                <th class="w-1"># <i class="ti ti-download"></i></th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for i in members %}
+                <tr>
+                  <td>{{ i.user.human_readable }}</td>
+                  <td>{% number_of_cases project i.user %}</td>
+                  <td>{% number_of_files project i.user %}</td>
+                  <td>{% number_of_files_downloaded project i.user %}</td>
+                </tr>
+                {#                <tr>#}
+                {#                  <td>{{ i.human_readable }}</td>#}
+                {#                  <td>{{ i.no_cases }}</td>#}
+                {#                  <td>{{ i.no_files }}</td>#}
+                {#                  <td>{{ i.no_downloaded }}</td>#}
+                {#                </tr>#}
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Terminology</h3>
+            </div>
+            {% if codes|length == 0 %}
+              <div class="card-body">
+                No terms yet.
+              </div>
+            {% else %}
+              <table class="table card-table table-vcenter table-striped table-hover">
+                <thead>
+                <tr>
+                  <th>Term</th>
+                  <th>Terminology</th>
+                  <th>#cases</th>
+                  <th>#files</th>
+                  <th>#annotations</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for c in codes %}
+                  <tr>
+                    <td>{{ c.code }}</td>
+                    <td>{{ c.codesystem_name }}</td>
+                    {#                    <td>{{ c.no_cases }}</td>#}
+                    {#                    <td>{{ c.no_files }}</td>#}
+                    {#                    <td>{{ c.no_annotations }}</td>#}
+                    <td>{% cases_with_code project c %}</td>
+                    <td>{% files_with_code project c %}</td>
+                    <td>0</td>
+                    {#                    <td>{% number_of_cases project c.node %}</td>#}
+                    {#                    <td>{% number_of_files project c.node %}</td>#}
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-3">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title">Cases by contributor</h3>
+              <div class="chart" id="chart-case-distribution"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title">Files by contributor</h3>
+              <div class="chart" id="chart-file-distribution"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title">Concepts by case</h3>
+              <div class="chart" id="chart-concepts-by-case"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title">Concepts by file</h3>
+              <div class="chart" id="chart-concepts-by-file"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-2">
+        {#        <div class="col-6">#}
+        {#          <div class="card">#}
+        {#            <div class="card-header">#}
+        {#              <h3 class="card-title">Annotations by user</h3>#}
+        {#            </div>#}
+        {#            <table class="table card-table table-vcenter table-striped table-hover">#}
+        {#              <thead>#}
+        {#              <tr>#}
+        {#                <th>User</th>#}
+        {#                <th>#cases</th>#}
+        {#                <th>#files</th>#}
+        {#              </tr>#}
+        {#              </thead>#}
+        {#              <tbody>#}
+        {#              <tr>#}
+        {#                <td>Hannibal Bohnenberger</td>#}
+        {#                <td>120</td>#}
+        {#                <td>129</td>#}
+        {#              </tr>#}
+        {#              <tr>#}
+        {#                <td>Martin Zielke</td>#}
+        {#                <td>337</td>#}
+        {#                <td>361</td>#}
+        {#              </tr>#}
+        {#              </tbody>#}
+        {#            </table>#}
+        {#          </div>#}
+        {#        </div>#}
+        {#        <div class="col-6">#}
+        {#          <div class="card">#}
+        {#            <div class="card-header">#}
+        {#              <h3 class="card-title">Annotations by term</h3>#}
+        {#            </div>#}
+        {#            <table class="table card-table table-vcenter table-striped table-hover">#}
+        {#              <thead>#}
+        {#              <tr>#}
+        {#                <th>User</th>#}
+        {#                <th>#cases</th>#}
+        {#                <th>#files</th>#}
+        {#                <th>HE</th>#}
+        {#                <th>Keratin</th>#}
+        {#              </tr>#}
+        {#              </thead>#}
+        {#              <tbody>#}
+        {#              <tr>#}
+        {#                <td>#}
+        {#                  Hannibal Bohnenberger#}
+        {#                </td>#}
+        {#                <td>#}
+        {##}
+        {#                </td>#}
+        {#                <td>#}
+        {##}
+        {#                </td>#}
+        {#                <td></td>#}
+        {#                <td></td>#}
+        {#              </tr>#}
+        {#              <tr>#}
+        {#                <td>#}
+        {#                  Martin Zielke#}
+        {#                </td>#}
+        {#                <td>#}
+        {##}
+        {#                </td>#}
+        {#                <td>#}
+        {##}
+        {#                </td>#}
+        {#                <td></td>#}
+        {#                <td></td>#}
+        {#              </tr>#}
+        {#              </tbody>#}
+        {#            </table>#}
+        {#          </div>#}
+        {#        </div>#}
+      </div>
+      <div class="row mt-2" hx-get="{% url 'project:events' project.pk %}" hx-swap="outerHTML" hx-target="#event-list"
+           hx-trigger="load">
+        <div class="col">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Latest Activity</h3>
+            </div>
+            <div class="card-body">
+              <div id="event-list">
+                <div class="spinner-border htmx-indicator"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Blockchain</h3>
+            </div>
+            <div class="card-body divide-y">
+              {% for l in logs %}
+                <div>
+                  <div class="row">
+                    <div class="col">
+                      <div class="text-truncate">
+                        {{ l.to_human_readable }}
+                      </div>
+                      <div class="text-secondary">{{ l.event_date|timesince }} ago
+                        ({{ l.event_date|date:'SHORT_DATETIME_FORMAT' }})
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  {{ data_chart_case_distribution_by_nodes|json_script:"data_chart_case_distribution_by_nodes" }}
+  {{ data_chart_file_distribution_by_nodes|json_script:"data_chart_file_distribution_by_nodes" }}
+
+  {{ data_chart_concepts_by_file|json_script:"data_chart_concepts_by_file" }}
+  {{ data_chart_concepts_by_case|json_script:"data_chart_concepts_by_case" }}
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      C.generateChartDataDistributionFromNodes('#chart-case-distribution', '#data_chart_case_distribution_by_nodes');
+      C.generateChartDataDistributionFromNodes('#chart-file-distribution', '#data_chart_file_distribution_by_nodes');
+      C.generateChartDataDistributionFromNodes('#chart-concepts-by-file', '#data_chart_concepts_by_file');
+      C.generateChartDataDistributionFromNodes('#chart-concepts-by-case', '#data_chart_concepts_by_case');
+    });
+  </script>
+
+{% endblock %}

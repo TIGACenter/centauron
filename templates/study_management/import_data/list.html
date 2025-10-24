@@ -1,0 +1,52 @@
+{% extends 'study_management/base_detail.html' %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row align-items-center">
+          <div class="col">
+            <div class="page-pretitle">
+              {{ arm.name }}
+            </div>
+            <h2 class="page-title">
+              Import Jobs
+            </h2>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <table class="table table striped">
+                  <tr>
+                    <th>Status</th>
+                    <th>Message</th>
+                    <th>File</th>
+                    <th>Celery Task ID</th>
+                    <th>Created</th>
+                    <th>By</th>
+                  </tr>
+                  {% for e in items %}
+                  <tr>
+                    <td>{{ e.status }}</td>
+                    <td>{{ e.message }}</td>
+                    <td>{{ e.file }}</td>
+                    <td>{{ e.celery_task_id }}</td>
+                    <td>{{ e.date_created }}</td>
+                    <td>{{ e.created_by }}</td>
+                  </tr>
+                  {% endfor %}
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

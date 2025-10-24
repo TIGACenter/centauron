@@ -1,0 +1,29 @@
+{% extends 'challenge/base_detail.html' %}
+{% block detail_header %}
+  <div class="row g-2 align-items-center">
+    <div class="col">
+      <h2 class="page-title">
+        Submissions
+      </h2>
+    </div>
+  </div>
+{% endblock %}
+{% block javascripts %}
+  {% include 'includes/datatables-js.html' %}
+  <script>
+    $(document).ready(function () {
+      let columns = [
+        {className: 'select-checkbox'},
+        {#{data: 'status', title: 'Status'},#}
+        {#{data: 'executed', title: 'Executed'},#}
+        {data: 'type', title: 'Type'},
+        {data: 'original_docker_image', title: 'Docker Image'},
+        {data: 'date_created', title: 'Created at'},
+      ];
+      dataTable('#table', '{% url 'challenge:challenge-computing-jobs-list' object.pk %}', {
+        columns,
+        order: [[3, 'desc']]
+      });
+    });
+  </script>
+{% endblock %}

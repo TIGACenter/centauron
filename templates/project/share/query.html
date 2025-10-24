@@ -1,0 +1,105 @@
+{% extends 'project/base_detail.html' %}
+{% load render_bundle from webpack_loader %}
+{% load project_tags %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <!-- Page pre-title -->
+            <div class="">
+              <div class="mb-2">
+                <ol class="breadcrumb" aria-label="breadcrumbs">
+                  <li class="breadcrumb-item"><a href="{% url 'project:list' %}">My Projects</a>
+                  </li>
+                  <li class="breadcrumb-item"><a
+                    href="{% url 'project:detail' object.id %}">{{ object.name }}</a></li>
+                  <li class="breadcrumb-item">Release my data</li>
+                </ol>
+              </div>
+            </div>
+            <h2 class="page-title">
+              Release my data to project partners
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                {% if not project_has_ground_truth_schema %}
+                  There is no ground truth schema yet for this project.
+                  {% if project|user_is_project_owner:request.user.profile %}
+                    <a href="{% url 'project:ground_truth:ground-truth-schema' project.pk %}" class="btn btn-secondary">Create
+                      ground truth schema now</a>
+                  {% else %}
+                    Ask the project owner to distribute the current ground truth schema.
+                  {% endif %}
+                {% elif not project_has_ground_truth %}
+                  Before releasing any data, you have to set a ground truth first.
+                  <a href="{% url 'project:my_data_ground_truth' project.pk %}" class="btn btn-secondary">Set ground
+                    truth now</a>
+                {% else %}
+
+                  {#                <div id="queryBuilder"></div>#}
+
+                  {#                Select the cases you want to share.#}
+                  <form hx-post="{% url 'project:create-share-query-action' object.pk %}"
+                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-swap="innerHTML" hx-target=".results"
+                        id="form"
+                  >
+                    {% csrf_token %}
+                    {#                  the field for the query builder#}
+                    <input name="query" type="hidden" value="{}">
+                    <div class="spinner-border text-primary htmx-indicator" role="status"></div>
+                    <div class="results">
+                    </div>
+                  </form>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+  {% if project_has_ground_truth %}
+    <script>
+      $(document).ready(() => {
+        htmx.trigger('#form', 'submit')
+      });
+    </script>
+  {% endif %}
+  {#  {{ codes|json_script:'codes' }}#}
+  {##}
+  {#  <script type="text/javascript">#}
+  {#    let codes = JSON.parse(document.querySelector('#codes').textContent);#}
+  {#    codes = codes.map(e => ({value: e.id, title: `${e.code} (${e.codesystem_name})`}))#}
+  {#    console.log(codes)#}
+  {#    window.QUERY_BUILDER_FIELDS = {#}
+  {#      codes: {#}
+  {#        label: "Term",#}
+  {#        type: "select",#}
+  {#        valueSources: ["value"],#}
+  {#        fieldSettings: {#}
+  {#          listValues: codes#}
+  {#        }#}
+  {#      },#}
+  {#      name: {#}
+  {#        label: 'Name', type: 'text',#}
+  {#        operators: [#}
+  {#          { name: '=', label: 'is' },#}
+  {#        ]#}
+  {#      }#}
+  {#    }#}
+  {#  </script>#}
+  {#  {% render_bundle 'queryBuilder' 'js' %}#}
+{% endblock %}

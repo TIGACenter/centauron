@@ -1,0 +1,21 @@
+{#{% load core_tags %}#}
+{% load active_link_tags %}
+<ul class="navbar-nav">
+  <li class="nav-item {% active_link 'study_management:list' %}">
+    <a class="nav-link" href="{% url 'study_management:list' %}">
+                            <span class="nav-link-title">
+                                List
+                              </span>
+    </a>
+  </li>
+  {% for arm in study.arms.all %}
+    <li
+      class="nav-item {% active_link 'study_management:add-file-to-case' pk=study.pk arm_pk=arm.pk case_pk=case.pk %} {% active_link 'study_management:arm-detail || study_management:arm-detail-cases || study_management:arm-detail-files || study_management:arm-detail-tilesets' pk=study.pk arm_pk=arm.pk %}">
+      <a class="nav-link" href="{% url 'study_management:arm-detail' study.pk arm.pk %}">
+                            <span class="nav-link-title">
+                                {{ arm.name }}
+                              </span>
+      </a>
+    </li>
+  {% endfor %}
+</ul>

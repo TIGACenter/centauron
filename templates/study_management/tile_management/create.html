@@ -1,0 +1,95 @@
+{% extends 'study_management/base_detail.html' %}
+{% block content %}
+  <form action="" method="post">
+    {% csrf_token %}
+    <div class="page-wrapper">
+      <div class="page-header d-print-none">
+        <div class="container-xl">
+          <div class="row align-items-center">
+            <div class="col">
+              <div class="page-pretitle">
+                {{ arm.name }}
+              </div>
+              <h2 class="page-title">
+                Create tileset
+              </h2>
+            </div>
+            <div class="col-auto ms-auto">
+              <button type="submit" class="btn btn-primary d-none d-sm-inline-block">Create
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="container-xl">
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label for="name" class="form-label">Tileset Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                  </div>
+                  <div class="mb-3">
+                    <div class="row">
+                      <div class="col">
+                        <label for="yaml">YAML</label>
+                        <textarea class="form-control" name="yml" id="yaml" cols="30" rows="10"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                  {#                  <div class="mb-3">#}
+                  {#                    <div class="row">#}
+                  {#                      <div class="col-4">#}
+                  {#                        <label for="tileSize" class="form-label">Tile Size (px)</label>#}
+                  {#                        <input type="number" class="form-control" id="tileSize" name="tile_size" value="512" required>#}
+                  {#                      </div>#}
+                  {#                      <div class="col-4">#}
+                  {#                        <label for="stepSize" class="form-label">Step Size (px)</label>#}
+                  {#                        <input type="number" class="form-control" id="stepSize" name="step_size" value="0" required>#}
+                  {#                      </div>#}
+                  {#                      <div class="col-4">#}
+                  {#                        <label for="tileResolution" class="form-label">Tile Resolution</label>#}
+                  {#                        <select name="tile_resolution" id="tileResolution" class="form-select">#}
+                  {#                          <option value="40" selected>40</option>#}
+                  {#                          <option value="20">20</option>#}
+                  {#                          <option value="10">10</option>#}
+                  {#                          <option value="5">5</option>#}
+                  {#                        </select>#}
+                  {#                      </div>#}
+                  {#                    </div>#}
+                  {#                  </div>#}
+                  {#                  <div class="mb-3">#}
+                  {#                    <label for="terms">Select the filters for the slides you want to include in the tileset (multiselect#}
+                  {#                      with ctrl).</label>#}
+                  {#                    <select class="form-select" multiple name="terms" id="terms" size="10" required>#}
+                  {#                      {% for term in terms %}#}
+                  {#                        <option value="{{ term.pk }}">{{ term.get_readable_str }} ({{ term.ontology }})</option>#}
+                  {#                      {% endfor %}#}
+                  {#                    </select>#}
+                  {#                  </div>#}
+                  <div class="mb-3">
+                    <button hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                            hx-indicator="#indicator"
+                            hx-post="{% url 'study_management:tile_management:filter' study.pk arm.pk %}"
+                            hx-swap="innerHTML" hx-target="#results" class="btn btn-primary d-none d-sm-inline-block">
+                      Filter
+                    </button>
+                  </div>
+                  <div class="htmx-indicator" id="indicator">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    Loading...
+                  </div>
+                  <div class="mb-3" id="results">
+                    Press button <em>Filter</em> to preview selected slides.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+{% endblock %}

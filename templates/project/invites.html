@@ -1,0 +1,82 @@
+{% extends 'project/base.html' %}
+{% load project_tags %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <!-- Page pre-title -->
+            {#            <div class="">#}
+            {#              <div class="mb-2">#}
+            {#                <ol class="breadcrumb" aria-label="breadcrumbs">#}
+            {#                  <li class="breadcrumb-item"><a href="{% url 'project:list' %}">My projects</a>#}
+            {#                  </li>#}
+            {#                </ol>#}
+            {#              </div>#}
+            {#            </div>#}
+            <h2 class="page-title">
+              Project Invitations
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <table id="table" class="table" style="width:100%">
+                <thead>
+                <tr>
+                  <th>Project Name</th>
+                  <th>From</th>
+                  <th>Organization</th>
+                  <th>Received</th>
+
+                    <th class="w-1"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for i in invites %}
+                  <tr>
+
+                    <td>
+                      {% if i.project %}
+                        {{  i.project.name }}
+                      {% else %}
+                      {{ i.project_data|project_name_from_message }}
+                      {% endif %}
+                      </td>
+                    <td>{{ i.from_user.human_readable }}</td>
+                    <td>{{ i.from_organization|default:'-' }}</td>
+                    <td>{{ i.date_created|date:'SHORT_DATETIME_FORMAT' }}</td>
+                      <td>
+                        <form action="{% url 'federation:invitation:accept-or-decline' i.pk %}" method="post">
+                          {% csrf_token %}
+                          <button type="submit" name="accept" class="btn btn-green btn-sm">Accept</button>
+                          <button type="submit" name="decline" class="btn btn-danger btn-sm">Decline</button>
+                        </form>
+                        {#                        <form method="post" action="{% url 'project:invite-action' %}">#}
+                        {#                          {% csrf_token %}#}
+                        {#                          <input type="hidden" name="url" value="{{ i.url }}">#}
+                        {#                          TODO must be the profile of the invite sender  #}
+                        {#                          <input type="hidden" name="user" value="{{ i.node.pk }}">#}
+                        {#                          <input type="hidden" name="project" value="{{ i.project_raw }}">#}
+                        {#                          FIXME possible XSS vector #}
+                        {#                          <button class="btn btn-icon btn-success" name="accept"><i class="ti ti-check"></i></button>#}
+                        {#                          <button class="btn btn-icon btn-danger" name="decline"><i class="ti ti-x"></i></button>#}
+                        {#                        </form>#}
+                      </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

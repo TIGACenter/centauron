@@ -1,0 +1,35 @@
+{% load humanize %}
+{% load crispy_forms_filters %}
+{% load render_bundle from webpack_loader %}
+<div class="modal" id="modalShare" tabindex="-1">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create new share</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {#        <form action="{% url 'share:create' %}" method="post">#}
+        {#          {% csrf_token %}#}
+        {##}
+        {#        </form>#}
+        {% crispy form %}
+        <label for="queryBuilder">Query</label>
+        <div id="queryBuilder"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary button-save-share-form">Share</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  const form = document.querySelector('#formCreateShare');
+  document.querySelector('.button-save-share-form').onclick = e => {
+    form.submit();
+    e.preventDefault();
+  };
+</script>
+{{ codes|json_script:'codes' }}
+{% render_bundle 'queryBuilder' 'js' %}

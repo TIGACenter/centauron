@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block header %}
+  {% with title='study_management/title.html' site_navigation='study_management/site-navigation.html' %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}

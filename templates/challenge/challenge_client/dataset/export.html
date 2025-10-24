@@ -1,0 +1,68 @@
+{% extends 'challenge/challenge_client/detail.html' %}
+{% load core_tags viewer_tags %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Download dataset
+              <span class="badge bg-blue text-white ms-2">{{ job.status }}</span>
+            </h2>
+          </div>
+          {% if request.user.is_superuser %}
+            <div class="col-auto ms-auto d-print-none">
+              <div class="btn-list">
+                <form method="post"
+                      action="{% url 'challenge_client:challenge-datasets-exports-detail-actions' challenge.pk job.pk %}">{% csrf_token %}
+                  <button class="btn" name="btn_start">Start</button>
+                </form>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row mt-2">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div>Number of files: {{ job.files.count }}</div>
+                {% if request.user.is_superuser %}
+                  <div>Folder: {{ job.export_folder }}</div>
+                {% endif %}
+                <div>Total size: {{ total_size|filesizeformat }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div>
+                  Copy the urls below to download the files with your favorite download manager. The urls contain a
+                  token that is custom to you. Do not provide these urls to anyone. Each download is logged within the
+                  platform.
+                </div>
+                <div>
+                  Recommended download manager: <a href="https://github.com/agalwood/Motrix" target="_blank">Motrix
+                  (Link to GitHub)</a>
+                </div>
+                <div class="mt-2">
+                <textarea class="form-control" readonly id="urls" value="urls" cols="30"
+                          rows="10">{{ urls|join:'&#13;&#10;' }}</textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+

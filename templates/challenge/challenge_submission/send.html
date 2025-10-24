@@ -1,0 +1,175 @@
+{% extends 'challenge/base.html' %}
+{% load core_tags %}
+{% block content %}
+  <style>
+    .nav-link.active {
+      font-weight: bold;
+    }
+  </style>
+  <form action="{% url 'challenge:challenge_submission:send' challenge.pk object.pk definition.pk execution.pk %}"
+        method="post">
+    {% csrf_token %}
+    <div class="page-wrapper">
+      <div class="page-header d-print-none">
+        <div class="container-xl">
+          <div class="row g-2 align-items-center">
+            <div class="col">
+              <div class="mb-1">
+                <ol class="breadcrumb" aria-label="breadcrumbs">
+                  <li class="breadcrumb-item"><a href="{% url 'challenge:list' %}">My challenges</a></li>
+                  <li class="breadcrumb-item"><a
+                    href="{% url 'challenge:detail' challenge.id %}">{{ challenge.name }}</a>
+                  <li class="breadcrumb-item"><a href="{% url 'challenge:challenge_submission:list' challenge.id %}">Submissions</a>
+                  </li>
+                  <li class="breadcrumb-item"><a
+                    href="{% url 'challenge:challenge_submission:detail' challenge.id object.id %}">{{ object.name }}</a>
+                  </li>
+                </ol>
+              </div>
+              <h2 class="page-title">
+                Send submission results <i class="mx-2">{{ object.name }}</i> to submitter.
+              </h2>
+            </div>
+            <div class="col-auto ms-auto d-print-none">
+              <div class="btn-list">
+                {% if request.user.is_superuser %}
+                  <a class="btn btn-icon" href="{% url 'admin:challenge_submission_submission_change' object.pk %}">
+                    <i class="ti ti-settings"></i>
+                  </a>
+                {% endif %}
+                <button type="submit" class="btn btn-primary">Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="container-xl">
+          <div class="row">
+            <div class="col-12">
+              <ul class="nav" data-bs-toggle="tabs" role="tablist">
+                {% for e in all_stages %}
+                  <li class="nav-item" role="presentation">
+                    <a href="#tabs-{{ e.pk }}" class="nav-link {% if forloop.first %}active{% endif %}"
+                       data-bs-toggle="tab" role="tab">{{ e.name }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+          <div class="row">
+            <div class="tab-content">
+              {% for stage in all_stages %}
+                <div class="tab-pane {% if forloop.first %}active show{% endif %}" id="tabs-{{ stage.pk }}">
+                  <div class="row">
+                    <div class="col-2">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="list-group list-group-flush" data-bs-toggle="tabs">
+                            {% for e in stage.executions.all|for_created_by:request.user.profile %}
+                              <div
+                                class="list-group-item list-group-item-action {% if forloop.first %}active{% endif %}">
+                                {% include 'includes/computing-job-execution-icon.html' with job=e %}
+                                <a href="#run-{{ e.pk }}" data-bs-toggle="tab"
+                                   class="">
+                                  {% include 'challenge/partials/list_label_job_execution.html' with execution=e %}
+                                </a>
+                              </div>
+                            {% endfor %}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-10">
+                      <div class="tab-content">
+                        {% for e in stage.executions.all %}
+                          {% comment %}
+                          when adding {% if forloop.first %}active show{% endif %} to the following tab-pane it is not removed when changing the tab i.e. the selected tab is appended
+                          instead of removed.
+                          {% endcomment %}
+                          <div class="tab-pane" role="tabpanel"
+                               id="run-{{ e.pk }}">
+                            <div class="card">
+                              <div class="card-header">
+                                <h3 class="card-title">Logs</h3>
+                              </div>
+                              <div class="logs-{{ e.pk }}">
+                                <button class="btn btn-primary"
+                                        hx-get="{% url 'challenge:challenge_submission:send-logs' challenge.pk object.pk definition.pk e.pk %}"
+                                        hx-target=".logs-{{ e.pk }}" hx-swap="innerHTML">Load logs (default: send none)
+                                </button>
+                              </div>
+                            </div>
+                            <div class="card mt-2">
+                              <div class="card-header">
+                                <h3 class="card-title">Artefacts</h3>
+                              </div>
+                              <div class="artefacts-{{ e.pk }}">
+
+                                <button class="btn btn-primary"
+                                        hx-get="{% url 'challenge:challenge_submission:send-artefacts' challenge.pk object.pk definition.pk e.pk %}"
+                                        hx-target=".artefacts-{{ e.pk }}" hx-swap="innerHTML">Load artefacts (default: send
+                                  none)
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+              <div class="card mt-2">
+                <div class="card-header">
+                  <div class="card-title">
+                    Data from other nodes
+                  </div>
+                </div>
+                <table class="table table-hover table-striped">
+                  <thead>
+                  <th>Stage</th>
+                  <th>File</th>
+                  <th>Origin</th>
+                  </thead>
+                  <tbody>
+                  {% for d in artefacts_per_execution %}
+                    <tr>
+                      <td>{{ d.computing_job.definition.name }}</td>
+                      <td>{{ d.file.name }}</td>
+                      <td>{{ d.origin }}</td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <script type="text/javascript">
+    // trigger first tab
+    {#const triggerFirstTabEl = document.querySelector('#run-{{ stage.executions.first.pk }}')#}
+    {#bootstrap.Tab.getInstance(triggerFirstTabEl).show() // Select first tab#}
+    document.querySelector('#linkToggleAllLog').addEventListener('click', e => {
+      const chkbxs = document.querySelectorAll('input[name="log"]')
+      for (const c of chkbxs) {
+        c.checked = !c.checked
+      }
+    })
+    document.querySelector('#linkToggleAllArtifact').addEventListener('click', e => {
+      const chkbxs = document.querySelectorAll('input[name="artefact"]')
+      for (const c of chkbxs) {
+        c.checked = !c.checked
+      }
+    })
+  </script>
+  <style>
+    .log, .table-artefacts {
+      max-height: 300px;
+      overflow-y: scroll;
+    }
+  </style>
+{% endblock %}

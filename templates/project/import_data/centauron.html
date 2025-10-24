@@ -1,0 +1,39 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="page-wrapper">
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <div class="mb-1">
+                            <ol class="breadcrumb" aria-label="breadcrumbs">
+                                <li class="breadcrumb-item"><a href="{% url 'management:list' %}">My projects</a></li>
+                                <li class="breadcrumb-item"><a
+                                        href="{% url 'management:detail' project.id %}">{{ project.name }}</a></li>
+                            </ol>
+                        </div>
+                        <h2 class="page-title">
+                            Import from CENTAURON
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="card">
+{#                    <div class="card-header">#}
+{#                        <h3 class="card-title">Import data</h3>#}
+{#                    </div>#}
+                    <div class="card-body">
+                        Paste below the code that you got from the other CENTAURON node.
+                        <div class="mt-2 mb-1">
+                            {% crispy form %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

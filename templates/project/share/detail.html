@@ -1,0 +1,170 @@
+{% extends 'project/base_detail.html' %}
+{% load share_tags %}
+{% load share_token_tags %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <!-- Page pre-title -->
+            <div class="">
+              <div class="mb-2">
+                <ol class="breadcrumb" aria-label="breadcrumbs">
+                  <li class="breadcrumb-item"><a href="{% url 'project:list' %}">My Projects</a>
+                  </li>
+                  <li class="breadcrumb-item"><a
+                    href="{% url 'project:detail' project.id %}">{{ project.name }}</a></li>
+                  <li class="breadcrumb-item"><a href="{% url 'project:share-list' project.pk %}">Data Releases</a></li>
+                </ol>
+              </div>
+            </div>
+            <h2 class="page-title">
+              {{ share.name }}
+            </h2>
+          </div>
+          <div class="col-auto ms-auto d-flex">
+            <div>
+              <a href="{% url 'admin:share_share_change' share.pk %}" class="btn btn-icon"><i
+                class="ti ti-settings"></i></a>
+            </div>
+{#            {% if share.origin == request.user.profile %}#}
+{#              <div>#}
+{#                <form action="{% url 'project:share-detail-action' project.pk share.pk %}"#}
+{#                      method="post">{% csrf_token %}#}
+{#                  <button class="btn btn-danger">Retract</button>#}
+{#                </form>#}
+{#              </div>#}
+{#            {% endif %}#}
+            {% if share.ground_truth_schema %}
+              <div>
+                <a
+                  href="{% url 'project:ground_truth:ground-truth-schema-detail' project.pk share.ground_truth_schema.pk %}"
+                  class="btn btn-icon"><i class="ti ti-background"></i></a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-3">
+            <div class="card card-sm">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-briefcase"></i></span>
+                  </div>
+                  <div class="col">
+                    <div class="font-weight-medium">
+                      {{ share.cases.count }} cases
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-files"></i></span>
+                  </div>
+                  <div class="col">
+                    <div class="font-weight-medium">
+                      {{ share.files.count }} files
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-abc"></i></span>
+                  </div>
+                  <div class="col">
+                    <div class="font-weight-medium">
+                      {{ share.codes.count }} terms
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-jetpack"></i></span>
+                  </div>
+                  <div class="col">
+                    <div class="font-weight-medium">
+                      {{ share.extra_data.count }} extra data (annotations etc)
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Shared with</h3>
+                <div class="card-actions">
+                  <a href="{% url 'admin:share_token_sharetoken_add' %}" class="btn btn-primary"><i
+                    class="ti ti-plus"></i> Add</a>
+                  {#                  <button hx-get="{% url 'share:share_token:dialog-create' share.pk %}" hx-swap="innerHTML" hx-target=".modal" ></button>#}
+                </div>
+                <div class="modal"></div>
+              </div>
+              <table class="table table-hover table-striped">
+                <thead>
+                <tr>
+                  <th>Node</th>
+                  <th>Valid from</th>
+                  <th>Valid until</th>
+                  <th class="w-1">Valid</th>
+                  <th class="w-1"></th>
+                </tr>
+                </thead>
+                {% for t in tokens %}
+                  <tr>
+                    <td>{{ t.recipient.human_readable }}</td>
+                    <td>{{ t.valid_from|date:"DATETIME_FORMAT" }}</td>
+                    <td>{{ t.valid_until|date:"DATETIME_FORMAT" }}</td>
+                    <td>
+                      {% if t|is_valid %}
+                        <i class="ti ti-check text-green"></i>
+                      {% else %}
+                        <i class="ti ti-x text-red"></i>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <form method="post" action="{% url 'share:share_token:action' t.pk %}">
+                        {% csrf_token %}
+                        <button class="btn btn-icon btn-icon btn-sm" type="submit" name="send"><i
+                          class="ti ti-send"></i></button>
+                        <button class="btn btn-icon btn-danger btn-sm" name="delete"><i
+                          class="ti ti-trash"></i></button>
+                      </form>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

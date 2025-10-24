@@ -1,0 +1,74 @@
+{% extends 'study_management/base_detail.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+  <div class="page-wrapper">
+    <form action="{% url 'study_management:import_data:form-preview' study.pk study_arm_pk %}"
+          method="post">{% csrf_token %}
+      <div class="page-header d-print-none">
+        <div class="container-xl">
+          <div class="row align-items-center">
+            <div class="col">
+              <h2 class="page-title">
+                Import Preview
+              </h2>
+            </div>
+            <div class="col-auto ms-auto">
+              <div class="btn-list">
+                <button class="btn btn-primary" type="submit">Import</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="container-xl">
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body">
+                  <div>Total files: {{ total_files }}</div>
+                  <table class="table table-striped">
+                    <tr>
+                      <th>Terminology</th>
+                      <th>Given term</th>
+                      <th>Existing term</th>
+                      <th></th>
+                    </tr>
+                    {% for c in codes %}
+                      <tr>
+                        <td>{{ c.codesystem_name }} {% if not c.codesystem_exists %}
+                          <sup class="text-red">New</sup>{% endif %}</td>
+                        <td>{{ c.term_name }} {% if not c.exists %}<sup class="text-red">New</sup>{% else %}
+                          <sup class="text-green">Exists</sup>{% endif %}
+                        </td>
+                        <td>
+                          {% if c.exists %}
+                            <input type="hidden" value="{{ c.id }}"
+                                   name="mapping.{{ c.codesystem_uri }}#{{ c.term_name }}">
+                          {% endif %}
+                          <select class="form-control form-select"
+                            {% if c.exists %}
+                              {#                                  name="mapping..exists..{{ c.id }}..{{ c.codesystem_id }}..{{ c.id }}"#}
+                                  disabled
+                            {% else %}
+                                  name="mapping.{{ c.codesystem_uri }}#{{ c.term_name }}"
+                            {% endif %}>
+                            <option value="null" selected disabled>Select term</option>
+                            {% for ca in c.alternative_codes %}
+                              <option value="{{ ca.0 }}">{{ ca.2 }} ({{ ca.1 }}) ({{ ca.3 }})</option>
+                            {% endfor %}
+                          </select></td>
+                        <td></td>
+                      </tr>
+                    {% endfor %}
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}

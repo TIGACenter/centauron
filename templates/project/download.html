@@ -1,0 +1,81 @@
+{% extends 'project/base_detail.html' %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Download data from remote node
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-6">
+            <div class="card card-sm">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-file"></i></span>
+                  </div>
+                  <div class="col">
+                    <div class="font-weight-medium">
+                      {{ files_total }} files (total not imported)
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="card">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <span class="bg-primary text-white avatar"><i class="ti ti-file"></i></span>
+                  </div>
+                  <div class="col">
+                    <div class="font-weight-medium">
+                      {{ files_size|filesizeformat }} (total not imported)
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="tab-content">
+                  <form hx-post="{% url 'project:download-query' project.pk %}"
+                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-swap="innerHTML" hx-target=".query-results">
+                    {#                  {% csrf_token %}#}
+                    <div class="row mt-2">
+                      <div class="col">
+                        <label class="form-label">Query (JSON) (Cases)</label>
+                        <textarea name="query" class="form-control">{}</textarea>
+                      </div>
+                    </div>
+                    <div class="row mt-2">
+                      <div class="col">
+                        <button type="submit" name="btn_query" class="btn btn-primary">Query</button>
+                        <div class="spinner-border text-primary htmx-indicator" role="status"></div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="query-results mt-2"></div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

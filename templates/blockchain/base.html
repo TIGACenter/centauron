@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block header %}
+  <style>
+    pre {
+      background-color: var(--tblr-bg-surface-dark)
+    }
+  </style>
+  {% with title='blockchain/includes/title.html' site_navigation='blockchain/includes/site-navigation.html' %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}

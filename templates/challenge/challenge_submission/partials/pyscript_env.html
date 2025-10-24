@@ -1,0 +1,18 @@
+{% comment %}
+  javascriptblock must be before the pyscript so it is available in the pyscript code.
+{% endcomment %}
+{{ processing_results|json_script:"processing_results" }}
+<script type="text/javascript">
+  {#function start_run() {#}
+  try {
+    const app = C.createTaskRun('#app', 'asd');
+  } catch (e) {
+    console.error(e);
+  }
+  {# }#}
+
+  {#start_run();#}
+</script>
+{{ code.pyscript|safe }}
+
+{#<input type="hidden" id="processing_results" value="{{ processing_results|safe }}">#}

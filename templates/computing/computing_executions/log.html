@@ -1,0 +1,5 @@
+{% if execution.get_log|length == 0 %}No log output (yet).
+{% endif %}
+<pre>
+{% for log in execution.get_log %}{{ log.logged_at|date:'DATETIME_FORMAT' }} - {{ log.content }}{% endfor %}
+</pre>

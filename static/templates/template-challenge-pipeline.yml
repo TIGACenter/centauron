@@ -1,0 +1,39 @@
+stages:
+  - predict
+  - .post
+
+predict:
+  image: busybox
+  template: true # remove to convert this yaml to not-a-template.
+  template_fields: # the fields that need to be provided by submissions.
+    - image
+    - script
+  type: auto # or "manual".
+  data: identifier_of_dataset
+  batch_size: -1 # the number of data entities per batch (default: len(data)) or -1 to disable batching
+  script: # the code that is executed in the running docker container
+#    - python /cyto_processor_local/code/csv_observer.py --conf /cyto_processor_local/code/processor_config.json --csv /data.csv
+    - cat /data.csv
+    # - cp filelist.csv /output/abc.csv
+    # - cp prediction.txt /output/prediction.txt
+  output: # output of the computation that needs to be saved (for download or use in later stages)
+    # define e.g. a results.json file here.
+    - "*"
+  resources:
+    requests:
+      memory: 20G
+    limits:
+      nvidia.com/gpu: 1
+
+# the name .post is mandatory for the stage that does the label crossing and final result calculation. only the results of the result.json file are used for leaderboard calculation. The keys in this file need to match with the key provided in the target metric.
+.post:
+  template: false # remove to convert this yaml to not-a-template.
+  type: manual
+  data: identifier_of_dataset
+  script: identifier_of_evaluation_code # identifier of the evaluation code that executes the ground truth
+  input:
+    - predict:* # takes all outputs of predict stages as an input for evaluate stage
+    #- predict:results.json # only takes results.json of predict stage as input
+  output: # output of the computation that needs to be saved (for download or use in later stages)
+    # this file contains the metrics e.g. { "acc": 0.1234 } and is used for leaderboard calculation
+    - results.json

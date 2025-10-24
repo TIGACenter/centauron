@@ -1,0 +1,36 @@
+{% extends 'study_management/base_detail.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Create case
+            </h2>
+          </div>
+          <div class="col-auto">
+            <button type="button" class="btn btn-primary" id="buttonSave" href="#">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="card">
+          <div class="card-body">
+            {% crispy form %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.querySelector('#buttonSave').addEventListener('click', () => {
+      document.querySelector('#create-case').submit()
+    });
+  </script>
+{% endblock %}

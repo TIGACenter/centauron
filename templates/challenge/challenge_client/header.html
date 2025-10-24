@@ -1,0 +1,75 @@
+{% load core_tags %}
+<header class="navbar navbar-expand-md navbar-light d-print-none">
+  <div class="container-xl">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu"
+            aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+      {% include site_title|default:'challenge/challenge_client/title.html' %}
+    </h1>
+
+    <div class="navbar-nav flex-row order-md-last">
+      <div class="nav-item {% active_link_app 'blockchain' %}">
+        <a class="nav-link" href="{% url 'blockchain:explorer' %}">
+                    <span class="nav-link-title">
+                                Blockchain Explorer
+                              </span>
+        </a>
+      </div>
+      <div class="nav-item">
+        <a class="nav-link" href="{% url 'challenge_client:challenge-list' %}">
+                    <span class="nav-link-title">
+                                All challenges
+                              </span>
+        </a>
+      </div>
+
+      {% if not request.user.is_authenticated %}
+        <div class="nav-item">
+          <a class=" btn btn-primary" href="{% url 'account_login' %}">
+                    <span class="nav-link-title">
+                                Sign In
+                              </span>
+          </a>
+        </div>
+
+        {% settings 'IS_CHALLENGE_HUB' as is_hub %}
+        {% settings 'HUB_ENABLE_REGISTRATION' as registration_enabled %}
+        {% if is_hub and registration_enabled %}
+          <div class="nav-item ms-2">
+            <a class="btn btn-secondary" href="{% url 'challenge_client:register' %}">
+                    <span class="nav-link-title">
+                                Register
+                              </span>
+            </a>
+          </div>
+        {% endif %}
+
+      {% endif %}
+      {% if request.user.is_authenticated %}
+        <div class="nav-item dropdown">
+          <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown"
+             aria-label="Open user menu">
+            <div class="d-none d-xl-block ps-2">
+              <div>{{ request.user.username }}</div>
+            </div>
+          </a>
+          <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+            {% if request.user.is_superuser %}
+              <a href="{% url 'admin:index' %}" class="dropdown-item">ADMIN</a>
+            {% endif %}
+            <a href="{% url 'user:profile:form' %}" class="dropdown-item">Profile</a>
+
+            <div>
+              <form action="{% url 'account_logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item">Sign out</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</header>

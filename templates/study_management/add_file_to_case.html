@@ -1,0 +1,133 @@
+{% extends 'study_management/base_detail.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block css %}
+  <style>
+    .autocomplete-suggestions {
+      border: 1px solid #999;
+      background: #FFF;
+      overflow: auto;
+    }
+
+    .autocomplete-suggestion {
+      padding: 2px 5px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .autocomplete-selected {
+      background: #F0F0F0;
+    }
+
+    .autocomplete-suggestions strong {
+      font-weight: normal;
+      color: #3399FF;
+    }
+
+    .autocomplete-group {
+      padding: 2px 5px;
+    }
+
+    .autocomplete-group strong {
+      display: block;
+      border-bottom: 1px solid #000;
+    }
+  </style>
+{% endblock %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Case {{ case.name }}: Add files
+            </h2>
+          </div>
+          <div class="col-auto">
+            <div class="d-inline-block">
+              <form method="post" action="{% url 'study_management:delete-case' study.pk study_arm.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="case" value="{{ case.pk }}">
+                <button type="submit" class="btn btn-danger">Delete</button>
+              </form>
+            </div>
+            <a href="{% url 'study_management:create-case' study.pk study_arm.pk %}" class="btn btn-secondary">New
+              Case</a>
+            <button type="button" class="btn btn-primary" id="buttonSave">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="card">
+          {% crispy formset helper %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+          integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script src="{% static 'js/jquery.autocomplete.min.js' %}"></script>
+  <script>
+    document.querySelector('#buttonSave').addEventListener('click', () => {
+      document.querySelector('#formFiles').submit();
+    })
+  </script>
+  <script>
+    const form = document.querySelector('#formFiles');
+
+    {% for form in formset.forms %}
+      const termField_{{ forloop.counter0 }} = document.getElementsByName('form-{{ forloop.counter0 }}-term_ids')[0];
+      $('#autocomplete-{{ forloop.counter0 }}').autocomplete({
+        serviceUrl: '{% url 'terminology:api-search' %}',
+        minChars: 2,
+        onSelect: function (suggestion) {
+          const termIdHiddenField = document.createElement('input');
+          termIdHiddenField.type = 'hidden';
+          termIdHiddenField.value = suggestion.data;
+          termIdHiddenField.name = 'form-{{ forloop.counter0 }}-term_ids';
+          termIdHiddenField.id = 'id_form-1-term_ids_1';
+          form.appendChild(termIdHiddenField);
+
+          const badge_{{ forloop.counter0 }} = document.createElement('span');
+          badge_{{ forloop.counter0 }}.textContent = suggestion.value;
+          badge_{{ forloop.counter0 }}.classList.add('badge', 'text-bg-secondary');
+          const badge_{{ forloop.counter0 }}_icon = document.createElement('i');
+          badge_{{ forloop.counter0 }}_icon.classList.add('ti', 'ti-trash', 'btn-delete-code');
+          badge_{{ forloop.counter0 }}_icon.dataset.termId = suggestion.data;
+          badge_{{ forloop.counter0 }}_icon.dataset.fileId = '{{ form.file.id }}';
+          badge_{{ forloop.counter0 }}_icon.title = 'Remove term from file';
+          badge_{{ forloop.counter0 }}.appendChild(badge_{{ forloop.counter0 }}_icon);
+          badge_{{ forloop.counter0 }}_icon.addEventListener('click', e => deleteTermFromFile(e));
+          document.querySelector('#div_id_form-{{ forloop.counter0 }}-terms').appendChild(badge_{{ forloop.counter0 }});
+          document.querySelector('#autocomplete-{{ forloop.counter0 }}').value = '';
+        }
+      });
+    {% endfor %}
+
+    const btnDeleteCode = document.querySelectorAll('.btn-delete-code');
+    for (const btn of btnDeleteCode) {
+      btn.addEventListener('click', e => deleteTermFromFile(e))
+    }
+
+    function deleteTermFromFile(e) {
+      if (e.target === undefined) {
+        return
+      }
+      console.log(e.target)
+      const termId = e.target.dataset.termId
+      const fileId = e.target.dataset.fileId
+      const index = e.target.dataset.index
+      e.target.parentNode.classList.add('bg-danger');
+      for (const el of document.getElementsByName(`form-${index}-term_ids`)) {
+        if (el.value === termId) {
+          el.remove();
+        }
+      }
+    }
+
+  </script>
+{% endblock %}

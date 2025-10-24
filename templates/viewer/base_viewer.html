@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block header %}
+  {% with title='viewer/includes/title.html' site_navigation='viewer/includes/site-navigation.html' %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}

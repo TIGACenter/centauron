@@ -1,0 +1,15 @@
+{{ number_of_slides }} found. First {{ n }} slides see below. <strong>Don't forget to save the tileset if desired!</strong>
+<table class="table table-bordered table-striped table-sm">
+  <tr>
+    <th>Filename</th>
+    <th>Terms</th>
+    <th>Case</th>
+  </tr>
+  {% for f in files %}
+    <tr>
+      <td>{{ f.name }}</td>
+      <td>{{ f.codes_list_string_rep }}</td>
+      <td>{{ f.case.name }}</td>
+    </tr>
+  {% endfor %}
+</table>

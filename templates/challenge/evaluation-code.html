@@ -1,0 +1,51 @@
+{% extends 'challenge/base_detail.html' %}
+{% load crispy_forms_tags static %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <div class="mb-2">
+              <ol class="breadcrumb" aria-label="breadcrumbs">
+                <li class="breadcrumb-item"><a href="{% url 'challenge:list' %}">My challenges</a></li>
+                <li class="breadcrumb-item"><a
+                  href="{% url 'challenge:detail' challenge.id %}">{{ challenge.name }}</a></li>
+              </ol>
+            </div>
+            <h2 class="page-title">
+              Evaluation Code
+            </h2>
+          </div>
+         <div class="col-auto">
+            <div class="btn-list">
+              {% if object %}
+                <div class="d-flex">
+                  <input type="text" disabled value="{{ object.identifier }}" class="form-control">
+                  <button class="btn btn-icon" onclick="window.copyText('{{ object.identifier }}')"><i
+                    class="ti ti-copy"></i>
+                  </button>
+                </div>
+              {% endif %}
+              <a href="{% static 'templates/template-evaluation-code-pyscript.html' %}" target="_blank"
+                 class="btn btn-primary d-none d-sm-inline-block"><i class="ti ti-download"></i>Template</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                {% crispy form %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% load core_tags challenge_client_tags %}
+<ul class="navbar-nav">
+  <li class="nav-item {% active_link 'challenge_client:challenge-detail' %}">
+    <a class="nav-link" href="{% url 'challenge_client:challenge-detail' challenge.pk %}">
+        <span class="nav-link-title">
+            Home
+        </span>
+    </a>
+  </li>
+  <li
+    class="nav-item dropdown  {% active_link 'challenge_client:challenge-datasets challenge_client:challenge-datasets-overview challenge_client:challenge-datasets-detail' %}">
+    <a class="nav-link dropdown-toggle" href="{% url 'challenge_client:challenge-datasets' challenge.pk %}"
+       data-bs-toggle="dropdown" data-bs-auto-close="outside">
+      <span class="nav-link-title">Datasets</span>
+    </a>
+    <div class="dropdown-menu" data-bs-popper="static">
+      <a class="dropdown-item" href="{% url 'challenge_client:challenge-datasets-overview' challenge.pk %}">
+        Overview
+      </a>
+      {% if request.user.is_authenticated and request.user.is_superuser %}
+        <a class="dropdown-item" href="{% url 'challenge_client:challenge-datasets-exports' challenge.pk %}">
+          Exports
+        </a>
+      {% endif %}
+      {% for d in challenge.datasets.all %}
+        <a class="dropdown-item" href="{% url 'challenge_client:challenge-datasets-detail' challenge.pk d.pk %}">
+          {{ d.name }}
+        </a>
+      {% endfor %}
+    </div>
+  </li>
+  <li class="nav-item {% active_link 'challenge_client:challenge-leaderboard' %}">
+    <a class="nav-link" href="{% url 'challenge_client:challenge-leaderboard' challenge.pk %}">
+        <span class="nav-link-title">
+        {% is_enrolled request challenge as en %}
+          {% if not en %}
+            <i class="ti ti-lock"></i>
+          {% endif %}
+          Leaderboard
+          </span>
+    </a>
+  </li>
+  <li class="nav-item {% active_link 'challenge_client:challenge-submission-list' %}">
+    <a class="nav-link" href="{% url 'challenge_client:challenge-submission-list' challenge.pk %}">
+        <span class="nav-link-title">
+           {% is_enrolled request challenge as en %}
+          {% if not en %}
+            <i class="ti ti-lock"></i>
+          {% endif %}
+          Submissions
+          </span>
+    </a>
+  </li>
+</ul>

@@ -1,0 +1,76 @@
+{% load core_tags %}
+{% load project_tags %}
+<ul class="navbar-nav">
+  <li class="nav-item {% active_link 'project:list' %}">
+    <a class="nav-link" href="{% url 'project:list' %}">
+                            <span class="nav-link-title">
+                                List
+                              </span>
+    </a>
+  </li>
+  {% if project|user_is_project_owner:request.user.profile %}
+    <li class="nav-item {% active_link 'project:dashboard' %}">
+      <a class="nav-link" href="{% url 'project:dashboard' project.pk %}">
+                            <span class="nav-link-title">
+                                Dashboard
+                              </span>
+      </a>
+    </li>
+  {% endif %}
+  {% for view in project.views.all %}
+    <li class="nav-item {% active_view view.pk %}">
+      <a class="nav-link" href="{% url 'project:detail-view' project.pk view.pk %}">
+                            <span class="nav-link-title">
+                                {{ view.name }}
+                              </span>
+      </a>
+    </li>
+  {% endfor %}
+  <li class="nav-item {% active_link 'project:terminology' %}">
+    <a class="nav-link" href="{% url 'project:terminology' project.pk %}">
+                            <span class="nav-link-title">
+                                Terminology
+                              </span>
+    </a>
+  </li>
+
+  <li class="nav-item {% active_link 'project:collaborator-list' %}">
+    <a class="nav-link" href="{% url 'project:collaborator-list' project.pk %}">
+                            <span class="nav-link-title">
+                                Collaborators
+                              </span>
+    </a>
+  </li>
+
+  <li class="nav-item {% active_link 'project:share-list' 'project:share-detail' %}">
+    <a class="nav-link" href="{% url 'project:share-list' project.pk %}">
+                            <span class="nav-link-title">
+                                Data Releases
+                              </span>
+    </a>
+  </li>
+  <li class="nav-item {% active_link 'project:transfer-job-list' %}">
+    <a class="nav-link" href="{% url 'project:transfer-job-list' project.pk %}">
+                            <span class="nav-link-title">
+                                Transfers
+                              </span>
+    </a>
+  </li>
+  <li class="nav-item {% active_link 'project:submissions' %}">
+    <a class="nav-link" href="{% url 'project:submissions' project.pk %}">
+                            <span class="nav-link-title">
+                                Submissions
+                              </span>
+    </a>
+  </li>
+  {% if request.user.is_superuser %}
+    <li class="nav-item">
+      <a href="{% url 'admin:project_project_change' project.pk %}" class="nav-link btn btn-icon">
+                            <span class="nav-link-title">
+    <i class="ti ti-settings"></i>
+  </span></a>
+      </a>
+    </li>
+
+  {% endif %}
+</ul>

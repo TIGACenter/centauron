@@ -1,0 +1,215 @@
+{% extends 'project/base_detail.html' %}
+{% load project_tags %}
+{% block title %}
+  {{ project.name }}
+{% endblock %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <!-- Page pre-title -->
+            <div class="page-pretitle">
+              View
+            </div>
+            <h2 class="page-title">
+              {{ current_view.name }}
+            </h2>
+          </div>
+          <div class="col-auto ms-auto d-print-none">
+            <div class="btn-list">
+{#              {% if project|user_is_project_owner:request.user.profile %}#}
+                <a href="{% url 'project:my_data_ground_truth' project.pk %}" class="btn btn-secondary">Set my data's
+                  ground truth</a>
+{#              {% endif %}#}
+              {% if request.user.is_superuser %}
+                <a href="{% url 'admin:project_dataview_change' current_view.pk %}" class="btn btn-icon"><i
+                  class="ti ti-settings"></i></a>
+              {% endif %}
+              <a href="{% url 'project:download' project.pk %}" class="btn btn-secondary"><i
+                class="ti ti-download"></i> Download</a>
+              <a href="{% url 'project:create-share-query' project.pk %}" class="btn btn-primary"><i
+                class="ti ti-share"></i> Release</a>
+
+              <div class="dropdown">
+                <a href="#" data-bs-toggle="dropdown" class="btn btn-primary">
+                  <i class="ti ti-chevron-down"></i>
+                  Import data</a>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" onclick="openPopupQuery()" href="#">Query</a>
+                  <a class="dropdown-item" href="{% url 'project:import_data:csv' object.pk %}">File upload</a>
+                  <a class="dropdown-item" href="{% url 'project:import_data:exact' object.pk %}">Annotations (Exact)</a>
+                </div>
+              </div>
+              <div class="dropdown">
+                <a href="#" class="btn btn-icon btn-secondary" data-bs-toggle="dropdown"><i
+                  class="ti ti-dots-vertical"></i></a>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="{% url 'project:ground_truth:ground-truth-schema' object.pk %}">Ground
+                    Truth Schema</a>
+                  <a class="dropdown-item disabled" href="{% url 'project:send-to-annotater' object.pk %}">Send to
+                    annotater</a>
+                  <form method="post" action="{% url 'project:export' object.pk %}">
+                    {% csrf_token %}
+                    <button class="btn btn-link dropdown-item" type="submit">Export as CSV</button>
+                  </form>
+                  {#                  <a class="dropdown-item disabled" href="">Export as CSV</a>#}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-10">
+            <div class="card">
+              <div class="card-body">
+                <div class="tab-content">
+                  <table id="table" class="table compact table-bordered table-hover table-sm" style="width:100%">
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Challenges</h3></div>
+              <div class="card-body">
+                <ul>
+                  {#                TODO #}
+                  {% for c in challenges %}
+                    {% if c.i_am_host %}
+                      <li><a href="{% url 'challenge:detail' c.pk %}">{{ c.name }}</a></li>
+                    {% else %}
+                      <li><a href="{% url 'challenge_client:challenge-detail' c.pk %}">{{ c.name }}</a></li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+  {% include 'includes/datatables-js.html' %}
+  {{ current_view.datatable_config|json_script:"datatable-config" }}
+  <script>
+    let table =
+      $(document).ready(function () {
+        let opts = JSON.parse(document.getElementById('datatable-config').textContent);
+        console.log({{ current_view.datatable_config|safe }})
+        const columns = {{ current_view.datatable_config|safe }}
+        {#[{#}
+        {#  "data": "name",#}
+        {#  "title": "Name",#}
+        {#  render: (data, type, row, meta) => {#}
+        {#    console.log(row)#}
+        {#    if (row.imported) {#}
+        {#      return `<strong><a href="${row.href}">${data}</a></strong>`#}
+        {#    }#}
+        {#    return data;#}
+        {#  }#}
+        {# },#}
+        {#  {#}
+        {#    "data": "date_created",#}
+        {#    "title": "Created at",#}
+        {#    render: DataTable.render.datetime()#}
+        {#  },#}
+        {#  {#}
+        {#    "data": "origin.human_readable",#}
+        {#    name: 'origin__human_readable',#}
+        {#    "title": "Origin"#}
+        {#  },#}
+        {#  {#}
+        {#    data: 'case',#}
+        {#    title: 'Case'#}
+        {#  },#}
+        {#  {data: 'terms', title: 'Terms'},#}
+        {#  {data: 'studies', title: 'Local Cohort'}#}
+        {#  {#}
+        {#    "data": "imported",#}
+        {#    "title": "Imported"#}
+        {#   }#}
+        {#]#}
+
+
+        table = dataTable('#table', '{{current_view.get_base_url}}?project={{ object.id }}&view={{ current_view.id }}', {
+          columns: columns,
+          buttons: ['colvis',
+            {#  {#}
+            {#  text: 'Share',#}
+            {#  className: 'btn btn-light',#}
+            {#  action: function (e, dt, node, config) {#}
+            {#    let t = dt.rows({selected: true}).data();#}
+            {#    const ids = []#}
+            {#    t.each(d => {#}
+            {#      ids.push(d.id)#}
+            {#    });#}
+            {#    if (ids.length === 0) {#}
+            {#      alert('Select cases first.')#}
+            {#      return#}
+            {#    }#}
+            {#    location.href = `{% url 'project:create-share-query' object.pk %}?ids=${ids.join(",")}`#}
+            {#  }#}
+            {# }#}
+          ],
+          pageLength: 10,
+        });
+
+        {{ view.js|safe }}
+
+        {#function format(d) {#}
+        {##}
+        {#  let rows = '';#}
+        {#  for (let row of d.files) {#}
+        {#    rows += `<tr><td>${row.name}</td><td>${JSON.stringify(row.annotations)}</td></tr>`;#}
+        {#  }#}
+        {#  return (#}
+        {#    `#}
+        {#              <table class="table">#}
+        {#              ${rows}</table>#}
+        {#              `#}
+        {#  )#}
+        {# }#}
+
+        {#$('#table tbody').on('click', 'td.dt-control', function () {#}
+        {#  var tr = $(this).closest('tr');#}
+        {#  var row = table.row(tr);#}
+        {##}
+        {#  if (row.child.isShown()) {#}
+        {#    // This row is already open - close it#}
+        {#    row.child.hide();#}
+        {#    tr.removeClass('shown');#}
+        {#  } else {#}
+        {#    // Open this row#}
+        {#    row.child(format(row.data())).show();#}
+        {#    tr.addClass('shown');#}
+        {#  }#}
+        {# });#}
+
+
+      })
+
+
+    function openPopupQuery() {
+      const params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=800,height=500`;
+      const w = window.open(`{% url 'project:import_data:add-data' project.id %}`, 'sub', params);
+      w.onbeforeunload = () => location.reload()
+    }
+
+
+    $('#table').on('change', 'input[type="checkbox"]', () => {
+      console.log(table.column(0))
+    });
+
+  </script>
+{% endblock %}

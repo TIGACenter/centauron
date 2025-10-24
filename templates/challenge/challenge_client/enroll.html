@@ -1,0 +1,36 @@
+{% extends 'challenge/challenge_client/base.html' %}
+{% block navbar %}
+{% endblock %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Enroll to <em>{{ challenge.name }}</em>
+            </h2>
+          </div>
+          <div class="col-auto ms-auto d-print-none">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <form action="{% url 'challenge_client:challenge-enroll' challenge.pk %}" method="post">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-primary">Enroll now</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

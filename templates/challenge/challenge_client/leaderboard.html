@@ -1,0 +1,61 @@
+{% extends 'challenge/challenge_client/detail.html' %}
+{% load core_tags %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Leaderboard {% if last_modified %}(Last modified: {{ last_modified|date:'DATETIME_FORMAT' }}){% endif %}
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <table class="table table-striped">
+                <tr>
+                  <th class="w-1">#</th>
+                  <th>Submission</th>
+                  <th>Author</th>
+                  {% for tm in target_metrics %}
+                    <th>{{ tm.key }}
+                      {% if tm in sort_criterion %}
+                        {% if tm.sort == 'desc' %}
+                          <i class="ti ti-arrow-narrow-down"></i>
+                        {% else %}
+                          <i class="ti ti-arrow-narrow-up"></i>
+                        {% endif %}
+                      {% endif %}
+                    </th>
+                  {% endfor %}
+                </tr>
+                {% for e in entries %}
+                  <tr>
+                    <td>{{ e.position|add:1 }}.</td>
+                    <td>{{ e.submission.name }}</td>
+                    <td>{{ e.submission.submitter }}</td>
+                    {% for tm in target_metrics %}
+                      <td>{% call_method e 'get_target_metric_value' tm.key %}</td>
+                    {% endfor %}
+                  </tr>
+                {% endfor %}
+              </table>
+              {% if entries.count == 0 %}
+                <div class="m-2">
+                  No entries found.
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

@@ -1,0 +1,55 @@
+{% extends 'challenge/base_detail.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+
+
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Create a new computing pipeline
+            </h2>
+          </div>
+          <div class="col-auto">
+            <div class="btn-list">
+              <a href="{% static 'templates/template-challenge-pipeline.yml' %}"
+                 class="btn btn-primary d-none d-sm-inline-block"><i class="ti ti-download"></i>Template</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="card">
+          <div class="card-body">
+            <div id="table-default" class="table-responsive">
+              {% crispy form %}
+            </div>
+          </div>
+        </div>
+        <div class="card mt-2">
+          <div class="card-header">
+            <h3 class="card-title">Current pipeline definition</h3>
+          </div>
+          <div class="card-body">
+            <button type="button" class="btn btn-primary mb-2" id="copyYaml">Copy</button>
+            <code class="language-yaml">
+              <pre>{{ challenge.pipeline_yml }}</pre>
+            </code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelector('#copyYaml').addEventListener('click', function (e) {
+      const text = `{{ challenge.pipeline_yml|safe }}`
+      navigator.clipboard.writeText(text).then()
+    });
+  </script>
+{% endblock %}

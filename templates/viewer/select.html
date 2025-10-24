@@ -1,0 +1,36 @@
+{% extends 'viewer/base_viewer.html' %}
+{% load viewer_tags %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Select file viewer for content type "{{ object.content_type }}"
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <ul>
+                  {% for vm in viewers %}
+                    <li><a class="btn btn-primary" href="{% viewer_url object vm %}">{{ vm }}</a></li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}

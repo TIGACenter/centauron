@@ -1,0 +1,13 @@
+{% if job.is_success %}
+  <i class="ti ti-circle-check text-green"></i>
+{% elif job.is_pending %}
+  <i class="ti ti-hourglass-empty text-yellow"></i>
+{% elif job.is_running %}
+  <i class="ti ti-run text-blue"></i>
+{% elif job.is_preparing %}
+  <i class="ti ti-hammer text-blue"></i>
+{% elif job.is_failed %}
+  <i class="ti ti-bug text-red"></i>
+{% else %}
+  {{ job.status }}
+{% endif %}

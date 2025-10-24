@@ -1,0 +1,366 @@
+name
+AAT
+ACT
+AFP (H)
+Aktin
+ALK1 (H)
+Amyloid A (H)
+Androgenrezeptor (L)
+ATRX
+BAP1
+b-Catenin
+BCL2
+BCL6
+Ber-Ep4
+bHCG
+Brachyury
+Ca19-9 (H)
+Ca125 (H)
+Calcitonin
+Caldesmon
+Calreticulin (L)
+Calretinin
+CD1a
+CD3
+CD3 (KM)
+CD4
+CD5
+CD7
+CD8
+CD10
+CD14 (L)
+CD15
+CD19
+CD20
+CD20 (KM)
+CD21
+CD23
+CD25
+CD30
+CD30 (KM)
+CD31
+CD33 (L)
+CD34
+CD34 (KM)
+CD45
+CD56
+CD56 (KM)
+CD57
+CD61
+CD68
+CD79a
+CD99
+CD103
+CD117
+CD123 (L)
+CD138
+CD138 (KM)
+CDX2
+CEA
+Chromogranin
+CK5/6
+CK5/14
+CK7
+CK8/18
+CK19
+CK20
+CK81
+Claudin
+Claudin 18
+CMV
+c-MYC
+Cyclin D1
+D2-40
+DAXX
+DBA44 (H)
+Desmin
+DIF C3C 1/80
+DIF Fibrinogen 1/40
+DIF IgA 1/10
+DIF IgG 1/80
+DIF IgM 1/20
+DIF Rabbit-a-Mouse 1/50
+DOG-1
+EBV
+E-Cadherin
+EGFR
+EMA
+ER
+ERG (H)
+EZH2
+FE (Immun)
+Gastrin (H)
+GATA3
+GATA6
+GFAP (H)
+Glucagon
+GLUT1 (H)
+Glutamin-Synthetase
+Glycophorin
+Glypican-3
+GranzymB
+GS
+H3K27
+HBsAG
+HE (Immun)
+HE Stufen (Immun)
+Hepatocyte
+Her-2
+HHV8
+HLADR
+HMB-45
+HNF1A
+HSP 70
+HSV1
+IgA
+IgD
+IgG (H)
+IgG4 (H)
+IgM
+IgM (KM)
+Inhibin
+INI1 (H)
+Insulin
+Kappa (L)
+Keratin
+Ki67
+Lambda (L)
+Leerschnitte kommen aus MolPatho
+Leerschnitte kommen aus Routine!
+Leerschnitt-IHC
+Lysozym
+Markiertes HE mit in MolPath
+M-CSF
+MCT
+MCT (KM)
+MDM2
+MelanA
+MLH-1
+MPO
+MPO (KM)
+MSH-2
+MSH-6
+MUC 4
+MUC2
+MUM1
+Myogenin
+N-C1q
+N-C3c
+N-C4d
+N-IgA
+N-IgG
+N-IgM
+N-Kappa
+N-Lambda
+NSE
+n-SV40
+NTRK (H)
+NUT
+Oct-2
+OCT3/4
+P16
+P40
+P53 (H)
+P57
+p63
+P504s
+PAS (Immun)
+Pax5
+PAX-8
+PD1 (H)
+Perforin
+PHH3 (L)
+PLA2R1 1/1000
+PLAP
+PMS2 (H)
+Positiv RNA
+PR
+PRAME
+PSA
+PSMA
+PSP (H)
+p-Stat3
+RB1 (L)
+S100
+SALL 4
+SATB2
+SDHB
+Serotonin (L)
+SOX-2
+SOX-10
+SOX-11
+SSTR2A (H)
+STAT6 (H)
+SV40
+Synapto
+T. Pallidum
+TCRa/b
+TCRgamma
+TdT (H)
+TFE3 (L)
+TFF3
+Thrombomodulin (L)
+THSD7A
+Thyroglobulin
+TIA (ProtK)
+TLE1 (H)
+TTF-1
+Vimentin
+WT-1 (H)
+SOX-9
+EBER
+PD-L1 PharmDX
+FoxA2
+NKX3.1
+P504s_p63 Cocktail
+Fibronectin
+SMARCA4
+SF-1
+ASS
+SATB1
+CD11c
+BCOR
+PTEN
+FH
+NKX2.2
+Acetonkompression
+Entkalkung (Ameisen-S.)
+Entkalkung (EDTA)
+Giemsa (LK)
+Alcian
+CAE
+Elastica van Gieson
+Elektronenmikroskopie
+Fe
+Giemsa
+Goldner
+Gram
+HE
+HE-Elastica
+HE-SS
+HE-SS-Stufen
+HE-Stufen
+HP
+Jones_HE
+Leerschnitt-R
+MG
+PAS
+Rhodanin
+SCAN-Fremd
+Semidünnschnitt
+UE CAE
+AFB (ZN)
+Gomorri
+Grocott (GMS)
+Jones B Green
+Kongo
+Massons (MG)
+Warthin Starry (WS)
+May Grünwald Giemsa
+Papanicolaou
+Pappenheim
+Z-Alcian
+Zellblock
+Z-Fe
+Z-Sudan
+Zytospin
+1p_19q Del
+"ALK,RET,ROS1,MET Ex14, NTRK1-2-3"
+ALK-FISH
+Archer CTL Panel
+Archer Lymphoma
+Archer Myeloid
+Archer Sacoma Fusion Panel
+Archer Salivary Gland
+Archer Solid Tumor
+AXL-FISH
+BCL2-FISH
+BCL6-FISH
+BCR/ABL Fus.
+BRAF_Mut
+BRCA1/2 NGS
+CCDN1-FISH
+CDK4/CEN12-FISH
+CDKN2A-FISH
+CIC-DUX FISH
+cMYC Amp
+cMYC-Transl.
+CTNNB1_Mut
+DDIT3 (CHOP)
+DNA Extr. Versand
+DNA Extraktion
+EGFR_Mut
+ERBB2/Cen17
+ETV6-FISH
+EWSR1-FISH
+FGFR1/Cen8 Amp
+FGFR1-FISH
+FGFR2 Amp
+FGFR2 Transl.
+FGFR3 Amp
+FGFR3_Mut
+FGFR3-FISH
+FIP1L1/PDGFRA
+FOXO-FISH
+FUS-FISH
+GNA11 (Ex. 5)
+GNAQ (Ex. 5)
+HE (MolPath)
+HPV-Typ.
+IDH1/2
+IGH-FISH
+JAK2_Mut
+JAZF1-FISH
+JH (B-Zell-Klon.)
+KIF5B-FISH
+KIT_Mut
+KRAS Amp.
+KRAS_Mut
+Liquid Biopsy (EGFR 790M/Primärmut.)
+MALT-1-FISH
+MAML2-FISH
+MDM2-FISH
+MET/Cen7-FISH
+MET_Mut
+MGMT
+MLH1 Meth.
+MSI
+MyD88
+Mykos
+NGS Basis
+NGS HiGHmed
+NGS HRD
+NGS LUNG
+NGS TERT
+NGS TNET Panel
+NGS-MTB-TSO
+NR4A3-FISH
+NRAS_Mut
+NRG1-FISH
+NTRK1-3 qPCR
+NTRK1-FISH
+PAX3-FISH
+PAX7-FISH
+PDGFB-FISH
+PDGFRA_Mut
+PIK3CA_Mut
+RB1-Del
+RET-FISH
+RNA Extraktion
+ROS1-FISH
+SS18 (SYT)
+TCR (T-Zell-Klon.)
+TFE3-FISH
+TMPRSS2-ERG
+UroVysion CEP
+USP6-FISH
+VHL-Del
+WT1-FISH
+WWTR1-FISH
+YWHAE-FISH
+NTRK2-FISH
+NTRK3-FISH
+NGS-HiGHmed AOK-Selektiv
+NGS-MTB-TSO-AOK: selektiv
+NGS-HiGHmed Panel ASV
+NGS-MTB-TSO-ASV

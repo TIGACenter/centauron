@@ -1,0 +1,45 @@
+{% extends 'project/base.html' %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              My projects
+            </h2>
+          </div>
+          <div class="col-auto">
+            <a href="{% url 'project:create' %}" class="btn btn-primary">New</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="card">
+          <div id="table-default" class="table-responsive">
+            <table class="table">
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>Origin</th>
+                <th>Created at</th>
+              </tr>
+              </thead>
+              <tbody class="table-tbody">
+              {% for p in projects %}
+                <tr>
+                  <td><a href="{% url 'project:detail' p.pk %}">{{ p.name }}</a></td>
+                  <td>{{ p.origin.human_readable }}</td>
+                  <td>{{ p.date_created }}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

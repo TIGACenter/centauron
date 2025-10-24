@@ -1,0 +1,28 @@
+{# a form is created outside of this file #}
+<!-- Modal -->
+<div class="modal fade" id="model-select-data-owner" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Select data owner</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <div>        <label for="exampleFormControlInput1" class="form-label">New data owner</label>
+        <select name="data_owner" class="form-select">
+            {% for p in users %}
+                <option value="{{ p.pk }}">{{ p.user.username }}</option>
+            {% endfor %}
+        </select>
+      </div>
+      <div>
+        Transferring the data ownership is recursive for data entities that are folders!
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" name="set_data_ownership">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

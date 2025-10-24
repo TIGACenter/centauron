@@ -1,0 +1,123 @@
+{% extends 'challenge/base_detail.html' %}
+{% block stylesheet %}
+  {% include 'includes/datatables-css.html' %}
+{% endblock %}
+{% block page-heading %}{{ object.name }}{% endblock %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        {% block detail_header %}
+          <div class="row g-2 align-items-center">
+            <div class="col">
+              <h2 class="page-title">
+                Datasets
+              </h2>
+            </div>
+            <div class="col-auto ms-auto d-print-none">
+            <a href="{% url 'challenge:update' object.id %}" class="btn btn-secondary d-none d-sm-inline-block">
+                  <i class="ti ti-pencil"></i> Edit
+                </a>
+              {% block card-actions %}
+                <a href="#" class="btn btn-primary d-none d-sm-inline-block">
+                  <i class="ti ti-plus"></i> New
+                </a>
+              {% endblock %}
+            </div>
+          </div>
+        {% endblock %}
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-9">
+            <div class="card">
+              {#              <div class="card-header">#}
+              {#                <ul class="nav nav-tabs card-header-tabs">#}
+              {#                  <li class="nav-item">#}
+              {#                    <a class="nav-link {% if tab == 'datasets' %}active{% endif %}"#}
+              {#                       href="{% url 'challenge:challenge_dataset:list' object.pk %}">#}
+              {#                      <i class="ti ti-database"></i>#}
+              {#                      Datasets</a>#}
+              {#                  </li>#}
+              {#                  <li class="nav-item">#}
+              {#                    <a class="nav-link  {% if tab == 'submissions' %}active{% endif %}"#}
+              {#                       href="{% url 'challenge:challenge_submission:list' object.pk %}"><i class="ti ti-mail"></i>#}
+              {#                      Submissions</a>#}
+              {#                  </li>#}
+              {#                  <li class="nav-item">#}
+              {#                    <a class="nav-link"#}
+              {#                       href="#"><i class="ti ti-military-rank"></i> Leaderboard</a>#}
+              {#                  </li>#}
+              {#                </ul>#}
+              {#                <div class="card-actions">#}
+              {#                  {% block card-actions %}{% endblock %}#}
+              {#                </div>#}
+              {#              </div>#}
+              <div class="card-body">
+                <div class="tab-content">
+                  <div class="tab-pane active show">
+                    <table id="table" class="table table-hover table-sm table-bordered"
+                           style="width:100%"></table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="card">
+              <div class="card-body">
+                {% if object %}
+                  <a href="{% url 'project:detail' object.project_id %}">
+                    <i class="ti ti-door-exit"></i> Project</a>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="card mt-3">
+              <div class="card-body">
+                <div>
+                  <a href="{% url 'challenge:publish' object.id %}" class="btn btn-primary">Publish</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="card mt-3">
+              <div class="card-body">
+                <div>
+                  <a href="{% url 'challenge:pipeline-create' object.id %}" class="btn btn-primary">Create pipeline</a>
+                </div>
+              </div>
+            </div>
+
+          <div class="card mt-3">
+              <div class="card-body">
+                <div>
+                  <a href="{% url 'challenge:evaluation-code' object.id %}" class="btn btn-primary">Evaluation Code</a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+  {% include 'includes/datatables-js.html' %}
+  <script>
+    $(document).ready(function () {
+      let columns = [
+        {className: 'select-checkbox'},
+        {data: 'name', title: 'Name'},
+        {data: 'date_created', title: 'Created at'},
+      ];
+      dataTable('#table', '{% url 'challenge:datatable-challenge-list-list' %}', {
+        columns
+      });
+    });
+  </script>
+{% endblock %}

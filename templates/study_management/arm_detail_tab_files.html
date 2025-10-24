@@ -1,0 +1,122 @@
+{% extends 'study_management/arm_detail_tab_base.html' %}
+{% block table-top %}
+  <div class="mb-2">
+    <form method="post" action="{% url 'study_management:table-action' study.pk arm.pk %}" id="formTableAction">
+      {% csrf_token %}
+      <button class="btn btn-danger disabled" type="submit" name="remove_files" id="deleteFiles">Remove files</button>
+      <button class="btn btn-danger disabled" type="submit" name="delete_metadata" id="deleteMetadata">Delete metadata</button>
+    </form>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+  {% include 'includes/datatables-js.html' %}
+  <script>
+
+    function formatUrlToCase(caseId) {
+      let url = '{% url 'study_management:add-file-to-case' study.pk arm.pk '00000000-0000-0000-0000-000000000000' %}';
+      return url.replace('00000000-0000-0000-0000-000000000000', caseId)
+    }
+
+    function select(nodes) {
+      document.querySelector('#deleteFiles').classList.remove('disabled');
+      document.querySelector('#deleteMetadata').classList.remove('disabled');
+    }
+
+    function deselect(nodes) {
+      if (window.DT_SELECTED_ROWS.length === 0) {
+        document.querySelector('#deleteFiles').classList.add('disabled');
+        document.querySelector('#deleteMetadata').classList.add('disabled');
+      }
+    }
+
+
+    $(document).ready(function () {
+      let columns = [
+        {
+          orderable: false,
+          render: DataTable.render.select(),
+          targets: 0
+        },
+        {#{#}
+        {#  className: 'dt-control',#}
+        {#  orderable: false,#}
+        {#  data: null,#}
+        {#  defaultContent: '',#}
+        {# },#}
+        {
+          data: 'name', title: 'Name', render: (data, type, row, meta) => {
+            {#console.log(row)#}
+            if (row.imported) {
+              return `<strong><a href="${row.href}">${data}</a></strong>`
+            }
+            return data;
+          }
+        },
+        {data: 'codes', title: 'Codes'},
+        {
+          data: 'case', title: 'Case', render: (data, type, row, meta) => {
+            return `<a href="${formatUrlToCase(row.case_id)}">${data}</a>`
+          }
+        },
+        {data: 'origin', title: 'Origin'},
+        {data: 'identifier', title: 'Identifier'},
+        {data: 'imported', title: 'Imported'},
+      ];
+
+      dataTable('#table', '{% url 'study_management:study-arm-files-list' %}?study={{ study.pk }}&arm={{ arm.pk }}', {
+        columns,
+        {#fullRowLink: true,#}
+      }, select, deselect);
+
+      function format(d) {
+        return new Promise((resolve) => {
+          let csrftoken = getCookie('csrftoken')
+          if (csrftoken === null) {
+            csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+          }
+          // TODO ajax call to retrieve rendered table
+          let url = `{% url 'study_management:case-files' study.pk arm.pk %}?case=${d.id}`;
+
+          fetch(url, {method: 'post', headers: {'X-CSRFToken': csrftoken, 'Content-Type': 'text/html'}}).then(data => {
+            console.log(data)
+            data.then(data => {
+              console.log(data)
+              resolve(data);
+            })
+            /*data.json().then(data => {
+              let rows = '';
+              for (let row of data.results) {
+                console.log(row)
+                rows += `<tr><td>${row.name}</td><td>${row.origin}</td><td>${row.codes}</td></tr>`;
+              }
+              resolve(`<table class="table"><tr><th>Filename</th><th>Origin</th><th>Codes</th></tr>${rows}</table>`)
+            });*/
+          });
+        });
+      }
+
+      // Add event listener for opening and closing details
+      $('#table tbody').on('click', 'td.dt-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row(tr);
+        console.log(row)
+
+        if (row.child.isShown()) {
+          // This row is already open - close it
+          row.child.hide();
+          tr.removeClass('shown');
+        } else {
+          // Open this row
+
+          const d = format(row.data());
+          d.then(data => {
+            row.child(data).show();
+            tr.addClass('shown');
+          })
+        }
+      });
+    });
+  </script>
+{% endblock %}
+

@@ -1,0 +1,36 @@
+{% extends 'challenge/challenge_client/base.html' %}
+{% load crispy_forms_tags crispy_forms_filters %}
+{% block content %}
+
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Register
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="mb-5">
+                  Fill out the form below. You will receive an email with a link to set your password. Check your SPAM folder
+                  if you don't receive anything within 15 minutes.
+                </div>
+                {% crispy form %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

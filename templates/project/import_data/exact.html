@@ -1,0 +1,47 @@
+{% extends '../base_detail.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Import annotations from Exact{% endblock %}
+{% block css %}
+{% endblock %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Import annotations from Exact
+            </h2>
+          </div>
+          <div class="col-auto">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="card">
+          <div class="card-body">
+            <div>
+              In order to import your annotations from Exact into Centauron, make sure to use the following export
+              format in Exact. All annotations will be assigned to user <code>{{ request.user.profile.human_readable }}</code>.
+              <h3>Base Format</h3>
+              <pre>%%content</pre>
+              <h3>Annotation format</h3>
+              <pre>{"type": "Feature","properties": {"file": "%%imagename", "id":"%%UUID", "author": "%%first_editor", "created_at": "%%first_timepoint", "annotation_type": "%%type", "metadata": %%meta_data},"geometry": {"coordinates": [[%%vector]],"type": "Polygon"}}</pre>
+              <h3>Vector format</h3>
+                <pre>[%%x,%%y],</pre>
+                <h3>Not in image format</h3>
+                <pre>image name|annotation type|not in image</pre>
+            </div>
+            {% crispy form %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+{% block javascript %}
+{% endblock %}

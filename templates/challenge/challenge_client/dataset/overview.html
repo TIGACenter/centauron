@@ -1,0 +1,39 @@
+{% extends 'challenge/challenge_client/detail.html' %}
+{% load core_tags %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Datasets Overview
+            </h2>
+          </div>
+          <div class="col-auto ms-auto d-print-none">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                Available datasets:
+                <ul>
+                  {% for d in datasets %}
+                    <li><a href="{% url 'challenge_client:challenge-datasets-detail' challenge.pk d.pk %}">{{ d.name }}</a></li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+

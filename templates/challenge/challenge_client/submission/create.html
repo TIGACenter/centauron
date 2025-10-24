@@ -1,0 +1,55 @@
+{% extends 'challenge/challenge_client/detail.html' %}
+{% load core_tags %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <h2 class="page-title">
+              Create a submission
+            </h2>
+          </div>
+          <div class="col-auto ms-auto d-print-none">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="mb-5">
+                  <ul>
+                    <li>Within your docker container input data is located at <code>/data.csv</code></li>
+                    <li>This CSV file has the columns: <code>original_filename;path;terms;origin</code></li>
+                    <li>Files can be read from directory <code>/input/</code>. Prefix any path given in column
+                      <code>path</code> by <code>/input/</code>.
+                    </li>
+                    <li>Any output files must be placed in directory <code>/output/</code>.</li>
+                    <li>Ask your challenge conductor which output files are required in order to correctly evaluate your
+                      submission.
+                    </li>
+                    <li>Make sure your container is not using any of <code>/data.csv</code>, <code>/input/</code>,
+                      <code>/output/</code> as they will be used to mount volumes.
+                    </li>
+                    <li>Push your docker image to the registry provided by your challenge conductor or they can not be
+                      used for evaluation.
+                    </li>
+                  </ul>
+                </div>
+
+                {% crispy form %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+

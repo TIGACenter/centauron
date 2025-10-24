@@ -1,0 +1,124 @@
+{% extends 'blockchain/base.html' %}
+{% load blockchain_tags core_tags %}
+{% block title %}Blockchain Explorer{% endblock %}
+{% block content %}
+  <div class="page-wrapper">
+  {#    <div class="page-header d-print-none">#}
+  {#      <div class="container-xl">#}
+  {#        <div class="row g-2 align-items-center">#}
+  {#          <div class="col">#}
+  {#            <h2 class="page-title">#}
+  {#            </h2>#}
+  {#          </div>#}
+  {#          <div class="col-auto ms-auto d-print-none">#}
+  {#            <div class="btn-list">#}
+  {#            </div>#}
+  {#          </div>#}
+  {#        </div>#}
+  {#      </div>#}
+  {#    </div>#}
+  <div class="page-body">
+    <div class="container-xl">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="tab-content">
+                <div class="tab-pane active show">
+                  <div class="d-flex flex-row">
+                    <div class="flex-grow-1">
+                      {% if request.user.is_authenticated %}
+                        <div class="form-control-checkbox">
+                          <form method="get" action="">
+                            <input type="checkbox" id="only-me" name="only-me" value="true"
+                                   onchange="this.form.submit()">
+                            <label for="only-me">Only show me</label>
+                          </form>
+                        </div>
+                      {% endif %}
+                    </div>
+                    <div class="">
+                      <a
+                        href="{% if page_obj.has_previous %}?page={{ page_obj.previous_page_number }}
+                              {% else %}#{% endif %}"
+                        class="btn btn-primary {% if not page_obj.has_previous %}disabled{% endif %}"><i
+                        class="ti ti-arrow-left"></i></a>
+                      <a href="{% if page_obj.has_next %}?page={{ page_obj.next_page_number }}{% else %}#{% endif %}"
+                         class="btn btn-primary {% if not page_obj.has_next %}disabled{% endif %}"><i
+                        class="ti ti-arrow-right"></i></a>
+                    </div>
+                  </div>
+                  <div class="list-group list-group-flush list-group-hoverable accordion">
+                    {% for object in object_list %}
+                      <div class="list-group-item accordion-item">
+                        <div class="row align-items-center accordion-header" data-bs-toggle="collapse"
+                             data-bs-target="#detail{{ object.pk }}">
+                          <div class="col text-truncate">
+                            <div class="d-block"><strong>{{ object.event_date|date:'SHORT_DATETIME_FORMAT' }}</strong>
+                            </div>
+                            <div class="d-block mt-n1">
+                              {{ object.to_human_readable|safe }}
+                            </div>
+                          </div>
+                          <div class="col-auto">
+                            Block: {{ object.block_number }}
+                          </div>
+                        </div>
+                        <div class="accordion-collapse collapse" id="detail{{ object.pk }}">
+                          <div class="accordion-body">
+                            <div class="datagrid">
+                              <div class="datagrid-item">
+                                <div class="datagrid-title">Message Type</div>
+                                <div class="datagrid-content">Broadcast</div>
+{#                                always broadcast for now #}
+                              </div>
+{#                              <div class="datagrid-item">#}
+{#                                <div class="datagrid-title">Message Hash</div>#}
+{#                                <div class="datagrid-content">{{ object.event_id }}</div>#}
+{#                              </div>#}
+                              <div class="datagrid-item">
+                                <div class="datagrid-title">Block</div>
+                                <div class="datagrid-content">{{ object.block_number }}</div>
+                              </div>
+                              <div class="datagrid-item" data-bs-toggle="collapse"
+                                   data-bs-target="#detail_raw{{ object.pk }}">
+                                <div class="datagrid-title">Block Hash
+                                </div>
+                                <div class="datagrid-content">{{ object.event_id }}</div>
+                              </div>
+                            </div>
+                          </div>
+                          {% if request.user.is_superuser %}
+                            <div class="accordion-collapse collapse " id="detail_raw{{ object.pk }}">
+                              <pre class="overflow-x-scroll">{{ object.message_as_json_string }}</pre>
+                              <pre class="overflow-x-scroll">{{ object.event_as_json_string }}</pre>
+                            </div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    {% endfor %}
+                  </div>
+                  <div style="text-align: right">
+                    <a href="{% if page_obj.has_previous %}?page={{ page_obj.previous_page_number }}
+                          {% else %}#{% endif %}"
+                       class="btn btn-primary {% if not page_obj.has_previous %}disabled{% endif %}"><i
+                      class="ti ti-arrow-left"></i></a>
+                    <a href="{% if page_obj.has_next %}?page={{ page_obj.next_page_number }}{% else %}#{% endif %}"
+                       class="btn btn-primary {% if not page_obj.has_next %}disabled{% endif %}"><i
+                      class="ti ti-arrow-right"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const onlyMeVal = urlParams.get('only-me');
+    const checkbox = document.querySelector("input[name='only-me']")
+    checkbox.checked = onlyMeVal === 'true'
+  </script>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends '_base.html' %}
+{% block content %}
+    <div>
+        How to exchange codes and certificates:
+        <ol>
+            <li>Select the user for which you want to create <i>my code</i>. Check include csr (<strong>This is normally
+                your current user.</strong>)
+            </li>
+            <li>Send that code to the other node.</li>
+            <li>The other nodes does the same.</li>
+            <li>Import the code of the other node.</li>
+            <li>Click the cert button for the user below, copy the code and send it to the user.</li>
+            <li>Import the code for the certificate that the other node sent you.</li>
+            <li>Done.</li>
+        </ol>
+    </div>
+    <h2>My code</h2>
+    <form hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-post="{% url 'sharing:certificate' %}"
+          hx-swap="outerHTML">
+        <select name="profile">
+            {% for p in users %}
+                <option value="{{ p.id }}"
+                        {% if p.id == request.user.profile.id %}selected{% endif %}>{{ p.identifier }}</option>
+            {% endfor %}
+        </select>
+        <label for="csr">Include CSR</label>
+        <input type="checkbox" name="csr" id="csr" checked>
+        <input type="submit" value="Submit">
+        {#    <button class="btn btn-primary" hx-vals='{"csr":true}'#}
+        {#            hx-post="" hx-swap="outerHTML">My code with CSR#}
+        {#    </button>#}
+        {##}
+        {#    <button hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="btn btn-primary" hx-vals='{"csr":false}'#}
+        {#            hx-post="{% url 'sharing:certificate' %}" hx-swap="outerHTML">My code without CSR#}
+        {##}
+        {#    </button>#}
+    </form>
+
+
+    <h2>Certificates</h2>
+    <table class="table table-striped">
+        <tr>
+            <th>Issued by</th>
+            <th>Issued for</th>
+            <th></th>
+        </tr>
+
+
+        {% for cert in certificates %}
+            <tr>
+                <td>{{ cert.issued_by }}</td>
+                <td>{{ cert.issued_for }}</td>
+                <td>
+                    <button hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="btn btn-primary"
+                            hx-vals='{"profile":"{{ cert.issued_for_id }}", "issued_by": "{{ cert.issued_by_id }}"}'
+                            hx-post="{% url 'sharing:certificate-token' %}" hx-swap="outerHTML">Cert
+                    </button>
+                </td>
+
+            </tr>
+        {% endfor %}
+    </table>
+    </ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.8.6/htmx.min.js"
+            integrity="sha512-SqV24lSRcthd1Bg0Obg/W/qWhKdSsQPIV342MQd8qDeeY/gJt+2qmsLhutblQNDuUx0Xs2Jh7D8m+7S1b0wQyA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock %}
