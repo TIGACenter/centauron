@@ -1,5 +1,51 @@
 {% extends 'project/base.html' %}
-{% load crispy_forms_tags %}
+{% load crispy_forms_tags static %}
+{% block css %}
+  <style>
+    .htmx-indicator {
+      opacity: 0;
+      transition: opacity 500ms ease-in;
+    }
+
+    .htmx-request .htmx-indicator {
+      opacity: 1
+    }
+
+    .htmx-request.htmx-indicator {
+      opacity: 1
+    }
+
+    .autocomplete-suggestions {
+      border: 1px solid #999;
+      background: #FFF;
+      overflow: auto;
+    }
+
+    .autocomplete-suggestion {
+      padding: 2px 5px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .autocomplete-selected {
+      background: #F0F0F0;
+    }
+
+    .autocomplete-suggestions strong {
+      font-weight: normal;
+      color: #3399FF;
+    }
+
+    .autocomplete-group {
+      padding: 2px 5px;
+    }
+
+    .autocomplete-group strong {
+      display: block;
+      border-bottom: 1px solid #000;
+    }
+  </style>
+{% endblock %}
 {% block content %}
   <div class="page-wrapper">
     <div class="page-header d-print-none">
@@ -25,3 +71,69 @@
   </div>
 {% endblock %}
 
+{% block javascript %}
+  <script src="{% static 'js/jquery.autocomplete.min.js' %}"></script>
+  <script>
+    const form = document.querySelector('#formQuery');
+
+    const autoCompleteFields = [
+      ['#term-autocomplete-biomarkers', '#div_id_form-biomarkers_ids', 'biomarkers_ids'],
+      ['#term-autocomplete-tissue', '#div_id_form-tissue_ids', 'tissue_ids'],
+      ['#term-autocomplete-disease', '#div_id_form-disease_ids', 'disease_ids']
+    ]
+
+    for (let f of autoCompleteFields) {
+      const field = f[0];
+      const fieldId = f[1];
+      const fieldName = f[2];
+
+      $(field).autocomplete({
+        serviceUrl: '{% url 'terminology:api-search' %}',
+        minChars: 2,
+        onSelect: function (suggestion) {
+          const termIdHiddenField = document.createElement('input');
+          termIdHiddenField.type = 'hidden';
+          termIdHiddenField.value = suggestion.data;
+          termIdHiddenField.name = fieldName;
+          {#termIdHiddenField.id = 'id_form-1-term_ids_1';#}
+          form.appendChild(termIdHiddenField);
+
+          const badge = document.createElement('span');
+          badge.textContent = suggestion.value;
+          badge.dataset.termId = `parent-${suggestion.data}`
+          badge.classList.add('badge', 'text-bg-secondary');
+          const badge_icon = document.createElement('i');
+          badge_icon.classList.add('ti', 'ti-trash', 'btn-delete-code');
+          badge_icon.dataset.termId = suggestion.data;
+          badge_icon.dataset.fileId = '{{ form.file.id }}';
+          badge_icon.title = 'Remove term from query';
+          badge.appendChild(badge_icon);
+          badge_icon.addEventListener('click', e => deleteTermFromFile(e));
+          document.querySelector(fieldId).appendChild(badge);
+          document.querySelector(field).value = '';
+        }
+      });
+
+      const btnDeleteCode = document.querySelectorAll('.btn-delete-code');
+      for (const btn of btnDeleteCode) {
+        btn.addEventListener('click', e => deleteTermFromFile(e))
+      }
+
+      function deleteTermFromFile(e) {
+        if (e.target === undefined) {
+          return
+        }
+        const termId = e.target.dataset.termId;
+        for (const el of document.getElementsByName(`term_ids`)) {
+          if (el.value === termId) {
+            el.remove();
+          }
+        }
+        {# remove the badge itself #}
+        const i = document.querySelector(`span[data-term-id="parent-${termId}"]`)
+        i.remove();
+      }
+    }
+
+  </script>
+{% endblock %}

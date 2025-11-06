@@ -70,15 +70,58 @@ class DownloadDataForm(forms.Form):
 class CreateProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ['name', 'description']
+        fields = ['name', 'description', 'intended_use', 'population', 'biomarkers_autocomplete',
+            'biomarkers_ids',
+            'tissue_autocomplete',
+            'tissue_ids',
+            'disease_autocomplete',
+            'disease_ids',]
+
+    biomarkers_autocomplete = forms.CharField(required=False,
+                                        label='Biomarkers',
+                                        widget=forms.TextInput(attrs={'id': f'term-autocomplete-biomarkers',
+                                                                      'placeholder': 'Start typing'}), )
+    biomarkers_ids = forms.ModelMultipleChoiceField(queryset=Code.objects.all(),
+                                              required=False,
+                                              widget=forms.MultipleHiddenInput())
+
+    tissue_autocomplete = forms.CharField(required=False,
+                                        label='Tissues',
+                                        widget=forms.TextInput(attrs={'id': f'term-autocomplete-tissue',
+                                                                      'placeholder': 'Start typing'}), )
+    tissue_ids = forms.ModelMultipleChoiceField(queryset=Code.objects.all(),
+                                              required=False,
+                                              widget=forms.MultipleHiddenInput())
+
+    disease_autocomplete = forms.CharField(required=False,
+                                        label='Diseases',
+                                        widget=forms.TextInput(attrs={'id': f'term-autocomplete-disease',
+                                                                      'placeholder': 'Start typing'}), )
+    disease_ids = forms.ModelMultipleChoiceField(queryset=Code.objects.all(),
+                                              required=False,
+                                              widget=forms.MultipleHiddenInput())
+
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         self.helper = FormHelper()
+        self.helper.form_id = 'formQuery'
         self.helper.layout = Layout(
             'name',
             'description',
+            'intended_use',
+            'population',
+            'biomarkers_autocomplete',
+            'biomarkers_ids',
+            Div(css_id='div_id_form-biomarkers_ids'),
+            'tissue_autocomplete',
+            'tissue_ids',
+            Div(css_id='div_id_form-tissue_ids'),
+            'disease_autocomplete',
+            'disease_ids',
+            Div(css_id='div_id_form-disease_ids'),
+
             Submit('submit', 'Submit')
         )
 

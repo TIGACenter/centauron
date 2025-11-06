@@ -802,7 +802,23 @@ class CreateProjectView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         profile = self.request.user.profile
-        self.object = form.save(**dict(created_by=profile))
+        data = form.cleaned_data
+
+        form_data = dict(created_by=profile)
+
+        biomarkers_ids = data['biomarkers_ids'].values_list('pk', flat=True)
+        if biomarkers_ids.count() > 0:
+            form_data['biomarkers'] = Code.objects.filter(pk__in=biomarkers_ids)
+
+        tissue_ids = data['tissue_ids'].values_list('pk', flat=True)
+        if tissue_ids.count() > 0:
+            form_data['tissue_ids'] = Code.objects.filter(pk__in=tissue_ids)
+
+        disease_ids = data['disease_ids'].values_list('pk', flat=True)
+        if disease_ids.count() > 0:
+            form_data['disease_ids'] = Code.objects.filter(pk__in=disease_ids)
+
+        self.object = form.save(**form_data)
         self.object.add_member(profile)
         self.object.broadcast_create_message()
         return super().form_valid(form)

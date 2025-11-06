@@ -27,6 +27,13 @@ class Project(CreatedByMixin, OriginMixin, IdentifieableMixin, Base):
 
     extra_data = models.ManyToManyField('extra_data.ExtraData', blank=True, related_name='projects', through='ProjectExtraData')
 
+    # the following fields are used for
+    intended_use = models.TextField(blank=True, null=True) # unstructured free text for now
+    population = models.TextField(blank=True, null=True) # unstructured free text for now
+    biomarkers = models.ManyToManyField('terminology.Code', blank=True, related_name='project_biomarkers')
+    tissue = models.ManyToManyField('terminology.Code', blank=True, related_name='project_tissue')
+    disease = models.ManyToManyField('terminology.Code', blank=True, related_name='project_disease')
+
     def __str__(self):
         return self.name
 
