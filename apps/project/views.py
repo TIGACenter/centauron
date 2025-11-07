@@ -812,13 +812,17 @@ class CreateProjectView(LoginRequiredMixin, FormView):
 
         tissue_ids = data['tissue_ids'].values_list('pk', flat=True)
         if tissue_ids.count() > 0:
-            form_data['tissue_ids'] = Code.objects.filter(pk__in=tissue_ids)
+            form_data['tissue'] = Code.objects.filter(pk__in=tissue_ids)
 
         disease_ids = data['disease_ids'].values_list('pk', flat=True)
         if disease_ids.count() > 0:
-            form_data['disease_ids'] = Code.objects.filter(pk__in=disease_ids)
+            form_data['disease'] = Code.objects.filter(pk__in=disease_ids)
 
         self.object = form.save(**form_data)
+        self.object.biomarkers.set(form_data['biomarkers'])
+        self.object.tissue.set(form_data['tissue'])
+        self.object.disease.set(form_data['disease'])
+
         self.object.add_member(profile)
         self.object.broadcast_create_message()
         return super().form_valid(form)
@@ -910,3 +914,19 @@ class ExportAsCSVView(LoginRequiredMixin, ProjectContextMixin, View):
             headers={
                 "Content-Disposition": f'attachment; filename="{dst}"'},
         )
+
+
+class CreateWebsiteView(LoginRequiredMixin, ProjectContextMixin, TemplateView):
+    template_name = 'project/website/create.html'
+
+class CreateWebsitePreviewView(LoginRequiredMixin, ProjectContextMixin, TemplateView):
+    template_name = 'project/website/preview.html'
+
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        ctx = super().get_context_data(**kwargs)
+
+
+
+
+        return ctx

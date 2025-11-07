@@ -8,6 +8,7 @@ from apps.project.models import Project, DataView, ProjectMembership, FilePermis
 class ProjectAdmin(admin.ModelAdmin):
     exclude = ('files',)
     list_display = ('pk', 'name', 'codeset', 'origin', 'date_created')
+    ordering = ('-date_created',)
 
     def get_form(self, request, obj, *args, **kwargs):
         form = super().get_form(request, obj, *args, **kwargs)

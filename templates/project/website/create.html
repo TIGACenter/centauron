@@ -1,0 +1,36 @@
+{% extends 'project/base_detail.html' %}
+
+
+{% block content %}
+
+  <div class="page-wrapper">
+  <div class="page-header d-print-none">
+    <div class="container-xl">
+      <div class="row g-2 align-items-center">
+        <div class="col">
+          <h2 class="page-title">
+            Website Builder
+          </h2>
+        </div>
+        <div class="col-auto ms-auto d-print-none">
+          {#            <div class="btn-list">#}
+          {#            </div>#}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="container-xl">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <a href="{% url 'project:website-preview' project.pk %}" target="_blank" class="btn btn-primary">Show preview</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

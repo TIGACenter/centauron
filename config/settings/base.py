@@ -108,6 +108,7 @@ LOCAL_APPS = [
     "apps.project",
     "apps.project.project_case",
     "apps.project.project_ground_truth",
+    "apps.project.website",
     "apps.share",
     "apps.share.share_token",
     "apps.storage",

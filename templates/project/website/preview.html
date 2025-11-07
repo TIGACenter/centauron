@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Histo-Data | Contribute Your WSI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Apply the font from the example */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-200">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-gray-900">
+              {{ project.name }}
+{#                <span class="text-blue-600">Project</span> Histo-Data#}
+            </div>
+
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#why-contribute" class="text-gray-600 hover:text-blue-600">Why Contribute?</a>
+                <a href="#projects" class="text-gray-600 hover:text-blue-600">Current Projects</a>
+                <a href="#how-to-submit" class="text-gray-600 hover:text-blue-600">How to Submit</a>
+                <a href="#security" class="text-gray-600 hover:text-blue-600">Security & Ethics</a>
+                <a href="#faq" class="text-gray-600 hover:text-blue-600">FAQ</a>
+
+                <a href="#submit" class="ml-4 inline-block bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300">
+                    Contribute Data
+                </a>
+            </div>
+            <div class="md:hidden">
+                <button class="text-gray-800">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-20 md:py-32 text-center">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+            Advance Medical Science.
+            <br>
+            <span class="text-blue-600">Share Your Whole Slide Images.</span>
+        </h1>
+        <p class="mt-6 text-lg text-gray-600 max-w-3xl mx-auto">
+            Join our global initiative to build the world's leading database for pathology research. Your de-identified data is the key to powering new AI diagnostics, accelerating drug discovery, and fundamentally changing how we understand disease.
+        </p>
+        <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+            <a href="#submit" class="inline-block bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-300 text-lg">
+                Start Your Submission
+            </a>
+            <a href="#why-contribute" class="inline-block bg-gray-800 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-900 transition-colors duration-300 text-lg">
+                Learn More
+            </a>
+        </div>
+    </main>
+
+    <hr class="w-11/12 mx-auto" />
+
+    <section id="why-contribute" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center text-gray-900 mb-16">Why Your Contribution Matters</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gray-50 border border-gray-200 p-8 rounded-lg">
+                    <h3 class="text-2xl font-bold text-blue-600">Accelerate Research</h3>
+                    <p class="mt-3 text-gray-600">
+                        Your slides will help train and validate next-generation computational pathology tools, enabling faster and more accurate diagnostics for patients.
+                    </p>
+                </div>
+                <div class="bg-gray-50 border border-gray-200 p-8 rounded-lg">
+                    <h3 class="text-2xl font-bold text-blue-600">Power Global Collaboration</h3>
+                    <p class="mt-3 text-gray-600">
+                        We provide a secure, centralized resource for thousands of researchers, breaking down data silos and fostering new collaborations.
+                    </p>
+                </div>
+                <div class="bg-gray-50 border border-gray-200 p-8 rounded-lg">
+                    <h3 class="text-2xl font-bold text-blue-600">Receive Full Credit</h3>
+                    <p class="mt-3 text-gray-600">
+                        All contributions are tracked. You and your institution will be properly cited in all research that uses your data, increasing your work's impact.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="w-11/12 mx-auto" />
+
+    <section id="projects" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center text-gray-900 mb-4">Our Current Project Needs</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+                We are actively seeking data for the following high-priority research projects. See where your slides can make the biggest impact.
+            </p>
+
+            <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
+
+                <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg border border-gray-200 space-y-3">
+                    <h3 class="text-2xl font-bold text-blue-600">The Digital Lung Cancer Atlas (DLCA)</h3>
+
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Description:</strong> This project aims to create a comprehensive map of morphological and biomarker expressions in Non-Small Cell Lung Cancer (NSCLC).</p>
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Intended Use:</strong> To train AI models for predicting patient prognosis and response to immunotherapy based on H&E slides.</p>
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Population:</strong> Adult patients (age 18+), all genders, diverse ancestries, with confirmed NSCLC diagnosis.</p>
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Biomarkers:</strong> PD-L1, EGFR, ALK, ROS1.</p>
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Tissue:</strong> Formalin-Fixed Paraffin-Embedded (FFPE) lung biopsy or resection specimens.</p>
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Disease:</strong> Non-Small Cell Lung Cancer (Adenocarcinoma and Squamous Cell Carcinoma).</p>
+                </div>
+
+                <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg border border-gray-200 space-y-3">
+                    <h3 class="text-2xl font-bold text-blue-600">Pancreatic Ductal Adenocarcinoma (PDAC) Staging</h3>
+
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Description:</strong> A focused effort to differentiate high-grade from low-grade PDAC and identify subtle morphological features of early-stage disease.</p>
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Intended Use:</strong> Development of an AI-assisted grading tool to reduce inter-observer variability among pathologists.</p>
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Population:</strong> Patients with surgical resection for PDAC, with corresponding pathology reports.</p>
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Biomarkers:</strong> H&E, MUC1, MUC5AC, Ki-67.</p>
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Tissue:</strong> FFPE pancreatic tissue.</p>
+                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Disease:</strong> Pancreatic Ductal Adenocarcinoma (PDAC).</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <hr class="w-11/12 mx-auto" />
+
+    <section id="how-to-submit" class="py-20 bg-white">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">How to Contribute</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+                We’ve designed our submission process to be secure, straightforward, and respectful of your time.
+            </p>
+            <ol class="space-y-8">
+                <li class="flex items-start">
+                    <span class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold text-lg">1</span>
+                    <div class="ml-6">
+                        <h4 class="text-xl font-semibold text-gray-900">Register Your Project</h4>
+                        <p class="mt-1 text-gray-600">Create a secure account on our contributor portal and provide a brief overview of the data you wish to share.</p>
+                    </div>
+                </li>
+                <li class="flex items-start">
+                    <span class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold text-lg">2</span>
+                    <div class="ml-6">
+                        <h4 class="text-xl font-semibold text-gray-900">De-identify & Prepare</h4>
+                        <p class="mt-1 text-gray-600">Follow our step-by-step guide to ensure all data is fully anonymized and compliant. We provide tools to help you securely remove all PHI.</p>
+                    </div>
+                </li>
+                <li class="flex items-start">
+                    <span class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold text-lg">3</span>
+                    <div class="ml-6">
+                        <h4 class="text-xl font-semibold text-gray-900">Secure Upload</h4>
+                        <p class="mt-1 text-gray-600">Use our high-speed, encrypted transfer client to upload your WSI files and metadata securely to our private cloud.</p>
+                    </div>
+                </li>
+                <li class="flex items-start">
+                    <span class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold text-lg">4</span>
+                    <div class="ml-6">
+                        <h4 class="text-xl font-semibold text-gray-900">Data Curation & QC</h4>
+                        <p class="mt-1 text-gray-600">Our curation team will perform a quality-control check and work with you to finalize the metadata and documentation.</p>
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <hr class="w-11/12 mx-auto" />
+
+    <section id="security" class="py-20 bg-gray-900 text-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">Security, Privacy, and Ethics</h2>
+            <p class="text-center text-gray-300 mb-12 max-w-3xl mx-auto">
+                We understand that WSI data is sensitive. Protecting it—and your trust—is our highest priority.
+            </p>
+            <div class="grid md:grid-cols-2 gap-10">
+                <div class="p-6 bg-gray-800 rounded-lg">
+                    <h4 class="text-xl font-semibold text-blue-400 mb-2">Full Anonymization</h4>
+                    <p class="text-gray-300">We require all data to be fully de-identified before upload. We provide protocols to help you securely remove all Patient Health Information (PHI).</p>
+                </div>
+                <div class="p-6 bg-gray-800 rounded-lg">
+                    <h4 class="text-xl font-semibold text-blue-400 mb-2">Bank-Grade Security</h4>
+                    <p class="text-gray-300">Our platform uses end-to-end encryption for all data in transit and at rest. Our servers are HIPAA and GDPR compliant.</p>
+                </div>
+                <div class="p-6 bg-gray-800 rounded-lg">
+                    <h4 class="text-xl font-semibold text-blue-400 mb-2">Ethical Oversight</h4>
+                    <p class="text-gray-300">All projects and data use requests are fully approved by an independent Institutional Review Board (IRB) or Ethics Committee.</p>
+                </div>
+                <div class="p-6 bg-gray-800 rounded-lg">
+                    <h4 class="text-xl font-semibold text-blue-400 mb-2">Data Control</h4>
+                    <p class="text-gray-300">You and your institution remain the owners of your data. You specify the terms of use through clear, standardized data-sharing agreements.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="submit" class="py-24 bg-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl font-extrabold text-gray-900">Ready to Make an Impact?</h2>
+            <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+                Join the leading pathologists and institutions who are contributing to the future of medicine.
+            </p>
+            <div class="mt-8">
+                <a href="#start-submission" class="inline-block bg-blue-600 text-white font-bold py-4 px-10 rounded-lg shadow-xl hover:bg-blue-700 transition-colors duration-300 text-lg">
+                    Start Your Data Submission
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-800 text-white py-10">
+        <div class="container mx-auto px-6 text-center text-gray-400">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="#about" class="hover:text-white">About</a>
+                <a href="#publications" class="hover:text-white">Publications</a>
+                <a href="#contact" class="hover:text-white">Contact Us</a>
+                <a href="#privacy" class="hover:text-white">Privacy Policy</a>
+                <a href="#terms" class="hover:text-white">Terms of Use</a>
+            </div>
+            <p>&copy; 2025 Project Histo-Data. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

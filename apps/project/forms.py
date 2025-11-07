@@ -13,7 +13,8 @@ class SendDataToAnnotatorForm(forms.Form):
     dataset_id = forms.CharField()
     project_id = forms.CharField()
     query = forms.CharField(widget=forms.Textarea())
-    codes = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(), queryset=Code.objects.all(), label='Labels', required=False)
+    codes = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(), queryset=Code.objects.all(),
+                                           label='Labels', required=False)
 
     def __init__(self, **kwargs):
         project = kwargs.pop('project')
@@ -71,36 +72,41 @@ class CreateProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = ['name', 'description', 'intended_use', 'population', 'biomarkers_autocomplete',
-            'biomarkers_ids',
-            'tissue_autocomplete',
-            'tissue_ids',
-            'disease_autocomplete',
-            'disease_ids',]
+                  'biomarkers_ids',
+                  'tissue_autocomplete',
+                  'tissue_ids',
+                  'disease_autocomplete',
+                  'disease_ids', ]
+
+        help_texts = {
+            "description": '<a href="https://www.markdownguide.org/basic-syntax/" target="_blank">Markdown</a> allowed',
+            "intended_use": '<a href="https://www.markdownguide.org/basic-syntax/" target="_blank">Markdown</a> allowed',
+            "population": '<a href="https://www.markdownguide.org/basic-syntax/" target="_blank">Markdown</a> allowed',
+        }
 
     biomarkers_autocomplete = forms.CharField(required=False,
-                                        label='Biomarkers',
-                                        widget=forms.TextInput(attrs={'id': f'term-autocomplete-biomarkers',
-                                                                      'placeholder': 'Start typing'}), )
+                                              label='Biomarkers',
+                                              widget=forms.TextInput(attrs={'id': f'term-autocomplete-biomarkers',
+                                                                            'placeholder': 'Start typing'}), )
     biomarkers_ids = forms.ModelMultipleChoiceField(queryset=Code.objects.all(),
-                                              required=False,
-                                              widget=forms.MultipleHiddenInput())
+                                                    required=False,
+                                                    widget=forms.MultipleHiddenInput())
 
     tissue_autocomplete = forms.CharField(required=False,
-                                        label='Tissues',
-                                        widget=forms.TextInput(attrs={'id': f'term-autocomplete-tissue',
-                                                                      'placeholder': 'Start typing'}), )
+                                          label='Tissues',
+                                          widget=forms.TextInput(attrs={'id': f'term-autocomplete-tissue',
+                                                                        'placeholder': 'Start typing'}), )
     tissue_ids = forms.ModelMultipleChoiceField(queryset=Code.objects.all(),
-                                              required=False,
-                                              widget=forms.MultipleHiddenInput())
+                                                required=False,
+                                                widget=forms.MultipleHiddenInput())
 
     disease_autocomplete = forms.CharField(required=False,
-                                        label='Diseases',
-                                        widget=forms.TextInput(attrs={'id': f'term-autocomplete-disease',
-                                                                      'placeholder': 'Start typing'}), )
+                                           label='Diseases',
+                                           widget=forms.TextInput(attrs={'id': f'term-autocomplete-disease',
+                                                                         'placeholder': 'Start typing'}), )
     disease_ids = forms.ModelMultipleChoiceField(queryset=Code.objects.all(),
-                                              required=False,
-                                              widget=forms.MultipleHiddenInput())
-
+                                                 required=False,
+                                                 widget=forms.MultipleHiddenInput())
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -130,5 +136,3 @@ class CreateProjectForm(forms.ModelForm):
         self.instance.origin = kwargs.get('created_by')
         self.instance.identifier = identifier.create_random('project')
         return super().save(commit)
-
-
