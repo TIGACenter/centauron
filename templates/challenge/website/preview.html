@@ -1,672 +1,843 @@
 {% load static %}
+{% load core_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ challenge.title }} - Centauron Challenge</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .hero-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding-top: 160px; /* Add padding to account for fixed nav (80px nav + 80px spacing) */
-        }
-        .section-divider {
-            background: linear-gradient(90deg, transparent, #667eea, transparent);
-            height: 2px;
-        }
-        .nav-header {
-            backdrop-filter: blur(10px);
-            background-color: rgba(17, 24, 39, 0.95);
-        }
-        .nav-link {
-            transition: all 0.3s ease;
-        }
-        .nav-link:hover {
-            color: #667eea;
-            transform: translateY(-2px);
-        }
-        .mobile-menu {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-        .mobile-menu.open {
-            max-height: 500px;
-        }
-        @keyframes blob {
-            0% {
-                transform: translate(0px, 0px) scale(1);
-            }
-            33% {
-                transform: translate(30px, -50px) scale(1.1);
-            }
-            66% {
-                transform: translate(-20px, 20px) scale(0.9);
-            }
-            100% {
-                transform: translate(0px, 0px) scale(1);
-            }
-        }
-        .animate-blob {
-            animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-            animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-            animation-delay: 4s;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ challenge.title }} - Centauron Challenge</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .hero-gradient {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding-top: 160px; /* Add padding to account for fixed nav (80px nav + 80px spacing) */
+    }
+
+    .section-divider {
+      background: linear-gradient(90deg, transparent, #667eea, transparent);
+      height: 2px;
+    }
+
+    .nav-header {
+      backdrop-filter: blur(10px);
+      background-color: rgba(17, 24, 39, 0.95);
+    }
+
+    .nav-link {
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: #667eea;
+      transform: translateY(-2px);
+    }
+
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .mobile-menu.open {
+      max-height: 500px;
+    }
+
+    @keyframes blob {
+      0% {
+        transform: translate(0px, 0px) scale(1);
+      }
+      33% {
+        transform: translate(30px, -50px) scale(1.1);
+      }
+      66% {
+        transform: translate(-20px, 20px) scale(0.9);
+      }
+      100% {
+        transform: translate(0px, 0px) scale(1);
+      }
+    }
+
+    .animate-blob {
+      animation: blob 7s infinite;
+    }
+
+    .animation-delay-2000 {
+      animation-delay: 2s;
+    }
+
+    .animation-delay-4000 {
+      animation-delay: 4s;
+    }
+  </style>
 </head>
 <body class="bg-gray-50">
 
-    <!-- Navigation Header -->
-    <nav class="nav-header fixed top-0 left-0 right-0 z-50 shadow-lg">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex items-center justify-between">
-                <!-- Logo/Challenge Name -->
-                <div class="flex items-center space-x-3">
-                    <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                    </svg>
-                    <a href="#top" class="text-white text-xl font-bold hover:text-blue-400 transition-colors">
-                        {{ challenge.title|default:"Challenge Title" }}
-                    </a>
-                </div>
+<!-- Navigation Header -->
+<nav class="nav-header fixed top-0 left-0 right-0 z-50 shadow-lg">
+  <div class="container mx-auto px-6 py-4">
+    <div class="flex items-center justify-between">
+      <!-- Logo/Challenge Name -->
+      <div class="flex items-center space-x-3">
+        <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+        </svg>
+        <a href="#top" class="text-white text-xl font-bold hover:text-blue-400 transition-colors">
+          {{ challenge.title|default:"Challenge Title" }}
+        </a>
+      </div>
 
-                <!-- Desktop Navigation -->
-                <div class="hidden lg:flex items-center space-x-8">
-                    <a href="#clinical-context" class="nav-link text-gray-300 hover:text-white font-medium">Clinical Context</a>
-                    <a href="#endpoints" class="nav-link text-gray-300 hover:text-white font-medium">Endpoints</a>
-                    <a href="#team" class="nav-link text-gray-300 hover:text-white font-medium">Team</a>
-                    <a href="#datasets" class="nav-link text-gray-300 hover:text-white font-medium">Datasets</a>
-                    <a href="#challenge" class="nav-link text-gray-300 hover:text-white font-medium">Participate</a>
-                    <a href="#citation" class="nav-link text-gray-300 hover:text-white font-medium">Citation</a>
-                    <a href="https://hub.centauron.io/" target="_blank" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg">
-                        Join Challenge
-                    </a>
-                </div>
+      <!-- Desktop Navigation -->
+      <div class="hidden lg:flex items-center space-x-8">
+        <a href="#clinical-context" class="nav-link text-gray-300 hover:text-white font-medium">Clinical Context</a>
+        <a href="#endpoints" class="nav-link text-gray-300 hover:text-white font-medium">Endpoints</a>
+        <a href="#team" class="nav-link text-gray-300 hover:text-white font-medium">Team</a>
+        <a href="#datasets" class="nav-link text-gray-300 hover:text-white font-medium">Datasets</a>
+        <a href="#challenge" class="nav-link text-gray-300 hover:text-white font-medium">Participate</a>
+        <a href="#citation" class="nav-link text-gray-300 hover:text-white font-medium">Citation</a>
+        <a href="https://hub.centauron.io/" target="_blank"
+           class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg">
+          Join Challenge
+        </a>
+      </div>
 
-                <!-- Mobile Menu Button -->
-                <button id="mobile-menu-button" class="lg:hidden text-white focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-            </div>
+      <!-- Mobile Menu Button -->
+      <button id="mobile-menu-button" class="lg:hidden text-white focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
 
-            <!-- Mobile Menu -->
-            <div id="mobile-menu" class="mobile-menu lg:hidden">
-                <div class="pt-4 pb-2 space-y-2">
-                    <a href="#clinical-context" class="block text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2 rounded transition-colors">Clinical Context</a>
-                    <a href="#endpoints" class="block text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2 rounded transition-colors">Endpoints</a>
-                    <a href="#team" class="block text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2 rounded transition-colors">Team</a>
-                    <a href="#datasets" class="block text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2 rounded transition-colors">Datasets</a>
-                    <a href="#challenge" class="block text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2 rounded transition-colors">Participate</a>
-                    <a href="#citation" class="block text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2 rounded transition-colors">Citation</a>
-                    <a href="https://hub.centauron.io/" target="_blank" class="block bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center mt-4">
-                        Join Challenge
-                    </a>
-                </div>
-            </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu lg:hidden">
+      <div class="pt-4 pb-2 space-y-2">
+        <a href="#clinical-context"
+           class="block text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2 rounded transition-colors">Clinical
+          Context</a>
+        <a href="#endpoints"
+           class="block text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2 rounded transition-colors">Endpoints</a>
+        <a href="#team"
+           class="block text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2 rounded transition-colors">Team</a>
+        <a href="#datasets"
+           class="block text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2 rounded transition-colors">Datasets</a>
+        <a href="#challenge"
+           class="block text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2 rounded transition-colors">Participate</a>
+        <a href="#citation"
+           class="block text-gray-300 hover:text-white hover:bg-gray-800 px-4 py-2 rounded transition-colors">Citation</a>
+        <a href="https://hub.centauron.io/" target="_blank"
+           class="block bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center mt-4">
+          Join Challenge
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<header class="hero-gradient text-white pb-24 md:pb-32 relative overflow-hidden">
+  <!-- Animated background elements -->
+  <div class="absolute inset-0 overflow-hidden">
+    <div
+      class="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+    <div
+      class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+    <div
+      class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+  </div>
+
+  <div class="container mx-auto px-6 relative z-10">
+    <div class="max-w-5xl mx-auto">
+      <!-- Challenge Badge -->
+      <div class="flex justify-center mb-6">
+        <div
+          class="inline-flex items-center px-4 py-2 rounded-full bg-white bg-opacity-20 backdrop-blur-sm border border-white border-opacity-30">
+          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+          </svg>
+          <span class="text-sm font-semibold">Active Challenge • Open for Submissions</span>
         </div>
-    </nav>
+      </div>
 
-    <!-- Hero Section -->
-    <header class="hero-gradient text-white pb-24 md:pb-32 relative overflow-hidden">
-        <!-- Animated background elements -->
-        <div class="absolute inset-0 overflow-hidden">
-            <div class="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-            <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+      <!-- Main Title -->
+      <div class="text-center mb-8">
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+          {{ challenge.title|default:"AI Challenge for Clinical Prediction" }}
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-100 mb-8 leading-relaxed max-w-3xl mx-auto">
+          {{ challenge.description|default:"Advance medical AI by developing models on real-world clinical data. Evaluate your algorithms on private datasets through secure federated evaluation." }}
+        </p>
+      </div>
+
+      <!-- Key Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+        <div
+          class="text-center p-4 bg-white bg-opacity-10 backdrop-blur-sm rounded-lg border border-white border-opacity-20">
+          <div class="text-3xl md:text-4xl font-bold mb-1">{{ challenge.dataset_size|default:"10K+" }}</div>
+          <div class="text-sm text-gray-200">Cases</div>
+        </div>
+        <div
+          class="text-center p-4 bg-white bg-opacity-10 backdrop-blur-sm rounded-lg border border-white border-opacity-20">
+          <div class="text-3xl md:text-4xl font-bold mb-1">{{ challenge.num_sites|default:"15+" }}</div>
+          <div class="text-sm text-gray-200">Clinical Sites</div>
+        </div>
+        <div
+          class="text-center p-4 bg-white bg-opacity-10 backdrop-blur-sm rounded-lg border border-white border-opacity-20">
+          <div class="text-3xl md:text-4xl font-bold mb-1">{{ challenge.data_modalities|default:"5+" }}</div>
+          <div class="text-sm text-gray-200">Data Types</div>
+        </div>
+        <div
+          class="text-center p-4 bg-white bg-opacity-10 backdrop-blur-sm rounded-lg border border-white border-opacity-20">
+          <div class="text-3xl md:text-4xl font-bold mb-1">{{ challenge.num_participants|default:"500+" }}</div>
+          <div class="text-sm text-gray-200">Participants</div>
+        </div>
+      </div>
+
+      <!-- CTA Buttons -->
+      <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12">
+        <a href="https://hub.centauron.io/" target="_blank"
+           class="w-full sm:w-auto bg-white text-purple-700 font-bold py-4 px-10 rounded-lg shadow-2xl hover:shadow-xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          </svg>
+          Join the Challenge
+        </a>
+        <a href="#clinical-context"
+           class="w-full sm:w-auto bg-purple-800 bg-opacity-80 backdrop-blur-sm text-white font-bold py-4 px-10 rounded-lg border-2 border-white border-opacity-30 hover:bg-purple-900 hover:border-opacity-50 transition-all duration-300 flex items-center justify-center">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          Explore Clinical Data
+        </a>
+        <a href="#datasets"
+           class="w-full sm:w-auto bg-transparent text-white font-semibold py-4 px-8 rounded-lg border-2 border-white border-opacity-50 hover:bg-white hover:bg-opacity-10 hover:border-opacity-100 transition-all duration-300 flex items-center justify-center">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          Download Data
+        </a>
+      </div>
+
+      <!-- Key Features -->
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="flex items-start space-x-3">
+          <div class="flex-shrink-0 w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg mb-1">Privacy-Preserving</h3>
+            <p class="text-gray-200 text-sm">Evaluate on private data without ever seeing it</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-3">
+          <div class="flex-shrink-0 w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg mb-1">Fair Evaluation</h3>
+            <p class="text-gray-200 text-sm">Unbiased assessment on held-out test sets</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-3">
+          <div class="flex-shrink-0 w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg mb-1">Docker-Based</h3>
+            <p class="text-gray-200 text-sm">Simple containerized model submission</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+    <a href="#clinical-context" class="text-white opacity-75 hover:opacity-100 transition-opacity">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+      </svg>
+    </a>
+  </div>
+</header>
+
+<!-- Clinical Context Section -->
+<section id="clinical-context" class="py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
+  <div class="container mx-auto px-6">
+    <h2 class="text-3xl font-bold text-center mb-4 text-gray-900">Clinical Context</h2>
+    <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
+      Understanding the population, disease characteristics, and biomarkers in this challenge.
+    </p>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+      <!-- Population -->
+      <div class="bg-white rounded-lg p-6 shadow-lg">
+        <div class="text-blue-600 mb-4">
+          <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold mb-3 text-gray-900">Population</h3>
+        <div class="text-gray-700 space-y-2">
+          <p><strong>Sample Size:</strong> {{ challenge.population_size }}</p>
+          <div class="text-sm prose prose-sm max-w-none">
+            {{ population|default:"Multi-center cohort with diverse demographics"|markdownify|safe }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Disease -->
+      <div class="bg-white rounded-lg p-6 shadow-lg">
+        <div class="text-red-600 mb-4">
+          <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold mb-3 text-gray-900">Disease</h3>
+        <div class="text-gray-700 space-y-1">
+          {% if disease %}
+            {% for d in disease %}
+              <p class="text-sm">• {{ d }}</p>
+            {% endfor %}
+          {% else %}
+            <p><strong>Type:</strong> Clinical condition</p>
+            <p class="text-sm">Multiple disease types included</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Tissue -->
+      <div class="bg-white rounded-lg p-6 shadow-lg">
+        <div class="text-green-600 mb-4">
+          <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold mb-3 text-gray-900">Tissue</h3>
+        <div class="text-gray-700 space-y-1">
+          {% if tissue %}
+            {% for t in tissue %}
+              <p class="text-sm">• {{ t }}</p>
+            {% endfor %}
+          {% else %}
+            <p><strong>Type:</strong> Multiple tissue types</p>
+            <p class="text-sm">Various tissue samples</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Biomarkers -->
+      <div class="bg-white rounded-lg p-6 shadow-lg">
+        <div class="text-purple-600 mb-4">
+          <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold mb-3 text-gray-900">Biomarkers</h3>
+        <div class="text-gray-700 space-y-1">
+          {% if biomarkers %}
+            {% for b in biomarkers %}
+              <p class="text-sm">• {{ b }}</p>
+            {% endfor %}
+          {% else %}
+            <p><strong>Molecular:</strong> Gene expression</p>
+            <p class="text-sm">Clinical and imaging markers</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Clinical Details -->
+    <div class="bg-white rounded-lg p-8 shadow-lg">
+      <h3 class="text-2xl font-bold mb-6 text-gray-900">Detailed Clinical Information</h3>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div>
+          <h4 class="text-lg font-semibold mb-3 text-blue-600">Population & Study Design</h4>
+          <div class="text-gray-700 prose prose-sm max-w-none">
+            {{ population|default:"This challenge is based on a multi-center cohort with carefully curated data from multiple clinical sites. The cohort represents real-world clinical scenarios with comprehensive follow-up data."|markdownify|safe }}
+          </div>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-3 text-blue-600">Intended Use</h4>
+          <div class="text-gray-700 prose prose-sm max-w-none">
+            {{ intended_use|default:"The dataset is intended for developing and validating AI models for clinical prediction and decision support. Models should demonstrate robust performance and clinical utility."|markdownify|safe }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Clinical Endpoints Section -->
+<section id="endpoints" class="py-20 bg-white">
+  <div class="container mx-auto px-6">
+    <h2 class="text-3xl font-bold text-center mb-4 text-gray-900">Clinical Endpoints</h2>
+    <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
+      The ground truth labels and evaluation metrics for this challenge.
+    </p>
+
+    <div class="max-w-4xl mx-auto">
+      {% if challenge.clinical_endpoints %}
+        <!-- Clinical Endpoints from Ground Truth Schema -->
+        <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg p-8 shadow-lg mb-6">
+          <h3 class="text-2xl font-bold mb-4 flex items-center">
+            <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Clinical Endpoints
+          </h3>
+          <p class="text-blue-100 mb-6">
+            The following clinical endpoints are defined in the ground truth schema for this challenge:
+          </p>
+          <div class="space-y-4">
+            {% for endpoint in challenge.clinical_endpoints %}
+              <div
+                class="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4 border-l-4 {% if endpoint.required %}border-yellow-400{% else %}border-blue-400{% endif %}">
+                <div class="flex items-start justify-between mb-2">
+                  <h4 class="font-semibold text-xl text-white">{{ endpoint.name }}</h4>
+                  <div class="flex gap-2">
+                    {% if endpoint.required %}
+                      <span class="text-xs px-2 py-1 rounded bg-yellow-500 text-gray-900 font-semibold">REQUIRED</span>
+                    {% else %}
+                      <span class="text-xs px-2 py-1 rounded bg-blue-500 text-white">OPTIONAL</span>
+                    {% endif %}
+                    {% if endpoint.type %}
+                      <span class="text-xs px-2 py-1 rounded bg-gray-700 text-white">{{ endpoint.type }}</span>
+                    {% endif %}
+                  </div>
+                </div>
+                {% if endpoint.description %}
+                  <p class="text-blue-100 text-sm">{{ endpoint.description }}</p>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
         </div>
 
-        <div class="container mx-auto px-6 relative z-10">
-            <div class="max-w-5xl mx-auto">
-                <!-- Challenge Badge -->
-                <div class="flex justify-center mb-6">
-                    <div class="inline-flex items-center px-4 py-2 rounded-full bg-white bg-opacity-20 backdrop-blur-sm border border-white border-opacity-30">
-                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                        </svg>
-                        <span class="text-sm font-semibold">Active Challenge • Open for Submissions</span>
-                    </div>
-                </div>
-
-                <!-- Main Title -->
-                <div class="text-center mb-8">
-                    <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
-                        {{ challenge.title|default:"AI Challenge for Clinical Prediction" }}
-                    </h1>
-                    <p class="text-xl md:text-2xl text-gray-100 mb-8 leading-relaxed max-w-3xl mx-auto">
-                        {{ challenge.description|default:"Advance medical AI by developing models on real-world clinical data. Evaluate your algorithms on private datasets through secure federated evaluation." }}
-                    </p>
-                </div>
-
-                <!-- Key Stats -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-                    <div class="text-center p-4 bg-white bg-opacity-10 backdrop-blur-sm rounded-lg border border-white border-opacity-20">
-                        <div class="text-3xl md:text-4xl font-bold mb-1">{{ challenge.dataset_size|default:"10K+" }}</div>
-                        <div class="text-sm text-gray-200">Patients</div>
-                    </div>
-                    <div class="text-center p-4 bg-white bg-opacity-10 backdrop-blur-sm rounded-lg border border-white border-opacity-20">
-                        <div class="text-3xl md:text-4xl font-bold mb-1">{{ challenge.num_sites|default:"15+" }}</div>
-                        <div class="text-sm text-gray-200">Clinical Sites</div>
-                    </div>
-                    <div class="text-center p-4 bg-white bg-opacity-10 backdrop-blur-sm rounded-lg border border-white border-opacity-20">
-                        <div class="text-3xl md:text-4xl font-bold mb-1">{{ challenge.data_modalities|default:"5+" }}</div>
-                        <div class="text-sm text-gray-200">Data Types</div>
-                    </div>
-                    <div class="text-center p-4 bg-white bg-opacity-10 backdrop-blur-sm rounded-lg border border-white border-opacity-20">
-                        <div class="text-3xl md:text-4xl font-bold mb-1">{{ challenge.num_participants|default:"500+" }}</div>
-                        <div class="text-sm text-gray-200">Participants</div>
-                    </div>
-                </div>
-
-                <!-- CTA Buttons -->
-                <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12">
-                    <a href="https://hub.centauron.io/" target="_blank" class="w-full sm:w-auto bg-white text-purple-700 font-bold py-4 px-10 rounded-lg shadow-2xl hover:shadow-xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                        Join the Challenge
-                    </a>
-                    <a href="#clinical-context" class="w-full sm:w-auto bg-purple-800 bg-opacity-80 backdrop-blur-sm text-white font-bold py-4 px-10 rounded-lg border-2 border-white border-opacity-30 hover:bg-purple-900 hover:border-opacity-50 transition-all duration-300 flex items-center justify-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        Explore Clinical Data
-                    </a>
-                    <a href="#datasets" class="w-full sm:w-auto bg-transparent text-white font-semibold py-4 px-8 rounded-lg border-2 border-white border-opacity-50 hover:bg-white hover:bg-opacity-10 hover:border-opacity-100 transition-all duration-300 flex items-center justify-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        Download Data
-                    </a>
-                </div>
-
-                <!-- Key Features -->
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="flex items-start space-x-3">
-                        <div class="flex-shrink-0 w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg mb-1">Privacy-Preserving</h3>
-                            <p class="text-gray-200 text-sm">Evaluate on private data without ever seeing it</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start space-x-3">
-                        <div class="flex-shrink-0 w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg mb-1">Fair Evaluation</h3>
-                            <p class="text-gray-200 text-sm">Unbiased assessment on held-out test sets</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start space-x-3">
-                        <div class="flex-shrink-0 w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg mb-1">Docker-Based</h3>
-                            <p class="text-gray-200 text-sm">Simple containerized model submission</p>
-                        </div>
-                    </div>
-                </div>
+      {% else %}
+        <!-- Fallback: Default endpoints if no ground truth schema -->
+        <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg p-8 shadow-lg mb-6">
+          <h3 class="text-2xl font-bold mb-4 flex items-center">
+            <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Primary Endpoint
+          </h3>
+          <p class="text-lg mb-4">
+            <strong>{{ challenge.primary_endpoint|default:"Overall Survival (OS)" }}</strong>
+          </p>
+          <p class="text-blue-100">
+            {{ challenge.primary_endpoint_description|default:"Time from diagnosis to death from any cause. This is the primary outcome measure for evaluating model performance and clinical utility." }}
+          </p>
+          <div class="mt-4 grid md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <span
+                class="font-semibold">Definition:</span> {{ challenge.primary_endpoint_definition|default:"Time-to-event data" }}
             </div>
+            <div>
+              <span
+                class="font-semibold">Measurement:</span> {{ challenge.primary_endpoint_measurement|default:"Months from baseline" }}
+            </div>
+          </div>
         </div>
 
-        <!-- Scroll indicator -->
-        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <a href="#clinical-context" class="text-white opacity-75 hover:opacity-100 transition-opacity">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+        <!-- Secondary Endpoints -->
+        <div class="bg-gray-50 rounded-lg p-8 shadow-lg mb-6">
+          <h3 class="text-2xl font-bold mb-6 text-gray-900 flex items-center">
+            <svg class="w-8 h-8 mr-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+            </svg>
+            Secondary Endpoints
+          </h3>
+          <div class="space-y-4">
+            <div class="border-l-4 border-blue-500 pl-4">
+              <h4
+                class="font-semibold text-lg text-gray-900">{{ challenge.secondary_endpoint_1|default:"Progression-Free Survival (PFS)" }}</h4>
+              <p
+                class="text-gray-700">{{ challenge.secondary_endpoint_1_desc|default:"Time from diagnosis to disease progression or death, whichever occurs first." }}</p>
+            </div>
+            <div class="border-l-4 border-blue-500 pl-4">
+              <h4
+                class="font-semibold text-lg text-gray-900">{{ challenge.secondary_endpoint_2|default:"Treatment Response" }}</h4>
+              <p
+                class="text-gray-700">{{ challenge.secondary_endpoint_2_desc|default:"Objective response rate according to RECIST criteria or equivalent." }}</p>
+            </div>
+            <div class="border-l-4 border-blue-500 pl-4">
+              <h4
+                class="font-semibold text-lg text-gray-900">{{ challenge.secondary_endpoint_3|default:"Disease Recurrence" }}</h4>
+              <p
+                class="text-gray-700">{{ challenge.secondary_endpoint_3_desc|default:"Binary outcome indicating whether disease recurred after initial treatment." }}</p>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Evaluation Metrics -->
+      <div class="bg-gray-900 text-white rounded-lg p-8 shadow-lg">
+        <h3 class="text-2xl font-bold mb-6 flex items-center">
+          <svg class="w-8 h-8 mr-3 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+          </svg>
+          Evaluation Metrics
+        </h3>
+        <p class="text-gray-300 mb-6">
+          Your model will be evaluated using the following metrics:
+        </p>
+
+        {% if challenge.evaluation_metrics %}
+          <div class="space-y-4">
+            {% for metric in challenge.evaluation_metrics %}
+              <div
+                class="bg-gray-800 rounded-lg p-4 border-l-4 {% if metric.sort == 'asc' %}border-blue-400{% elif metric.sort == 'desc' %}border-green-400{% else %}border-yellow-400{% endif %}">
+                <div class="flex items-center justify-between mb-2">
+                  <h4 class="font-semibold text-lg text-white">{{ metric.name }}</h4>
+                  {% if metric.sort %}
+                    <span
+                      class="text-xs px-2 py-1 rounded {% if metric.sort == 'asc' %}bg-blue-600{% elif metric.sort == 'desc' %}bg-green-600{% else %}bg-yellow-600{% endif %}">
+                                    {{ metric.sort|upper }}
+                                </span>
+                  {% endif %}
+                </div>
+                <div class="flex items-center gap-4 text-sm text-gray-400">
+                  <span class="text-gray-300">{{ metric.description }}</span>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="mt-6 bg-yellow-900 bg-opacity-30 p-4 rounded-lg border-l-4 border-yellow-400">
+            <p class="text-sm text-gray-200">
+              <strong>📊 Leaderboard Ranking:</strong> Submissions will be ranked based on the metrics above. Metrics
+              marked as ASC (ascending) favor lower values, while DESC (descending) favor higher values.
+            </p>
+          </div>
+
+        {% else %}
+          <!-- Fallback if no metrics defined -->
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <h4 class="font-semibold text-lg mb-2 text-blue-400">For Survival Outcomes:</h4>
+              <ul class="space-y-2 text-gray-300">
+                <li class="flex items-start">
+                  <span class="text-yellow-400 mr-2">▸</span>
+                  <span><strong>C-index (Concordance Index):</strong> Primary metric for ranking predictions</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="text-yellow-400 mr-2">▸</span>
+                  <span><strong>Integrated Brier Score:</strong> Calibration measure</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="text-yellow-400 mr-2">▸</span>
+                  <span><strong>Time-dependent AUC:</strong> Discrimination at specific time points</span>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="font-semibold text-lg mb-2 text-blue-400">For Binary Outcomes:</h4>
+              <ul class="space-y-2 text-gray-300">
+                <li class="flex items-start">
+                  <span class="text-yellow-400 mr-2">▸</span>
+                  <span><strong>AUROC:</strong> Area under the ROC curve</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="text-yellow-400 mr-2">▸</span>
+                  <span><strong>AUPRC:</strong> Area under precision-recall curve</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="text-yellow-400 mr-2">▸</span>
+                  <span><strong>F1 Score:</strong> Harmonic mean of precision and recall</span>
+                </li>
+                <li class="flex items-start">
+                  <span class="text-yellow-400 mr-2">▸</span>
+                  <span><strong>Sensitivity/Specificity:</strong> At optimal threshold</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="mt-6 bg-yellow-900 bg-opacity-30 p-4 rounded-lg border-l-4 border-yellow-400">
+            <p class="text-sm text-gray-200">
+              <strong>📊 Leaderboard Ranking:</strong> Submissions will be ranked primarily by C-index for survival
+              outcomes. In case of ties, secondary metrics will be considered. All metrics will be computed with 95%
+              confidence intervals.
+            </p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Team Section -->
+<section id="team" class="py-20 bg-gray-50">
+  <div class="container mx-auto px-6">
+    <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">Challenge Team</h2>
+
+    <!-- Principal Investigator -->
+    <div class="max-w-4xl mx-auto mb-12">
+      <h3 class="text-2xl font-semibold mb-6 text-center text-blue-600">Principal Investigator</h3>
+      <div class="bg-white rounded-lg shadow-lg p-8 flex flex-col md:flex-row items-center gap-8">
+        <div class="flex-shrink-0">
+          <div
+            class="w-48 h-48 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white text-6xl font-bold">
+            {{ challenge.pi_initials|default:"PI" }}
+          </div>
+        </div>
+        <div class="flex-1 text-center md:text-left">
+          <h4
+            class="text-3xl font-bold text-gray-900 mb-2">{{ challenge.pi_name|default:"Dr. Principal Investigator" }}</h4>
+          <p class="text-xl text-blue-600 mb-4">{{ challenge.pi_title|default:"Professor of Medicine" }}</p>
+          <div class="text-gray-700 mb-4 prose prose-sm max-w-none">
+            {{ challenge.pi_affiliation|markdownify|safe }}
+          </div>
+          <p class="text-gray-600 mb-4">
+            {{ challenge.pi_bio|default:"Leading expert in computational medicine and AI applications in clinical research with over 20 years of experience. Published extensively on precision medicine and data-driven clinical decision support systems." }}
+          </p>
+          <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+            {% if challenge.pi_email %}
+              <a href="mailto:{{ challenge.pi_email }}" class="text-blue-600 hover:text-blue-800 flex items-center">
+                <svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
                 </svg>
-            </a>
+                Email
+              </a>
+            {% endif %}
+            {% if challenge.pi_website %}
+              <a href="{{ challenge.pi_website }}" target="_blank"
+                 class="text-blue-600 hover:text-blue-800 flex items-center">
+                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+                </svg>
+                Website
+              </a>
+            {% endif %}
+          </div>
         </div>
-    </header>
+      </div>
+    </div>
 
-    <!-- Clinical Context Section -->
-    <section id="clinical-context" class="py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-4 text-gray-900">Clinical Context</h2>
-            <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
-                Understanding the population, disease characteristics, and biomarkers in this challenge.
-            </p>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                <!-- Population -->
-                <div class="bg-white rounded-lg p-6 shadow-lg">
-                    <div class="text-blue-600 mb-4">
-                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-900">Population</h3>
-                    <div class="text-gray-700 space-y-2">
-                        <p><strong>Sample Size:</strong> {{ challenge.population_size|default:"N patients" }}</p>
-                        <p><strong>Age Range:</strong> {{ challenge.age_range|default:"XX-XX years" }}</p>
-                        <p><strong>Demographics:</strong> {{ challenge.demographics|default:"Diverse cohort" }}</p>
-                        <p><strong>Inclusion:</strong> {{ challenge.inclusion_criteria|default:"Specified in protocol" }}</p>
-                    </div>
-                </div>
-
-                <!-- Disease -->
-                <div class="bg-white rounded-lg p-6 shadow-lg">
-                    <div class="text-red-600 mb-4">
-                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-900">Disease</h3>
-                    <div class="text-gray-700 space-y-2">
-                        <p><strong>Type:</strong> {{ challenge.disease_type|default:"Specified disease" }}</p>
-                        <p><strong>Stage:</strong> {{ challenge.disease_stage|default:"Various stages" }}</p>
-                        <p><strong>Subtype:</strong> {{ challenge.disease_subtype|default:"Multiple subtypes" }}</p>
-                        <p><strong>Classification:</strong> {{ challenge.disease_classification|default:"ICD-10 coded" }}</p>
-                    </div>
-                </div>
-
-                <!-- Tissue -->
-                <div class="bg-white rounded-lg p-6 shadow-lg">
-                    <div class="text-green-600 mb-4">
-                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-900">Tissue</h3>
-                    <div class="text-gray-700 space-y-2">
-                        <p><strong>Type:</strong> {{ challenge.tissue_type|default:"Tissue samples" }}</p>
-                        <p><strong>Source:</strong> {{ challenge.tissue_source|default:"Biopsy/surgical" }}</p>
-                        <p><strong>Preparation:</strong> {{ challenge.tissue_prep|default:"FFPE/Fresh frozen" }}</p>
-                        <p><strong>Quality:</strong> {{ challenge.tissue_quality|default:"High quality control" }}</p>
-                    </div>
-                </div>
-
-                <!-- Biomarkers -->
-                <div class="bg-white rounded-lg p-6 shadow-lg">
-                    <div class="text-purple-600 mb-4">
-                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-900">Biomarkers</h3>
-                    <div class="text-gray-700 space-y-2">
-                        <p><strong>Molecular:</strong> {{ challenge.molecular_markers|default:"Gene expression" }}</p>
-                        <p><strong>Imaging:</strong> {{ challenge.imaging_markers|default:"Radiological features" }}</p>
-                        <p><strong>Clinical:</strong> {{ challenge.clinical_markers|default:"Lab values" }}</p>
-                        <p><strong>Validated:</strong> {{ challenge.validated_markers|default:"Yes" }}</p>
-                    </div>
-                </div>
+    <!-- Contributors -->
+    <div class="max-w-6xl mx-auto">
+      <h3 class="text-2xl font-semibold mb-8 text-center text-blue-600">Contributors</h3>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for contributor in contributors %}
+          <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+            <div
+              class="w-24 h-24 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">
+              {{ contributor.initials }}
             </div>
-
-            <!-- Additional Clinical Details -->
-            <div class="bg-white rounded-lg p-8 shadow-lg">
-                <h3 class="text-2xl font-bold mb-6 text-gray-900">Detailed Clinical Information</h3>
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div>
-                        <h4 class="text-lg font-semibold mb-3 text-blue-600">Study Design</h4>
-                        <p class="text-gray-700">
-                            {{ challenge.study_design|default:"This challenge is based on a retrospective/prospective study design with carefully curated data from multiple clinical sites. The cohort represents real-world clinical scenarios with comprehensive follow-up data." }}
-                        </p>
-                    </div>
-                    <div>
-                        <h4 class="text-lg font-semibold mb-3 text-blue-600">Data Modalities</h4>
-                        <p class="text-gray-700">
-                            {{ challenge.data_modalities|default:"The dataset includes multiple data modalities: clinical records, laboratory results, imaging data (CT/MRI/PET), genomic data, and pathology reports. All data is standardized and anonymized." }}
-                        </p>
-                    </div>
-                </div>
+            <h4 class="text-xl font-bold text-gray-900 mb-1">{{ contributor.name }}</h4>
+            <p class="text-blue-600 mb-2">Contributor</p>
+            <p class="text-gray-600 text-sm">{{ contributor.organization|default:"Research Institution" }}</p>
+            {% if contributor.orcid or contributor.pubmed or contributor.google_scholar %}
+              <div class="flex justify-center gap-2 mt-3">
+                {% if contributor.orcid %}
+                  <a href="{{ contributor.orcid }}" target="_blank" class="text-gray-500 hover:text-blue-600"
+                     title="ORCID">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path
+                        d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.016-5.325 5.016h-3.919V7.416zm1.444 1.303v7.444h2.297c2.359 0 4.078-1.456 4.078-3.722 0-2.072-1.297-3.722-4.078-3.722h-2.297z"/>
+                    </svg>
+                  </a>
+                {% endif %}
+                {% if contributor.pubmed %}
+                  <a href="{{ contributor.pubmed }}" target="_blank" class="text-gray-500 hover:text-blue-600"
+                     title="PubMed">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                  </a>
+                {% endif %}
+                {% if contributor.google_scholar %}
+                  <a href="{{ contributor.google_scholar }}" target="_blank" class="text-gray-500 hover:text-blue-600"
+                     title="Google Scholar">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path
+                        d="M12 24a7 7 0 110-14 7 7 0 010 14zm0-24L0 9.5l4.838 3.94A8 8 0 0112 9a8 8 0 017.162 4.44L24 9.5z"/>
+                    </svg>
+                  </a>
+                {% endif %}
+              </div>
+            {% endif %}
+            <div class="mt-3 text-xs text-gray-500">
+              <div>{{ contributor.file_count }} files</div>
+              <div>{{ contributor.case_count }} cases</div>
             </div>
+          </div>
+        {% empty %}
+          <!-- Fallback if no contributors -->
+          <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+            <div
+              class="w-24 h-24 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">
+              C1
+            </div>
+            <h4 class="text-xl font-bold text-gray-900 mb-1">Research Team</h4>
+            <p class="text-blue-600 mb-2">Contributors</p>
+            <p class="text-gray-600 text-sm">Various Institutions</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Institutional Support -->
+    <div class="max-w-4xl mx-auto mt-12">
+      <div class="bg-white rounded-lg shadow-lg p-8">
+        <h3 class="text-2xl font-semibold mb-6 text-center text-gray-900">Institutional Support</h3>
+        <div class="grid md:grid-cols-2 gap-6 text-gray-700">
+          <div>
+            <h4 class="font-semibold text-lg mb-2 text-blue-600">Academic Partners</h4>
+            <ul class="space-y-1">
+              {% for contributor in contributors|slice:":3" %}
+                <li>{{ contributor.organization|default:"Research Institution" }}</li>
+              {% empty %}
+                <li>Partner Institution 1</li>
+                <li>Partner Institution 2</li>
+                <li>Partner Institution 3</li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold text-lg mb-2 text-blue-600">Data Contributions</h4>
+            <ul class="space-y-1">
+              <li>{{ stats.case_count }} total cases</li>
+              <li>{{ stats.file_count }} data files</li>
+              <li>{{ contributors|length }} contributing sites</li>
+            </ul>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- Clinical Endpoints Section -->
-    <section id="endpoints" class="py-20 bg-white">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-4 text-gray-900">Clinical Endpoints</h2>
-            <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
-                The ground truth labels and evaluation metrics for this challenge.
-            </p>
 
-            <div class="max-w-4xl mx-auto">
-                <!-- Primary Endpoint -->
-                <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg p-8 shadow-lg mb-6">
-                    <h3 class="text-2xl font-bold mb-4 flex items-center">
-                        <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        Primary Endpoint
-                    </h3>
-                    <p class="text-lg mb-4">
-                        <strong>{{ challenge.primary_endpoint|default:"Overall Survival (OS)" }}</strong>
-                    </p>
-                    <p class="text-blue-100">
-                        {{ challenge.primary_endpoint_description|default:"Time from diagnosis to death from any cause. This is the primary outcome measure for evaluating model performance and clinical utility." }}
-                    </p>
-                    <div class="mt-4 grid md:grid-cols-2 gap-4 text-sm">
-                        <div>
-                            <span class="font-semibold">Definition:</span> {{ challenge.primary_endpoint_definition|default:"Time-to-event data" }}
-                        </div>
-                        <div>
-                            <span class="font-semibold">Measurement:</span> {{ challenge.primary_endpoint_measurement|default:"Months from baseline" }}
-                        </div>
-                    </div>
-                </div>
+<!-- Datasets Section -->
+<section id="datasets" class="py-20 bg-white">
+  <div class="container mx-auto px-6">
+    <h2 class="text-3xl font-bold text-center mb-4 text-gray-900">Datasets</h2>
+    <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
+      Access comprehensive, curated datasets for developing and evaluating your AI models.
+    </p>
 
-                <!-- Secondary Endpoints -->
-                <div class="bg-gray-50 rounded-lg p-8 shadow-lg mb-6">
-                    <h3 class="text-2xl font-bold mb-6 text-gray-900 flex items-center">
-                        <svg class="w-8 h-8 mr-3 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-                        </svg>
-                        Secondary Endpoints
-                    </h3>
-                    <div class="space-y-4">
-                        <div class="border-l-4 border-blue-500 pl-4">
-                            <h4 class="font-semibold text-lg text-gray-900">{{ challenge.secondary_endpoint_1|default:"Progression-Free Survival (PFS)" }}</h4>
-                            <p class="text-gray-700">{{ challenge.secondary_endpoint_1_desc|default:"Time from diagnosis to disease progression or death, whichever occurs first." }}</p>
-                        </div>
-                        <div class="border-l-4 border-blue-500 pl-4">
-                            <h4 class="font-semibold text-lg text-gray-900">{{ challenge.secondary_endpoint_2|default:"Treatment Response" }}</h4>
-                            <p class="text-gray-700">{{ challenge.secondary_endpoint_2_desc|default:"Objective response rate according to RECIST criteria or equivalent." }}</p>
-                        </div>
-                        <div class="border-l-4 border-blue-500 pl-4">
-                            <h4 class="font-semibold text-lg text-gray-900">{{ challenge.secondary_endpoint_3|default:"Disease Recurrence" }}</h4>
-                            <p class="text-gray-700">{{ challenge.secondary_endpoint_3_desc|default:"Binary outcome indicating whether disease recurred after initial treatment." }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Evaluation Metrics -->
-                <div class="bg-gray-900 text-white rounded-lg p-8 shadow-lg">
-                    <h3 class="text-2xl font-bold mb-6 flex items-center">
-                        <svg class="w-8 h-8 mr-3 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
-                        Evaluation Metrics
-                    </h3>
-                    <p class="text-gray-300 mb-6">
-                        Your model will be evaluated using the following metrics:
-                    </p>
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <h4 class="font-semibold text-lg mb-2 text-blue-400">For Survival Outcomes:</h4>
-                            <ul class="space-y-2 text-gray-300">
-                                <li class="flex items-start">
-                                    <span class="text-yellow-400 mr-2">▸</span>
-                                    <span><strong>C-index (Concordance Index):</strong> Primary metric for ranking predictions</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-yellow-400 mr-2">▸</span>
-                                    <span><strong>Integrated Brier Score:</strong> Calibration measure</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-yellow-400 mr-2">▸</span>
-                                    <span><strong>Time-dependent AUC:</strong> Discrimination at specific time points</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 class="font-semibold text-lg mb-2 text-blue-400">For Binary Outcomes:</h4>
-                            <ul class="space-y-2 text-gray-300">
-                                <li class="flex items-start">
-                                    <span class="text-yellow-400 mr-2">▸</span>
-                                    <span><strong>AUROC:</strong> Area under the ROC curve</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-yellow-400 mr-2">▸</span>
-                                    <span><strong>AUPRC:</strong> Area under precision-recall curve</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-yellow-400 mr-2">▸</span>
-                                    <span><strong>F1 Score:</strong> Harmonic mean of precision and recall</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-yellow-400 mr-2">▸</span>
-                                    <span><strong>Sensitivity/Specificity:</strong> At optimal threshold</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="mt-6 bg-yellow-900 bg-opacity-30 p-4 rounded-lg border-l-4 border-yellow-400">
-                        <p class="text-sm text-gray-200">
-                            <strong>📊 Leaderboard Ranking:</strong> Submissions will be ranked primarily by C-index for survival outcomes. In case of ties, secondary metrics will be considered. All metrics will be computed with 95% confidence intervals.
-                        </p>
-                    </div>
-                </div>
-            </div>
+    <div class="grid md:grid-cols-2 gap-8 mb-12">
+      <!-- Public Dataset -->
+      <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-8 shadow-lg">
+        <div class="flex items-center mb-4">
+          <svg class="w-8 h-8 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <h3 class="text-2xl font-bold text-gray-900">Public Dataset</h3>
         </div>
-    </section>
+        <p class="text-gray-700 mb-4">
+          Available for model development and training. Use this data to build and optimize your AI algorithms.
+        </p>
+        <ul class="space-y-2 text-gray-700 mb-6">
+          <li class="flex items-start">
+            <span class="text-green-600 mr-2">✓</span>
+            <span>Freely accessible for participants</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-green-600 mr-2">✓</span>
+            <span>Annotated with ground truth labels</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-green-600 mr-2">✓</span>
+            <span>Comprehensive metadata included</span>
+          </li>
+        </ul>
+        <a href="#"
+           class="inline-block bg-green-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-green-700 transition-colors">
+          Download Dataset
+        </a>
+      </div>
 
-    <!-- Team Section -->
-    <section id="team" class="py-20 bg-gray-50">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">Challenge Team</h2>
-
-            <!-- Principal Investigator -->
-            <div class="max-w-4xl mx-auto mb-12">
-                <h3 class="text-2xl font-semibold mb-6 text-center text-blue-600">Principal Investigator</h3>
-                <div class="bg-white rounded-lg shadow-lg p-8 flex flex-col md:flex-row items-center gap-8">
-                    <div class="flex-shrink-0">
-                        <div class="w-48 h-48 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white text-6xl font-bold">
-                            {{ challenge.pi_initials|default:"PI" }}
-                        </div>
-                    </div>
-                    <div class="flex-1 text-center md:text-left">
-                        <h4 class="text-3xl font-bold text-gray-900 mb-2">{{ challenge.pi_name|default:"Dr. Principal Investigator" }}</h4>
-                        <p class="text-xl text-blue-600 mb-4">{{ challenge.pi_title|default:"Professor of Medicine" }}</p>
-                        <p class="text-gray-700 mb-4">
-                            {{ challenge.pi_affiliation|default:"Department of Oncology, University Medical Center" }}
-                        </p>
-                        <p class="text-gray-600 mb-4">
-                            {{ challenge.pi_bio|default:"Leading expert in computational medicine and AI applications in clinical research with over 20 years of experience. Published extensively on precision medicine and data-driven clinical decision support systems." }}
-                        </p>
-                        <div class="flex flex-wrap gap-3 justify-center md:justify-start">
-                            {% if challenge.pi_email %}
-                            <a href="mailto:{{ challenge.pi_email }}" class="text-blue-600 hover:text-blue-800 flex items-center">
-                                <svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-                                </svg>
-                                Email
-                            </a>
-                            {% endif %}
-                            {% if challenge.pi_website %}
-                            <a href="{{ challenge.pi_website }}" target="_blank" class="text-blue-600 hover:text-blue-800 flex items-center">
-                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
-                                </svg>
-                                Website
-                            </a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Contributors -->
-            <div class="max-w-6xl mx-auto">
-                <h3 class="text-2xl font-semibold mb-8 text-center text-blue-600">Contributors</h3>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Contributor 1 -->
-                    <div class="bg-white rounded-lg shadow-lg p-6 text-center">
-                        <div class="w-24 h-24 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">
-                            {{ challenge.contributor_1_initials|default:"C1" }}
-                        </div>
-                        <h4 class="text-xl font-bold text-gray-900 mb-1">{{ challenge.contributor_1_name|default:"Dr. Contributor Name" }}</h4>
-                        <p class="text-blue-600 mb-2">{{ challenge.contributor_1_role|default:"Data Scientist" }}</p>
-                        <p class="text-gray-600 text-sm">{{ challenge.contributor_1_affiliation|default:"Institution Name" }}</p>
-                    </div>
-
-                    <!-- Contributor 2 -->
-                    <div class="bg-white rounded-lg shadow-lg p-6 text-center">
-                        <div class="w-24 h-24 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">
-                            {{ challenge.contributor_2_initials|default:"C2" }}
-                        </div>
-                        <h4 class="text-xl font-bold text-gray-900 mb-1">{{ challenge.contributor_2_name|default:"Dr. Contributor Name" }}</h4>
-                        <p class="text-blue-600 mb-2">{{ challenge.contributor_2_role|default:"Clinical Researcher" }}</p>
-                        <p class="text-gray-600 text-sm">{{ challenge.contributor_2_affiliation|default:"Institution Name" }}</p>
-                    </div>
-
-                    <!-- Contributor 3 -->
-                    <div class="bg-white rounded-lg shadow-lg p-6 text-center">
-                        <div class="w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">
-                            {{ challenge.contributor_3_initials|default:"C3" }}
-                        </div>
-                        <h4 class="text-xl font-bold text-gray-900 mb-1">{{ challenge.contributor_3_name|default:"Dr. Contributor Name" }}</h4>
-                        <p class="text-blue-600 mb-2">{{ challenge.contributor_3_role|default:"Bioinformatician" }}</p>
-                        <p class="text-gray-600 text-sm">{{ challenge.contributor_3_affiliation|default:"Institution Name" }}</p>
-                    </div>
-
-                    <!-- Add more contributors as needed -->
-                    {% for contributor in challenge.additional_contributors %}
-                    <div class="bg-white rounded-lg shadow-lg p-6 text-center">
-                        <div class="w-24 h-24 bg-gradient-to-br from-indigo-400 to-cyan-500 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">
-                            {{ contributor.initials }}
-                        </div>
-                        <h4 class="text-xl font-bold text-gray-900 mb-1">{{ contributor.name }}</h4>
-                        <p class="text-blue-600 mb-2">{{ contributor.role }}</p>
-                        <p class="text-gray-600 text-sm">{{ contributor.affiliation }}</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!-- Institutional Support -->
-            <div class="max-w-4xl mx-auto mt-12">
-                <div class="bg-white rounded-lg shadow-lg p-8">
-                    <h3 class="text-2xl font-semibold mb-6 text-center text-gray-900">Institutional Support</h3>
-                    <div class="grid md:grid-cols-2 gap-6 text-gray-700">
-                        <div>
-                            <h4 class="font-semibold text-lg mb-2 text-blue-600">Academic Partners</h4>
-                            <ul class="space-y-1">
-                                <li>{{ challenge.partner_1|default:"Partner Institution 1" }}</li>
-                                <li>{{ challenge.partner_2|default:"Partner Institution 2" }}</li>
-                                <li>{{ challenge.partner_3|default:"Partner Institution 3" }}</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 class="font-semibold text-lg mb-2 text-blue-600">Funding Sources</h4>
-                            <ul class="space-y-1">
-                                <li>{{ challenge.funding_1|default:"Funding Agency 1" }}</li>
-                                <li>{{ challenge.funding_2|default:"Funding Agency 2" }}</li>
-                                <li>{{ challenge.funding_3|default:"Research Grant XXX" }}</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <!-- Private Dataset -->
+      <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-8 shadow-lg">
+        <div class="flex items-center mb-4">
+          <svg class="w-8 h-8 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+          </svg>
+          <h3 class="text-2xl font-bold text-gray-900">Private Dataset</h3>
         </div>
-    </section>
-
-
-    <!-- Datasets Section -->
-    <section id="datasets" class="py-20 bg-white">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-4 text-gray-900">Datasets</h2>
-            <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
-                Access comprehensive, curated datasets for developing and evaluating your AI models.
-            </p>
-
-            <div class="grid md:grid-cols-2 gap-8 mb-12">
-                <!-- Public Dataset -->
-                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-8 shadow-lg">
-                    <div class="flex items-center mb-4">
-                        <svg class="w-8 h-8 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <h3 class="text-2xl font-bold text-gray-900">Public Dataset</h3>
-                    </div>
-                    <p class="text-gray-700 mb-4">
-                        Available for model development and training. Use this data to build and optimize your AI algorithms.
-                    </p>
-                    <ul class="space-y-2 text-gray-700 mb-6">
-                        <li class="flex items-start">
-                            <span class="text-green-600 mr-2">✓</span>
-                            <span>Freely accessible for participants</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-600 mr-2">✓</span>
-                            <span>Annotated with ground truth labels</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-600 mr-2">✓</span>
-                            <span>Comprehensive metadata included</span>
-                        </li>
-                    </ul>
-                    <a href="#" class="inline-block bg-green-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-green-700 transition-colors">
-                        Download Dataset
-                    </a>
-                </div>
-
-                <!-- Private Dataset -->
-                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-8 shadow-lg">
-                    <div class="flex items-center mb-4">
-                        <svg class="w-8 h-8 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                        </svg>
-                        <h3 class="text-2xl font-bold text-gray-900">Private Dataset</h3>
-                    </div>
-                    <p class="text-gray-700 mb-4">
-                        Reserved for unbiased model evaluation. Submit your containerized model to test on this hidden data.
-                    </p>
-                    <ul class="space-y-2 text-gray-700 mb-6">
-                        <li class="flex items-start">
-                            <span class="text-purple-600 mr-2">✓</span>
-                            <span>Larger cohort for robust evaluation</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-purple-600 mr-2">✓</span>
-                            <span>Never disclosed to participants</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-purple-600 mr-2">✓</span>
-                            <span>Ensures fair model comparison</span>
-                        </li>
-                    </ul>
-                    <span class="inline-block bg-purple-600 text-white font-semibold py-2 px-6 rounded-lg opacity-75 cursor-not-allowed">
+        <p class="text-gray-700 mb-4">
+          Reserved for unbiased model evaluation. Submit your containerized model to test on this hidden data.
+        </p>
+        <ul class="space-y-2 text-gray-700 mb-6">
+          <li class="flex items-start">
+            <span class="text-purple-600 mr-2">✓</span>
+            <span>Larger cohort for robust evaluation</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-purple-600 mr-2">✓</span>
+            <span>Never disclosed to participants</span>
+          </li>
+          <li class="flex items-start">
+            <span class="text-purple-600 mr-2">✓</span>
+            <span>Ensures fair model comparison</span>
+          </li>
+        </ul>
+        <span
+          class="inline-block bg-purple-600 text-white font-semibold py-2 px-6 rounded-lg opacity-75 cursor-not-allowed">
                         Evaluation Only
                     </span>
-                </div>
-            </div>
+      </div>
+    </div>
 
-            <!-- Docker Submission Instructions -->
-            <div class="bg-gray-900 text-white rounded-lg p-8 shadow-lg">
-                <h3 class="text-2xl font-bold mb-6 flex items-center">
-                    <svg class="w-8 h-8 mr-3 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.186.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.186.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.186.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338 0-.676.03-1.01.09-.808-1.197-1.96-2.03-3.292-2.376.08-.238.126-.49.126-.757a2.3 2.3 0 00-2.3-2.3 2.3 2.3 0 00-2.298 2.3c0 .268.046.52.127.758-1.332.345-2.484 1.178-3.291 2.376a8.918 8.918 0 00-1.01-.09c-1.282 0-1.89.46-1.955.51a.19.19 0 00-.071.14v1.717c0 .104.084.188.188.188h.984c.103 0 .188-.084.188-.188v-1.023c.152-.076.756-.338 1.629-.338.194 0 .383.016.569.047a.19.19 0 00.217-.217 5.35 5.35 0 00-.041-.59c-.015-.123.03-.245.124-.327.096-.082.226-.113.35-.082.177.045.357.068.536.068.179 0 .36-.023.536-.068.124-.03.255 0 .35.082.095.082.14.204.125.327a5.27 5.27 0 00-.04.59.19.19 0 00.216.217c.186-.031.375-.047.57-.047.872 0 1.476.262 1.628.338v1.023c0 .104.084.188.188.188h.984c.104 0 .188-.084.188-.188v-1.717a.19.19 0 00-.07-.14"></path>
-                    </svg>
-                    How to Submit Your Dockerized AI Model
-                </h3>
+    <!-- Docker Submission Instructions -->
+    <div class="bg-gray-900 text-white rounded-lg p-8 shadow-lg">
+      <h3 class="text-2xl font-bold mb-6 flex items-center">
+        <svg class="w-8 h-8 mr-3 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.186.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.186.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.186.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338 0-.676.03-1.01.09-.808-1.197-1.96-2.03-3.292-2.376.08-.238.126-.49.126-.757a2.3 2.3 0 00-2.3-2.3 2.3 2.3 0 00-2.298 2.3c0 .268.046.52.127.758-1.332.345-2.484 1.178-3.291 2.376a8.918 8.918 0 00-1.01-.09c-1.282 0-1.89.46-1.955.51a.19.19 0 00-.071.14v1.717c0 .104.084.188.188.188h.984c.103 0 .188-.084.188-.188v-1.023c.152-.076.756-.338 1.629-.338.194 0 .383.016.569.047a.19.19 0 00.217-.217 5.35 5.35 0 00-.041-.59c-.015-.123.03-.245.124-.327.096-.082.226-.113.35-.082.177.045.357.068.536.068.179 0 .36-.023.536-.068.124-.03.255 0 .35.082.095.082.14.204.125.327a5.27 5.27 0 00-.04.59.19.19 0 00.216.217c.186-.031.375-.047.57-.047.872 0 1.476.262 1.628.338v1.023c0 .104.084.188.188.188h.984c.104 0 .188-.084.188-.188v-1.717a.19.19 0 00-.07-.14"></path>
+        </svg>
+        How to Submit Your Dockerized AI Model
+      </h3>
 
-                <div class="space-y-6">
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-blue-400">1. Prepare Your Model</h4>
-                        <p class="text-gray-300 mb-2">
-                            Ensure your AI model is trained and ready for deployment. Your model should accept the standard input format specified in our documentation.
-                        </p>
-                    </div>
+      <div class="space-y-6">
+        <div>
+          <h4 class="text-xl font-semibold mb-3 text-blue-400">1. Prepare Your Model</h4>
+          <p class="text-gray-300 mb-2">
+            Ensure your AI model is trained and ready for deployment. Your model should accept the standard input format
+            specified in our documentation.
+          </p>
+        </div>
 
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-blue-400">2. Create a Dockerfile</h4>
-                        <p class="text-gray-300 mb-3">
-                            Package your model into a Docker container. Here's a basic example:
-                        </p>
-                        <pre class="bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm">
+        <div>
+          <h4 class="text-xl font-semibold mb-3 text-blue-400">2. Create a Dockerfile</h4>
+          <p class="text-gray-300 mb-3">
+            Package your model into a Docker container. Here's a basic example:
+          </p>
+          <pre class="bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm">
 <code class="text-green-400">FROM python:3.9-slim
 
 WORKDIR /app
@@ -680,138 +851,156 @@ COPY . .
 
 # Define the entrypoint
 ENTRYPOINT ["python", "predict.py"]</code></pre>
-                    </div>
+        </div>
 
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-blue-400">3. Build and Test Locally</h4>
-                        <p class="text-gray-300 mb-3">
-                            Build your Docker image and test it with sample data:
-                        </p>
-                        <pre class="bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm">
+        <div>
+          <h4 class="text-xl font-semibold mb-3 text-blue-400">3. Build and Test Locally</h4>
+          <p class="text-gray-300 mb-3">
+            Build your Docker image and test it with sample data:
+          </p>
+          <pre class="bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm">
 <code class="text-green-400">docker build -t my-challenge-model:latest .
 docker run my-challenge-model:latest --input sample_data.csv</code></pre>
-                    </div>
+        </div>
 
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-blue-400">4. Push to a Registry</h4>
-                        <p class="text-gray-300 mb-3">
-                            Tag and push your image to a container registry (Docker Hub, GitHub Container Registry, etc.):
-                        </p>
-                        <pre class="bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm">
+        <div>
+          <h4 class="text-xl font-semibold mb-3 text-blue-400">4. Push to a Registry</h4>
+          <p class="text-gray-300 mb-3">
+            Tag and push your image to a container registry (Docker Hub, GitHub Container Registry, etc.):
+          </p>
+          <pre class="bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm">
 <code class="text-green-400">docker tag my-challenge-model:latest username/my-challenge-model:v1
 docker push username/my-challenge-model:v1</code></pre>
-                    </div>
-
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-blue-400">5. Submit via Centauron Platform</h4>
-                        <p class="text-gray-300 mb-2">
-                            Log in to <a href="https://hub.centauron.io/" target="_blank" class="text-blue-400 hover:underline">hub.centauron.io</a> and submit your Docker image URL. The platform will:
-                        </p>
-                        <ul class="list-disc list-inside text-gray-300 space-y-1 ml-4">
-                            <li>Pull your container</li>
-                            <li>Run it on the private dataset</li>
-                            <li>Compute performance metrics</li>
-                            <li>Return results to your dashboard</li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-blue-900 bg-opacity-50 p-4 rounded-lg border-l-4 border-blue-400">
-                        <p class="text-sm text-gray-200">
-                            <strong>💡 Tip:</strong> Make sure your Docker image is publicly accessible or share appropriate credentials with the platform. For detailed technical specifications and API documentation, visit our <a href="https://centauron.net/docs" target="_blank" class="text-blue-400 hover:underline">documentation</a>.
-                        </p>
-                    </div>
-                </div>
-            </div>
         </div>
-    </section>
 
-    <!-- Challenge Overview Section -->
-    <section id="challenge" class="py-20 bg-gray-900 text-white">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-12">Evaluate Your AI on Private Data</h2>
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                    <h3 class="text-2xl font-semibold mb-4 text-blue-400">The Centauron Challenge</h3>
-                    <p class="mb-4 text-gray-300">
-                        While the public dataset is extensive, a larger, private portion remains hidden for unbiased model evaluation. You can test your AI model on this hidden data without ever seeing it through the <strong>Centauron Network</strong>.
-                    </p>
-                    <p class="mb-6 text-gray-300">
-                        This "blind evaluation" ensures a fair and robust assessment of your model's generalizability and performance, mimicking a real-world clinical validation scenario.
-                    </p>
-                    <h4 class="text-xl font-semibold mb-3">How it Works:</h4>
-                    <ol class="list-decimal list-inside space-y-2 text-gray-300">
-                        <li><strong>Sign Up</strong> on the challenge platform over at <a href="https://hub.centauron.io/" target="_blank" class="text-blue-400 hover:underline">https://hub.centauron.io/</a>.</li>
-                        <li><strong>Develop Your Model</strong> using the public part of the cohort and your own data.</li>
-                        <li><strong>Containerize Your Model</strong> into a Docker image.</li>
-                        <li><strong>Submit Your Docker Image</strong> to the Centauron platform.</li>
-                        <li>The network runs your model on the private data and returns the performance metrics to you.</li>
-                    </ol>
-
-                    <p class="mt-6 text-gray-400 text-sm">For detailed instructions and documentation, visit the official Centauron website at <a href="https://centauron.net" target="_blank" class="text-blue-400 hover:underline">centauron.net</a>.</p>
-                </div>
-                <div class="text-center p-8 bg-gray-800 rounded-lg">
-                    <h3 class="text-2xl font-bold mb-4">Ready to test your model?</h3>
-                    <p class="mb-8 text-gray-300">Participate in our ongoing challenge and see how your algorithm stacks up against others on a truly independent test set.</p>
-                    <a href="https://hub.centauron.io/" target="_blank" rel="noopener noreferrer" class="w-full inline-block bg-blue-600 text-white font-bold py-4 px-8 rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-300 text-lg">
-                        Participate in the Challenge
-                    </a>
-                </div>
-            </div>
+        <div>
+          <h4 class="text-xl font-semibold mb-3 text-blue-400">5. Submit via Centauron Platform</h4>
+          <p class="text-gray-300 mb-2">
+            Log in to <a href="https://hub.centauron.io/" target="_blank" class="text-blue-400 hover:underline">hub.centauron.io</a>
+            and submit your Docker image URL. The platform will:
+          </p>
+          <ul class="list-disc list-inside text-gray-300 space-y-1 ml-4">
+            <li>Pull your container</li>
+            <li>Run it on the private dataset</li>
+            <li>Compute performance metrics</li>
+            <li>Return results to your dashboard</li>
+          </ul>
         </div>
-    </section>
 
-    <!-- Citation Section -->
-    <section id="citation" class="py-20 bg-white">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-4 text-gray-900">How to Cite</h2>
-            <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
-                If you use this challenge or datasets in your research, please cite the following:
-            </p>
+        <div class="bg-blue-900 bg-opacity-50 p-4 rounded-lg border-l-4 border-blue-400">
+          <p class="text-sm text-gray-200">
+            <strong>💡 Tip:</strong> Make sure your Docker image is publicly accessible or share appropriate credentials
+            with the platform. For detailed technical specifications and API documentation, visit our <a
+            href="https://centauron.net/docs" target="_blank" class="text-blue-400 hover:underline">documentation</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-            <div class="max-w-4xl mx-auto space-y-6">
-                <!-- Challenge Citation -->
-                <div class="bg-gray-50 rounded-lg p-8 shadow-lg">
-                    <h3 class="text-xl font-bold mb-4 text-gray-900 flex items-center">
-                        <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                        </svg>
-                        Challenge Citation
-                    </h3>
-                    <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm mb-4 overflow-x-auto">
-                        <code>{{ challenge.citation|default:"Author Name et al. (2025). Challenge Title: A Multi-Institutional AI Challenge for Disease Prediction. Centauron Platform. https://hub.centauron.io/challenge/xyz" }}</code>
-                    </div>
-                    <button onclick="copyCitation('challenge')" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                        Copy Citation
-                    </button>
-                </div>
+<!-- Challenge Overview Section -->
+<section id="challenge" class="py-20 bg-gray-900 text-white">
+  <div class="container mx-auto px-6">
+    <h2 class="text-3xl font-bold text-center mb-12">Evaluate Your AI on Private Data</h2>
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <h3 class="text-2xl font-semibold mb-4 text-blue-400">The Centauron Challenge</h3>
+        <p class="mb-4 text-gray-300">
+          While the public dataset is extensive, a larger, private portion remains hidden for unbiased model evaluation.
+          You can test your AI model on this hidden data without ever seeing it through the <strong>Centauron
+          Network</strong>.
+        </p>
+        <p class="mb-6 text-gray-300">
+          This "blind evaluation" ensures a fair and robust assessment of your model's generalizability and performance,
+          mimicking a real-world clinical validation scenario.
+        </p>
+        <h4 class="text-xl font-semibold mb-3">How it Works:</h4>
+        <ol class="list-decimal list-inside space-y-2 text-gray-300">
+          <li><strong>Sign Up</strong> on the challenge platform over at <a href="https://hub.centauron.io/"
+                                                                            target="_blank"
+                                                                            class="text-blue-400 hover:underline">https://hub.centauron.io/</a>.
+          </li>
+          <li><strong>Develop Your Model</strong> using the public part of the cohort and your own data.</li>
+          <li><strong>Containerize Your Model</strong> into a Docker image.</li>
+          <li><strong>Submit Your Docker Image</strong> to the Centauron platform.</li>
+          <li>The network runs your model on the private data and returns the performance metrics to you.</li>
+        </ol>
 
-                <!-- Dataset Citation -->
-                {% if challenge.dataset_citation %}
-                <div class="bg-gray-50 rounded-lg p-8 shadow-lg">
-                    <h3 class="text-xl font-bold mb-4 text-gray-900 flex items-center">
-                        <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
-                        </svg>
-                        Dataset Citation
-                    </h3>
-                    <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm mb-4 overflow-x-auto">
-                        <code>{{ challenge.dataset_citation }}</code>
-                    </div>
-                    <button onclick="copyCitation('dataset')" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
-                        Copy Citation
-                    </button>
-                </div>
-                {% endif %}
+        <p class="mt-6 text-gray-400 text-sm">For detailed instructions and documentation, visit the official Centauron
+          website at <a href="https://centauron.net" target="_blank"
+                        class="text-blue-400 hover:underline">centauron.net</a>.</p>
+      </div>
+      <div class="text-center p-8 bg-gray-800 rounded-lg">
+        <h3 class="text-2xl font-bold mb-4">Ready to test your model?</h3>
+        <p class="mb-8 text-gray-300">Participate in our ongoing challenge and see how your algorithm stacks up against
+          others on a truly independent test set.</p>
+        <a href="https://hub.centauron.io/" target="_blank" rel="noopener noreferrer"
+           class="w-full inline-block bg-blue-600 text-white font-bold py-4 px-8 rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-300 text-lg">
+          Participate in the Challenge
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
 
-                <!-- BibTeX -->
-                <div class="bg-gray-50 rounded-lg p-8 shadow-lg">
-                    <h3 class="text-xl font-bold mb-4 text-gray-900 flex items-center">
-                        <svg class="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                        </svg>
-                        BibTeX
-                    </h3>
-                    <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm mb-4 overflow-x-auto">
+<!-- Citation Section -->
+<section id="citation" class="py-20 bg-white">
+  <div class="container mx-auto px-6">
+    <h2 class="text-3xl font-bold text-center mb-4 text-gray-900">How to Cite</h2>
+    <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
+      If you use this challenge or datasets in your research, please cite the following:
+    </p>
+
+    <div class="max-w-4xl mx-auto space-y-6">
+      <!-- Challenge Citation -->
+      <div class="bg-gray-50 rounded-lg p-8 shadow-lg">
+        <h3 class="text-xl font-bold mb-4 text-gray-900 flex items-center">
+          <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+          </svg>
+          Challenge Citation
+        </h3>
+        <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm mb-4 overflow-x-auto">
+          <code>{{ challenge.citation|default:"Author Name et al. (2025). Challenge Title: A Multi-Institutional AI Challenge for Disease Prediction. Centauron Platform. https://hub.centauron.io/challenge/xyz" }}</code>
+        </div>
+        <button onclick="copyCitation('challenge')"
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+          Copy Citation
+        </button>
+      </div>
+
+      <!-- Dataset Citation -->
+      {% if challenge.dataset_citation %}
+        <div class="bg-gray-50 rounded-lg p-8 shadow-lg">
+          <h3 class="text-xl font-bold mb-4 text-gray-900 flex items-center">
+            <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
+            </svg>
+            Dataset Citation
+          </h3>
+          <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm mb-4 overflow-x-auto">
+            <code>{{ challenge.dataset_citation }}</code>
+          </div>
+          <button onclick="copyCitation('dataset')"
+                  class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+            Copy Citation
+          </button>
+        </div>
+      {% endif %}
+
+      <!-- BibTeX -->
+      <div class="bg-gray-50 rounded-lg p-8 shadow-lg">
+        <h3 class="text-xl font-bold mb-4 text-gray-900 flex items-center">
+          <svg class="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+          </svg>
+          BibTeX
+        </h3>
+        <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm mb-4 overflow-x-auto">
                         <pre><code>@misc{challenge{{ challenge.year|default:"2025" }},
   title={<nowiki>{{ challenge.title|default:"Challenge Title" }}</nowiki>},
   author={<nowiki>{{ challenge.authors|default:"Author Name and Contributors" }}</nowiki>},
@@ -819,162 +1008,165 @@ docker push username/my-challenge-model:v1</code></pre>
   publisher={Centauron Platform},
   url={<nowiki>{{ challenge.url|default:"https://hub.centauron.io/" }}</nowiki>}
 }</code></pre>
-                    </div>
-                    <button onclick="copyCitation('bibtex')" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
-                        Copy BibTeX
-                    </button>
-                </div>
-
-                <!-- Related Publications -->
-                {% if challenge.related_publications %}
-                <div class="bg-blue-50 rounded-lg p-8 border-l-4 border-blue-600">
-                    <h3 class="text-xl font-bold mb-4 text-gray-900">Related Publications</h3>
-                    <ul class="space-y-3 text-gray-700">
-                        {% for publication in challenge.related_publications %}
-                        <li class="flex items-start">
-                            <span class="text-blue-600 mr-2 mt-1">📄</span>
-                            <span>{{ publication }}</span>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
-            </div>
         </div>
-    </section>
+        <button onclick="copyCitation('bibtex')"
+                class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+          Copy BibTeX
+        </button>
+      </div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12">
-        <div class="container mx-auto px-6">
-            <div class="grid md:grid-cols-3 gap-8 mb-8">
-                <div>
-                    <h3 class="text-xl font-bold mb-4">About Centauron</h3>
-                    <p class="text-gray-400">
-                        Centauron is a decentralized platform for secure AI model evaluation on private healthcare data.
-                    </p>
-                </div>
-                <div>
-                    <h3 class="text-xl font-bold mb-4">Quick Links</h3>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="https://centauron.net" target="_blank" class="hover:text-white">Centauron Website</a></li>
-                        <li><a href="https://hub.centauron.io/" target="_blank" class="hover:text-white">Challenge Platform</a></li>
-                        <li><a href="https://centauron.net/docs" target="_blank" class="hover:text-white">Documentation</a></li>
-                        <li><a href="#citation" class="hover:text-white">Citation</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-xl font-bold mb-4">Contact</h3>
-                    <p class="text-gray-400">
-                        For questions about this challenge, please contact:<br>
-                        <a href="mailto:{{ challenge.contact_email|default:'info@centauron.net' }}" class="text-blue-400 hover:text-blue-300">{{ challenge.contact_email|default:"info@centauron.net" }}</a>
-                    </p>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
-                <p>&copy; {{ challenge.year|default:"2025" }} {{ challenge.organization|default:"Centauron Network" }}. All rights reserved.</p>
-            </div>
+      <!-- Related Publications -->
+      {% if challenge.related_publications %}
+        <div class="bg-blue-50 rounded-lg p-8 border-l-4 border-blue-600">
+          <h3 class="text-xl font-bold mb-4 text-gray-900">Related Publications</h3>
+          <ul class="space-y-3 text-gray-700">
+            {% for publication in challenge.related_publications %}
+              <li class="flex items-start">
+                <span class="text-blue-600 mr-2 mt-1">📄</span>
+                <span>{{ publication }}</span>
+              </li>
+            {% endfor %}
+          </ul>
         </div>
-    </footer>
+      {% endif %}
+    </div>
+  </div>
+</section>
 
-    <script>
-        // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-12">
+  <div class="container mx-auto px-6">
+    <div class="grid md:grid-cols-3 gap-8 mb-8">
+      <div>
+        <h3 class="text-xl font-bold mb-4">About Centauron</h3>
+        <p class="text-gray-400">
+          Centauron is a decentralized platform for secure AI model evaluation on private healthcare data.
+        </p>
+      </div>
+      <div>
+        <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+        <ul class="space-y-2 text-gray-400">
+          <li><a href="https://centauron.net" target="_blank" class="hover:text-white">Centauron Website</a></li>
+          <li><a href="https://hub.centauron.io/" target="_blank" class="hover:text-white">Challenge Platform</a></li>
+          <li><a href="https://centauron.net/docs" target="_blank" class="hover:text-white">Documentation</a></li>
+          <li><a href="#citation" class="hover:text-white">Citation</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-xl font-bold mb-4">Contact</h3>
+        <p class="text-gray-400">
+          For questions about this challenge, please contact:<br>
+          <a href="mailto:{{ challenge.contact_email|default:'info@centauron.net' }}"
+             class="text-blue-400 hover:text-blue-300">{{ challenge.contact_email|default:"info@centauron.net" }}</a>
+        </p>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+      <p>&copy; {{ challenge.year|default:"2025" }} {{ challenge.organization|default:"Centauron Network" }}. All rights
+        reserved.</p>
+    </div>
+  </div>
+</footer>
 
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('open');
+<script>
+  // Mobile menu toggle
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
 
-            // Toggle icon
-            const icon = mobileMenuButton.querySelector('svg path');
-            if (mobileMenu.classList.contains('open')) {
-                mobileMenuButton.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>';
-            } else {
-                mobileMenuButton.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
-            }
+  mobileMenuButton.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+
+    // Toggle icon
+    const icon = mobileMenuButton.querySelector('svg path');
+    if (mobileMenu.classList.contains('open')) {
+      mobileMenuButton.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>';
+    } else {
+      mobileMenuButton.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
+    }
+  });
+
+  // Close mobile menu when clicking a link
+  const mobileLinks = document.querySelectorAll('#mobile-menu a');
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      mobileMenuButton.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
+    });
+  });
+
+  // Smooth scrolling for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        const offset = 80; // Account for fixed header
+        const elementPosition = target.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
         });
+      }
+    });
+  });
 
-        // Close mobile menu when clicking a link
-        const mobileLinks = document.querySelectorAll('#mobile-menu a');
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('open');
-                mobileMenuButton.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
-            });
-        });
+  // Highlight active section in navigation
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
 
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    const offset = 80; // Account for fixed header
-                    const elementPosition = target.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - offset;
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.clientHeight;
+      if (pageYOffset >= (sectionTop - 150)) {
+        current = section.getAttribute('id');
+      }
+    });
 
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
+    navLinks.forEach(link => {
+      link.classList.remove('text-blue-400');
+      link.classList.add('text-gray-300');
+      if (link.getAttribute('href') === `#${current}`) {
+        link.classList.remove('text-gray-300');
+        link.classList.add('text-blue-400');
+      }
+    });
+  });
 
-        // Highlight active section in navigation
-        const sections = document.querySelectorAll('section[id]');
-        const navLinks = document.querySelectorAll('.nav-link');
+  // Copy citation function
+  function copyCitation(type) {
+    let text = '';
+    if (type === 'challenge') {
+      text = document.querySelector('#citation .bg-gray-50:nth-child(1) code').textContent;
+    } else if (type === 'dataset') {
+      text = document.querySelector('#citation .bg-gray-50:nth-child(2) code').textContent;
+    } else if (type === 'bibtex') {
+      text = document.querySelector('#citation pre code').textContent;
+    }
 
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (pageYOffset >= (sectionTop - 150)) {
-                    current = section.getAttribute('id');
-                }
-            });
+    navigator.clipboard.writeText(text).then(() => {
+      const button = event.target;
+      const originalText = button.textContent;
+      button.textContent = '✓ Copied!';
+      setTimeout(() => {
+        button.textContent = originalText;
+      }, 2000);
+    });
+  }
 
-            navLinks.forEach(link => {
-                link.classList.remove('text-blue-400');
-                link.classList.add('text-gray-300');
-                if (link.getAttribute('href') === `#${current}`) {
-                    link.classList.remove('text-gray-300');
-                    link.classList.add('text-blue-400');
-                }
-            });
-        });
-
-        // Copy citation function
-        function copyCitation(type) {
-            let text = '';
-            if (type === 'challenge') {
-                text = document.querySelector('#citation .bg-gray-50:nth-child(1) code').textContent;
-            } else if (type === 'dataset') {
-                text = document.querySelector('#citation .bg-gray-50:nth-child(2) code').textContent;
-            } else if (type === 'bibtex') {
-                text = document.querySelector('#citation pre code').textContent;
-            }
-
-            navigator.clipboard.writeText(text).then(() => {
-                const button = event.target;
-                const originalText = button.textContent;
-                button.textContent = '✓ Copied!';
-                setTimeout(() => {
-                    button.textContent = originalText;
-                }, 2000);
-            });
-        }
-
-        // Add scroll-based header shadow
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('nav');
-            if (window.scrollY > 0) {
-                header.classList.add('shadow-2xl');
-            } else {
-                header.classList.remove('shadow-2xl');
-            }
-        });
-    </script>
+  // Add scroll-based header shadow
+  window.addEventListener('scroll', () => {
+    const header = document.querySelector('nav');
+    if (window.scrollY > 0) {
+      header.classList.add('shadow-2xl');
+    } else {
+      header.classList.remove('shadow-2xl');
+    }
+  });
+</script>
 </body>
 </html>
 

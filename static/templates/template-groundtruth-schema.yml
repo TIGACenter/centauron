@@ -8,4 +8,7 @@ id:
     - val 1
     - val 2
     - val3
+  is_endpoint: false # for the challenge website
+  description:  # only necessary if is_endpoint: true for the challenge website
+
 

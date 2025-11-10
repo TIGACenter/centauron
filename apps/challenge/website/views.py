@@ -1,11 +1,10 @@
-from django.shortcuts import render
-
 # Create your views here.
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import redirect
 from django.views.generic import FormView, TemplateView
 from django.db import models
+import yaml
 
 from apps.challenge.views import ChallengeContextMixin
 from apps.challenge.website.forms import ProjectWebsiteForm
@@ -94,7 +93,9 @@ class PreviewView(LoginRequiredMixin, ChallengeContextMixin, TemplateView):
             raise Http404()
 
         website = objects_filter.first()
-        project = self.get_challenge().project
+        challenge = self.get_challenge()
+        project = challenge.project
+
         # contributors are accepted members including origin
         contributors = project.get_project_members().select_related('user')
 
@@ -107,13 +108,22 @@ class PreviewView(LoginRequiredMixin, ChallengeContextMixin, TemplateView):
             # Count unique cases from those files
             case_count = user_files.values('case').distinct().count()
 
+            # Get initials from name
+            name = member.user.human_readable #get_full_name() or member.user.email.split('@')[0]
+            name_parts = name.split()
+            initials = ''.join([part[0].upper() for part in name_parts if part]) if name_parts else 'U'
+
             contributors_with_stats.append({
                 'member': member,
+                'name': name,
+                'initials': initials,
                 'file_count': file_count,
                 'case_count': case_count,
                 'orcid': member.user.orcid,
                 'pubmed': member.user.pubmed,
                 'google_scholar': member.user.google_scholar,
+                'organization': member.user.organization or '',
+                'email': member.user.email if hasattr(member.user, 'email') else '',
             })
 
         # compute overall statistics
@@ -127,14 +137,108 @@ class PreviewView(LoginRequiredMixin, ChallengeContextMixin, TemplateView):
         def code_list(qs):
             return [c.get_readable_str() if hasattr(c, 'get_readable_str') else getattr(c, 'code', str(c)) for c in qs.all()]
 
+        # Get biomarkers, tissue, and disease information
+        biomarkers = code_list(project.biomarkers)
+        tissue = code_list(project.tissue)
+        disease = code_list(project.disease)
+
+        # Determine the principal investigator (challenge creator)
+        pi = challenge.created_by
+        pi_name = pi.human_readable if pi and hasattr(pi, 'human_readable') else 'Principal Investigator'
+        pi_parts = pi_name.split()
+        pi_initials = ''.join([part[0].upper() for part in pi_parts if part]) if pi_parts else 'PI'
+
+        # Get number of clinical sites (number of contributors)
+        num_sites = contributors.count()
+
+        # Get target metrics for evaluation
+        target_metrics = challenge.target_metrics.all().order_by('sort', 'key')
+        evaluation_metrics = []
+        for metric in target_metrics:
+            evaluation_metrics.append({
+                'key': metric.key,
+                'sort': metric.sort,
+                'dtype': metric.dtype,
+                'filename': metric.filename,
+                'name': metric.name,
+                'description': metric.description,
+            })
+
+        # Get clinical endpoints from ground truth schema
+        clinical_endpoints = []
+        ground_truth_schema = project.latest_ground_truth_schema
+        if ground_truth_schema and ground_truth_schema.yaml:
+            try:
+                schema_data = yaml.safe_load(ground_truth_schema.yaml)
+                if isinstance(schema_data, dict) and 'columns' in schema_data:
+                    for column in schema_data['columns']:
+                        if isinstance(column, dict) and column.get('is_endpoint', False):
+                            clinical_endpoints.append({
+                                'name': column.get('name', ''),
+                                'description': column.get('description', ''),
+                            })
+            except yaml.YAMLError:
+                # If YAML parsing fails, just use empty list
+                pass
+
+        # Challenge context data
+        challenge_data = {
+            'title': challenge.name,
+            'description': challenge.description or website.slogan or 'Advance medical AI by developing models on real-world clinical data.',
+            'dataset_size': f"{total_case_count}+" if total_case_count > 0 else "N/A",
+            'num_sites': f"{num_sites}+" if num_sites > 0 else "1+",
+            'data_modalities': f"{total_file_count}+" if total_file_count > 0 else "Multiple",
+            'num_participants': "Open",  # Could be enhanced with actual participant count
+            'contact_email': website.contact_email or (self.request.user.email if hasattr(self.request.user, 'email') else 'info@centauron.net'),
+            'year': challenge.date_created.year if challenge.date_created else 2025,
+            'organization': pi.organization if pi and hasattr(pi, 'organization') else 'Centauron Network',
+
+            # Clinical context
+            'population_size': f"{total_case_count} cases" if total_case_count > 0 else "N cases",
+            'population': project.population or "Diverse clinical cohort",
+            'intended_use': project.intended_use or "Clinical prediction and decision support",
+
+            # Biomarkers, tissue, disease
+            'molecular_markers': ', '.join(biomarkers[:3]) if biomarkers else "Gene expression, mutations",
+            'tissue_type': ', '.join(tissue[:3]) if tissue else "Multiple tissue types",
+            'disease_type': ', '.join(disease[:3]) if disease else "Clinical condition",
+            'biomarkers_list': biomarkers,
+            'tissue_list': tissue,
+            'disease_list': disease,
+
+            # Principal Investigator
+            'pi_name': pi_name,
+            'pi_initials': pi_initials,
+            'pi_title': 'Principal Investigator',
+            'pi_affiliation': website.affiliation or (pi.organization if pi and hasattr(pi, 'organization') else 'Research Institution'),
+            'pi_bio': f"Leading the {challenge.name} initiative.",
+            'pi_email': website.contact_email or (pi.email if pi and hasattr(pi, 'email') else None),
+
+            # Challenge dates
+            'open_from': challenge.open_from,
+            'open_until': challenge.open_until,
+
+            # Citation
+            'citation': f"{pi_name} et al. ({challenge.date_created.year if challenge.date_created else 2025}). {challenge.name}. Centauron Platform. https://hub.centauron.io/",
+            'authors': pi_name,
+            'url': self.request.build_absolute_uri(challenge.get_absolute_url()) if hasattr(challenge, 'get_absolute_url') else "https://hub.centauron.io/",
+
+            # Evaluation Metrics
+            'evaluation_metrics': evaluation_metrics,
+
+            # Clinical Endpoints from Ground Truth Schema
+            'clinical_endpoints': clinical_endpoints,
+        }
+
         ctx.update({
             'website': website,
+            'challenge': challenge_data,
             'slogan': website.slogan,
             'population': project.population,
             'intended_use': project.intended_use,
-            'biomarkers': code_list(project.biomarkers),
-            'tissue': code_list(project.tissue),
-            'disease': code_list(project.disease),
+            'biomarkers': biomarkers,
+            'tissue': tissue,
+            'disease': disease,
             'contributors': contributors_with_stats,
             'stats': {
                 'file_count': total_file_count,

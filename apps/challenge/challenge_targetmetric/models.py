@@ -25,6 +25,8 @@ class TargetMetric(IdentifieableMixin, Base):
     dtype = models.CharField(choices=DType.choices, max_length=6, default=DType.FLOAT)
     challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE, related_name='target_metrics')
     filename = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, null=True, blank=True, default=None)
+    description = models.TextField(null=True, blank=True, default=None)
 
     def __str__(self):
         return f'{self.key} {self.sort}'
