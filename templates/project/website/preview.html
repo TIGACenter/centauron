@@ -1,230 +1,351 @@
+{% load core_tags %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Histo-Data | Contribute Your WSI</title>
+    <title>{{ project.name }} - Research Cohort</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
     <style>
-        /* Apply the font from the example */
-        body {
-            font-family: 'Inter', sans-serif;
+        .affiliation-content a {
+            color: #2563eb !important;
+            text-decoration: underline !important;
+        }
+        .affiliation-content a:hover {
+            color: #1e40af !important;
+          text-decoration: none !important;
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 antialiased">
+<body class="bg-gray-50">
 
-    <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-200">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="text-2xl font-bold text-gray-900">
-              {{ project.name }}
-{#                <span class="text-blue-600">Project</span> Histo-Data#}
-            </div>
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <!-- Title -->
+                <div>
+                    <h1 class="text-4xl font-bold">{{ project.name }}</h1>
+                    {% if website and website.slogan %}
+                        <p class="mt-2 text-blue-100 text-lg">{{ website.slogan }}</p>
+                    {% endif %}
+                </div>
 
-            <div class="hidden md:flex items-center space-x-6">
-                <a href="#why-contribute" class="text-gray-600 hover:text-blue-600">Why Contribute?</a>
-                <a href="#projects" class="text-gray-600 hover:text-blue-600">Current Projects</a>
-                <a href="#how-to-submit" class="text-gray-600 hover:text-blue-600">How to Submit</a>
-                <a href="#security" class="text-gray-600 hover:text-blue-600">Security & Ethics</a>
-                <a href="#faq" class="text-gray-600 hover:text-blue-600">FAQ</a>
-
-                <a href="#submit" class="ml-4 inline-block bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300">
-                    Contribute Data
-                </a>
+                <!-- Navigation -->
+                <nav>
+                    <ul class="flex flex-wrap gap-6 text-sm font-medium">
+                        <li><a href="#about" class="hover:text-blue-200 transition-colors">About</a></li>
+                        <li><a href="#characteristics" class="hover:text-blue-200 transition-colors">Cohort Details</a></li>
+                        <li><a href="#statistics" class="hover:text-blue-200 transition-colors">Statistics</a></li>
+                        <li><a href="#contributors" class="hover:text-blue-200 transition-colors">Contributors</a></li>
+                        <li><a href="#contact" class="hover:text-blue-200 transition-colors">Contact</a></li>
+                    </ul>
+                </nav>
             </div>
-            <div class="md:hidden">
-                <button class="text-gray-800">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                </button>
-            </div>
-        </nav>
+        </div>
     </header>
 
-    <main class="container mx-auto px-6 py-20 md:py-32 text-center">
-        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
-            Advance Medical Science.
-            <br>
-            <span class="text-blue-600">Share Your Whole Slide Images.</span>
-        </h1>
-        <p class="mt-6 text-lg text-gray-600 max-w-3xl mx-auto">
-            Join our global initiative to build the world's leading database for pathology research. Your de-identified data is the key to powering new AI diagnostics, accelerating drug discovery, and fundamentally changing how we understand disease.
-        </p>
-        <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-            <a href="#submit" class="inline-block bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-300 text-lg">
-                Start Your Submission
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- Hero Section -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl shadow-xl overflow-hidden">
+                <div class="px-8 py-12 md:px-12 md:py-16">
+                    <div class="max-w-3xl">
+                        <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                            Advancing Medical Research Through Collaboration
+                        </h2>
+                        <p class="text-xl text-gray-700 mb-8 leading-relaxed">
+                            This research cohort brings together leading institutions and researchers to build a comprehensive dataset for {{ project.name }}. Join us in pushing the boundaries of computational pathology and precision medicine.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#about" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors inline-flex items-center">
+                                Learn More
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+                            <a href="#contact" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold border-2 border-blue-600 hover:bg-blue-50 transition-colors">
+                                Get Involved
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Intended Use Section -->
+        <section id="about" class="mb-12">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="bg-blue-600 px-6 py-4">
+                    <h2 class="text-2xl font-bold text-white">Intended Use</h2>
+                </div>
+                <div class="p-6">
+                    <div class="text-gray-700 text-lg leading-relaxed prose max-w-none">
+                        {% if intended_use %}
+                            {{ intended_use|markdownify|safe }}
+                        {% else %}
+                            <p>This cohort is being developed to support cutting-edge research in computational pathology and precision medicine. Researchers will use this data to develop and validate AI-driven diagnostic tools, discover novel biomarkers, and advance our understanding of disease mechanisms.</p>
+                        {% endif %}
+                    </div>
+
+{#                    {% if website and website.contact_email %}#}
+{#                    <div class="mt-6 pt-6 border-t border-gray-200">#}
+{#                        <p class="text-gray-600 mb-3">Interested in contributing to this cohort?</p>#}
+{#                        <a href="mailto:{{ website.contact_email }}"#}
+{#                           class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">#}
+{#                            Contact Us: {{ website.contact_email }}#}
+{#                        </a>#}
+{#                    </div>#}
+{#                    {% endif %}#}
+                </div>
+            </div>
+        </section>
+
+        <!-- Cohort Characteristics -->
+        <section id="characteristics" class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6">Cohort Characteristics</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Population -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-semibold text-blue-600 mb-3">Target Population</h3>
+                    <div class="text-gray-700 prose prose-sm max-w-none">
+                        {% if population %}
+                            {{ population|markdownify|safe }}
+                        {% else %}
+                            <p>All patient populations with relevant pathology specimens are encouraged to participate.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Disease -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-semibold text-blue-600 mb-3">Disease Focus</h3>
+                    <p class="text-gray-700">
+                        {% if disease %}
+                            {{ disease|join:", " }}
+                        {% else %}
+                            Multiple disease types accepted
+                        {% endif %}
+                    </p>
+                </div>
+
+                <!-- Tissue Types -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-semibold text-blue-600 mb-3">Tissue Types</h3>
+                    <p class="text-gray-700">
+                        {% if tissue %}
+                            {{ tissue|join:", " }}
+                        {% else %}
+                            Various tissue types
+                        {% endif %}
+                    </p>
+                </div>
+
+                <!-- Biomarkers -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-semibold text-blue-600 mb-3">Biomarkers of Interest</h3>
+                    <p class="text-gray-700">
+                        {% if biomarkers %}
+                            {{ biomarkers|join:", " }}
+                        {% else %}
+                            Standard pathology markers
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics -->
+        <section id="statistics" class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6">Current Data</h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-md p-6 text-white text-center">
+                    <div class="text-4xl font-bold mb-2">{{ stats.file_count }}</div>
+                    <div class="text-blue-100">Files</div>
+                </div>
+
+                <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg shadow-md p-6 text-white text-center">
+                    <div class="text-4xl font-bold mb-2">{{ stats.case_count }}</div>
+                    <div class="text-indigo-100">Cases</div>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-md p-6 text-white text-center">
+                    <div class="text-4xl font-bold mb-2">{{ stats.total_size|filesizeformat }}</div>
+                    <div class="text-purple-100">Total Size</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contributors -->
+        <section id="contributors" class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6">Contributors</h2>
+
+            {% if contributors %}
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for contrib in contributors %}
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <div class="flex items-start mb-3">
+                        <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4 flex-shrink-0">
+                            {{ contrib.member.user.human_readable|default:contrib.member.user.identifier|slice:":1"|upper }}
+                        </div>
+                        <div class="flex-grow">
+                            <div class="font-semibold text-gray-900">
+                                {{ contrib.member.user.human_readable|default:contrib.member.user.identifier }}
+                            </div>
+                            <div class="text-sm text-gray-500">
+                                Joined {{ contrib.member.date_created|date:"M Y" }}
+                            </div>
+
+                            <!-- Profile Links -->
+                            {% if contrib.orcid or contrib.google_scholar or contrib.pubmed %}
+                            <div class="flex gap-2 mt-2">
+                                {% if contrib.orcid %}
+                                <a href="{{ contrib.orcid }}" target="_blank" rel="noopener noreferrer"
+                                   class="text-xs text-blue-600 hover:text-blue-800 underline hover:no-underline"
+                                   title="ORCID">ORCID</a>
+                                {% endif %}
+                                {% if contrib.google_scholar %}
+                                <a href="{{ contrib.google_scholar }}" target="_blank" rel="noopener noreferrer"
+                                   class="text-xs text-blue-600 hover:text-blue-800 underline  hover:no-underline"
+                                   title="Google Scholar">Scholar</a>
+                                {% endif %}
+                                {% if contrib.pubmed %}
+                                <a href="{{ contrib.pubmed }}" target="_blank" rel="noopener noreferrer"
+                                   class="text-xs text-blue-600 hover:text-blue-800 underline hover:no-underline"
+                                   title="PubMed">PubMed</a>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="border-t border-gray-200 pt-3 mt-3">
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <div class="text-center bg-blue-50 rounded p-2">
+                                <div class="font-bold text-blue-600">{{ contrib.case_count }}</div>
+                                <div class="text-gray-600 text-xs">Cases</div>
+                            </div>
+                            <div class="text-center bg-indigo-50 rounded p-2">
+                                <div class="font-bold text-indigo-600">{{ contrib.file_count }}</div>
+                                <div class="text-gray-600 text-xs">WSI</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="bg-white rounded-lg shadow-md p-8 text-center text-gray-500">
+                No contributors listed yet. Be the first to join!
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="mb-12">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="bg-blue-600 px-6 py-4">
+                    <h2 class="text-2xl font-bold text-white">Contact Information</h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Responsible Person -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Project Contact</h3>
+                            {% if project.created_by %}
+                            <div class="flex items-start">
+                                <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-2xl mr-4 flex-shrink-0">
+                                    {{ project.created_by.human_readable|default:project.created_by.identifier|slice:":1"|upper }}
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-900 text-lg">
+                                        {{ project.created_by.human_readable|default:project.created_by.identifier }}
+                                    </p>
+{#                                    <p class="text-gray-600 text-sm mt-1">Principal Investigator</p>#}
+                                    {% if website and website.affiliation %}
+                                    <div class="text-gray-600 text-sm mt-1 affiliation-content">
+                                      {{ website.affiliation|markdownify|safe }}
+                                      </div>
+                                    {% endif %}
+                                    {% if website and website.contact_email %}
+                                    <p class="text-blue-600 mt-2">
+                                        <a href="mailto:{{ website.contact_email }}" class="text-blue-600 underline hover:no-underline hover:text-blue-800">
+                                            {{ website.contact_email }}
+                                        </a>
+                                    </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% else %}
+                            <p class="text-gray-600">Contact information will be available soon.</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- How to Get Involved -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Get Involved</h3>
+                            <p class="text-gray-700 mb-4">
+                                We welcome contributions from researchers and institutions worldwide. If you're interested in participating in this cohort:
+                            </p>
+                            <ul class="space-y-2 text-gray-700 mb-6">
+                                <li class="flex items-start">
+                                    <svg class="w-5 h-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    Review the cohort characteristics and intended use
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-5 h-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    Ensure your data meets the requirements
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-5 h-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    Reach out to discuss collaboration opportunities
+                                </li>
+                            </ul>
+                            {% if website and website.contact_email %}
+                            <a href="mailto:{{ website.contact_email }}"
+                               class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                                Send an Inquiry
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        {% if website and website.contact_email %}
+        <section class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-lg shadow-lg p-8 text-white text-center">
+            <h2 class="text-3xl font-bold mb-4">Ready to Contribute?</h2>
+            <p class="text-blue-100 mb-6 text-lg max-w-2xl mx-auto">
+                Join our network of contributors advancing medical research and improving patient outcomes through collaborative data sharing.
+            </p>
+            <a href="mailto:{{ website.contact_email }}"
+               class="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-bold hover:bg-blue-50 transition-colors">
+                Contact Us Today
             </a>
-            <a href="#why-contribute" class="inline-block bg-gray-800 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-900 transition-colors duration-300 text-lg">
-                Learn More
-            </a>
-        </div>
+        </section>
+        {% endif %}
+
     </main>
 
-    <hr class="w-11/12 mx-auto" />
-
-    <section id="why-contribute" class="py-20 bg-white">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center text-gray-900 mb-16">Why Your Contribution Matters</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-gray-50 border border-gray-200 p-8 rounded-lg">
-                    <h3 class="text-2xl font-bold text-blue-600">Accelerate Research</h3>
-                    <p class="mt-3 text-gray-600">
-                        Your slides will help train and validate next-generation computational pathology tools, enabling faster and more accurate diagnostics for patients.
-                    </p>
-                </div>
-                <div class="bg-gray-50 border border-gray-200 p-8 rounded-lg">
-                    <h3 class="text-2xl font-bold text-blue-600">Power Global Collaboration</h3>
-                    <p class="mt-3 text-gray-600">
-                        We provide a secure, centralized resource for thousands of researchers, breaking down data silos and fostering new collaborations.
-                    </p>
-                </div>
-                <div class="bg-gray-50 border border-gray-200 p-8 rounded-lg">
-                    <h3 class="text-2xl font-bold text-blue-600">Receive Full Credit</h3>
-                    <p class="mt-3 text-gray-600">
-                        All contributions are tracked. You and your institution will be properly cited in all research that uses your data, increasing your work's impact.
-                    </p>
-                </div>
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center">
+                <p>&copy; {% now "Y" %} {{ project.name }}. All rights reserved.</p>
             </div>
-        </div>
-    </section>
-
-    <hr class="w-11/12 mx-auto" />
-
-    <section id="projects" class="py-20 bg-gray-50">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center text-gray-900 mb-4">Our Current Project Needs</h2>
-            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-                We are actively seeking data for the following high-priority research projects. See where your slides can make the biggest impact.
-            </p>
-
-            <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
-
-                <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg border border-gray-200 space-y-3">
-                    <h3 class="text-2xl font-bold text-blue-600">The Digital Lung Cancer Atlas (DLCA)</h3>
-
-                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Description:</strong> This project aims to create a comprehensive map of morphological and biomarker expressions in Non-Small Cell Lung Cancer (NSCLC).</p>
-                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Intended Use:</strong> To train AI models for predicting patient prognosis and response to immunotherapy based on H&E slides.</p>
-                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Population:</strong> Adult patients (age 18+), all genders, diverse ancestries, with confirmed NSCLC diagnosis.</p>
-                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Biomarkers:</strong> PD-L1, EGFR, ALK, ROS1.</p>
-                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Tissue:</strong> Formalin-Fixed Paraffin-Embedded (FFPE) lung biopsy or resection specimens.</p>
-                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Disease:</strong> Non-Small Cell Lung Cancer (Adenocarcinoma and Squamous Cell Carcinoma).</p>
-                </div>
-
-                <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg border border-gray-200 space-y-3">
-                    <h3 class="text-2xl font-bold text-blue-600">Pancreatic Ductal Adenocarcinoma (PDAC) Staging</h3>
-
-                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Description:</strong> A focused effort to differentiate high-grade from low-grade PDAC and identify subtle morphological features of early-stage disease.</p>
-                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Intended Use:</strong> Development of an AI-assisted grading tool to reduce inter-observer variability among pathologists.</p>
-                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Population:</strong> Patients with surgical resection for PDAC, with corresponding pathology reports.</p>
-                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Biomarkers:</strong> H&E, MUC1, MUC5AC, Ki-67.</p>
-                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Tissue:</strong> FFPE pancreatic tissue.</p>
-                    <p class="text-gray-700"><strong class="font-semibold text-gray-900">Disease:</strong> Pancreatic Ductal Adenocarcinoma (PDAC).</p>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <hr class="w-11/12 mx-auto" />
-
-    <section id="how-to-submit" class="py-20 bg-white">
-        <div class="container mx-auto px-6 max-w-4xl">
-            <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">How to Contribute</h2>
-            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-                We’ve designed our submission process to be secure, straightforward, and respectful of your time.
-            </p>
-            <ol class="space-y-8">
-                <li class="flex items-start">
-                    <span class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold text-lg">1</span>
-                    <div class="ml-6">
-                        <h4 class="text-xl font-semibold text-gray-900">Register Your Project</h4>
-                        <p class="mt-1 text-gray-600">Create a secure account on our contributor portal and provide a brief overview of the data you wish to share.</p>
-                    </div>
-                </li>
-                <li class="flex items-start">
-                    <span class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold text-lg">2</span>
-                    <div class="ml-6">
-                        <h4 class="text-xl font-semibold text-gray-900">De-identify & Prepare</h4>
-                        <p class="mt-1 text-gray-600">Follow our step-by-step guide to ensure all data is fully anonymized and compliant. We provide tools to help you securely remove all PHI.</p>
-                    </div>
-                </li>
-                <li class="flex items-start">
-                    <span class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold text-lg">3</span>
-                    <div class="ml-6">
-                        <h4 class="text-xl font-semibold text-gray-900">Secure Upload</h4>
-                        <p class="mt-1 text-gray-600">Use our high-speed, encrypted transfer client to upload your WSI files and metadata securely to our private cloud.</p>
-                    </div>
-                </li>
-                <li class="flex items-start">
-                    <span class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold text-lg">4</span>
-                    <div class="ml-6">
-                        <h4 class="text-xl font-semibold text-gray-900">Data Curation & QC</h4>
-                        <p class="mt-1 text-gray-600">Our curation team will perform a quality-control check and work with you to finalize the metadata and documentation.</p>
-                    </div>
-                </li>
-            </ol>
-        </div>
-    </section>
-
-    <hr class="w-11/12 mx-auto" />
-
-    <section id="security" class="py-20 bg-gray-900 text-white">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-12">Security, Privacy, and Ethics</h2>
-            <p class="text-center text-gray-300 mb-12 max-w-3xl mx-auto">
-                We understand that WSI data is sensitive. Protecting it—and your trust—is our highest priority.
-            </p>
-            <div class="grid md:grid-cols-2 gap-10">
-                <div class="p-6 bg-gray-800 rounded-lg">
-                    <h4 class="text-xl font-semibold text-blue-400 mb-2">Full Anonymization</h4>
-                    <p class="text-gray-300">We require all data to be fully de-identified before upload. We provide protocols to help you securely remove all Patient Health Information (PHI).</p>
-                </div>
-                <div class="p-6 bg-gray-800 rounded-lg">
-                    <h4 class="text-xl font-semibold text-blue-400 mb-2">Bank-Grade Security</h4>
-                    <p class="text-gray-300">Our platform uses end-to-end encryption for all data in transit and at rest. Our servers are HIPAA and GDPR compliant.</p>
-                </div>
-                <div class="p-6 bg-gray-800 rounded-lg">
-                    <h4 class="text-xl font-semibold text-blue-400 mb-2">Ethical Oversight</h4>
-                    <p class="text-gray-300">All projects and data use requests are fully approved by an independent Institutional Review Board (IRB) or Ethics Committee.</p>
-                </div>
-                <div class="p-6 bg-gray-800 rounded-lg">
-                    <h4 class="text-xl font-semibold text-blue-400 mb-2">Data Control</h4>
-                    <p class="text-gray-300">You and your institution remain the owners of your data. You specify the terms of use through clear, standardized data-sharing agreements.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="submit" class="py-24 bg-white">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-4xl font-extrabold text-gray-900">Ready to Make an Impact?</h2>
-            <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-                Join the leading pathologists and institutions who are contributing to the future of medicine.
-            </p>
-            <div class="mt-8">
-                <a href="#start-submission" class="inline-block bg-blue-600 text-white font-bold py-4 px-10 rounded-lg shadow-xl hover:bg-blue-700 transition-colors duration-300 text-lg">
-                    Start Your Data Submission
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <footer class="bg-gray-800 text-white py-10">
-        <div class="container mx-auto px-6 text-center text-gray-400">
-            <div class="flex justify-center space-x-6 mb-4">
-                <a href="#about" class="hover:text-white">About</a>
-                <a href="#publications" class="hover:text-white">Publications</a>
-                <a href="#contact" class="hover:text-white">Contact Us</a>
-                <a href="#privacy" class="hover:text-white">Privacy Policy</a>
-                <a href="#terms" class="hover:text-white">Terms of Use</a>
-            </div>
-            <p>&copy; 2025 Project Histo-Data. All Rights Reserved.</p>
         </div>
     </footer>
 
 </body>
 </html>
+

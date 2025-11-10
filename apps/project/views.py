@@ -914,19 +914,3 @@ class ExportAsCSVView(LoginRequiredMixin, ProjectContextMixin, View):
             headers={
                 "Content-Disposition": f'attachment; filename="{dst}"'},
         )
-
-
-class CreateWebsiteView(LoginRequiredMixin, ProjectContextMixin, TemplateView):
-    template_name = 'project/website/create.html'
-
-class CreateWebsitePreviewView(LoginRequiredMixin, ProjectContextMixin, TemplateView):
-    template_name = 'project/website/preview.html'
-
-
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        ctx = super().get_context_data(**kwargs)
-
-
-
-
-        return ctx

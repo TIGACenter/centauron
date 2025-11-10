@@ -1,5 +1,5 @@
 {% extends 'project/base_detail.html' %}
-
+{% load crispy_forms_tags %}
 
 {% block content %}
 
@@ -13,8 +13,11 @@
           </h2>
         </div>
         <div class="col-auto ms-auto d-print-none">
-          {#            <div class="btn-list">#}
-          {#            </div>#}
+          <div class="btn-list">
+            {% if website %}
+              <a href="{% url 'project:website:preview' project.pk website.pk %}" target="_blank" class="btn btn-primary">Preview</a>
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>
@@ -25,12 +28,55 @@
         <div class="col-12">
           <div class="card">
             <div class="card-body">
-              <a href="{% url 'project:website-preview' project.pk %}" target="_blank" class="btn btn-primary">Show preview</a>
+              {% crispy form %}
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get default values from Django context
+    const defaultEmail = "{{ default_contact_email|escapejs }}";
+    const defaultAffiliation = "{{ default_affiliation|escapejs }}";
+
+    // Store initial form values on page load
+    const form = document.querySelector('form');
+    const resetButton = form.querySelector('button[type="reset"]');
+
+    if (resetButton) {
+        resetButton.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Reset to default values instead of empty
+            const emailField = document.querySelector('#id_contact_email');
+            const affiliationField = document.querySelector('#id_affiliation');
+
+            if (emailField) {
+                emailField.value = defaultEmail;
+            }
+
+            if (affiliationField) {
+                affiliationField.value = defaultAffiliation;
+            }
+
+            // Clear slogan and hero fields (normal reset behavior)
+            const sloganField = document.querySelector('#id_slogan');
+            const heroField = document.querySelector('#id_hero');
+
+            if (sloganField) {
+                sloganField.value = '';
+            }
+
+            if (heroField) {
+                heroField.value = '';
+            }
+        });
+    }
+});
+</script>
 
 {% endblock %}

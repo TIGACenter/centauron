@@ -104,3 +104,4 @@ if __name__ == "__main__":
     # Use the parsed arguments
     generator = MetadataGenerator(args.input_path, args.output_file, codes=args.codes, pattern=args.pattern, recursive=args.recursive)
     generator.generate()
+

@@ -59,6 +59,7 @@ urlpatterns = [
                   path('<uuid:pk>/collaborators/delete/', view=views.DeleteCollaboratorActionView.as_view(),
                        name="collaborator-delete"),
                   path('invites/', view=views.InvitesView.as_view(), name='invites'),
-                  path('<uuid:pk>/website/', view=views.CreateWebsiteView.as_view(), name='website'),
-                  path('<uuid:pk>/website/preview/', view=views.CreateWebsitePreviewView.as_view(), name='website-preview'),
+
+                  path('<uuid:pk>/website/', include('apps.project.website.urls'),
+                       name='website'),
               ] + router.urls
