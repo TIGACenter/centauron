@@ -5,6 +5,7 @@ from apps.challenge import views
 urlpatterns = [
     path('', views.ListView.as_view(), name='list'),
     path('create', views.CreateChallengeView.as_view(), name='create'),
+    path('<uuid:pk>/website/', include('apps.challenge.website.urls'), name='website'),
     path('<uuid:pk>/', views.RedirectToDatasetListView.as_view(), name='detail'),
     path('<uuid:pk>/update/', views.UpdateChallengeFormView.as_view(), name='update'),
     path('<uuid:pk>/publish/', views.PublishView.as_view(), name='publish'),

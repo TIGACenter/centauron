@@ -100,6 +100,7 @@ LOCAL_APPS = [
     "apps.challenge.challenge_client",
     'apps.challenge.challenge_targetmetric',
     'apps.challenge.challenge_leaderboard',
+    'apps.challenge.website',
     "apps.computing",
     "apps.computing.computing_artifact",
     "apps.computing.computing_executions",

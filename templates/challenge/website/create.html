@@ -1,4 +1,4 @@
-{% extends 'project/base_detail.html' %}
+{% extends 'challenge/base_detail.html' %}
 {% load crispy_forms_tags %}
 
 {% block content %}
@@ -15,7 +15,7 @@
         <div class="col-auto ms-auto d-print-none">
           <div class="btn-list">
             {% if website %}
-              <a href="{% url 'project:website:preview' project.pk website.pk %}" target="_blank" class="btn btn-primary">Preview</a>
+              <a href="{% url 'challenge:website:preview' challenge.pk website.pk %}" target="_blank" class="btn btn-primary">Preview</a>
             {% endif %}
           </div>
         </div>
