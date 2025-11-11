@@ -13,9 +13,12 @@ from django.conf import settings
 @shared_task
 def send_broadcast_message(sender, payload):
     from apps.user.user_profile.models import Profile
-    sender = Profile.objects.get(identity=sender)
-    return _send_message(sender, payload)
-
+    try:
+        sender = Profile.objects.get(identity=sender)
+        return _send_message(sender, payload)
+    except Profile.DoesNotExist:
+        logging.error(f"Profile with identity {sender} does not exist. Cannot send broadcast message.")
+        return
 
 def store_string_in_ipfs(payload:Dict[str, Any]):
     url = f'{settings.IPFS_URL}api/v0/add'

@@ -4,7 +4,6 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.views.generic import FormView, TemplateView
 from django.db import models
-import yaml
 
 from apps.challenge.views import ChallengeContextMixin
 from apps.challenge.website.forms import ProjectWebsiteForm
@@ -35,6 +34,8 @@ class CreateWebsiteView(LoginRequiredMixin, ChallengeContextMixin, FormView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
+        # Pass challenge to form so it can load available endpoints
+        kwargs['challenge'] = self.get_challenge()
         # If a website already exists for this project, update it instead of creating a new one
         existing = ChallengeWebsite.objects.filter(challenge=self.get_challenge()).first()
         if existing is not None:
@@ -142,6 +143,9 @@ class PreviewView(LoginRequiredMixin, ChallengeContextMixin, TemplateView):
         tissue = code_list(project.tissue)
         disease = code_list(project.disease)
 
+        # Generate detailed dataset statistics per dataset (public vs hidden)
+        dataset_statistics = self._generate_dataset_statistics(challenge)
+
         # Determine the principal investigator (challenge creator)
         pi = challenge.created_by
         pi_name = pi.human_readable if pi and hasattr(pi, 'human_readable') else 'Principal Investigator'
@@ -167,19 +171,22 @@ class PreviewView(LoginRequiredMixin, ChallengeContextMixin, TemplateView):
         # Get clinical endpoints from ground truth schema
         clinical_endpoints = []
         ground_truth_schema = project.latest_ground_truth_schema
-        if ground_truth_schema and ground_truth_schema.yaml:
-            try:
-                schema_data = yaml.safe_load(ground_truth_schema.yaml)
-                if isinstance(schema_data, dict) and 'columns' in schema_data:
-                    for column in schema_data['columns']:
-                        if isinstance(column, dict) and column.get('is_endpoint', False):
-                            clinical_endpoints.append({
-                                'name': column.get('name', ''),
-                                'description': column.get('description', ''),
-                            })
-            except yaml.YAMLError:
-                # If YAML parsing fails, just use empty list
-                pass
+        if ground_truth_schema:
+            # Get selected endpoints from website configuration
+            selected_endpoint_names = website.selected_endpoints if website.selected_endpoints else []
+
+            # Use the model's get_endpoints method
+            all_endpoints = ground_truth_schema.get_endpoints()
+
+            # Filter based on selected endpoints
+            for endpoint in all_endpoints:
+                endpoint_name = endpoint['name']
+                # Only include endpoint if it's in the selected list (or if no selection was made, include all)
+                if not selected_endpoint_names or endpoint_name in selected_endpoint_names:
+                    clinical_endpoints.append({
+                        'name': endpoint_name,
+                        'description': endpoint['description'],
+                    })
 
         # Challenge context data
         challenge_data = {
@@ -219,7 +226,8 @@ class PreviewView(LoginRequiredMixin, ChallengeContextMixin, TemplateView):
             'open_until': challenge.open_until,
 
             # Citation
-            'citation': f"{pi_name} et al. ({challenge.date_created.year if challenge.date_created else 2025}). {challenge.name}. Centauron Platform. https://hub.centauron.io/",
+            'citation': None if not website.citation or len(website.citation.strip()) == 0 else website.citation,
+            'bibtex': None if not website.bibtex or len(website.bibtex.strip()) == 0 else website.bibtex,
             'authors': pi_name,
             'url': self.request.build_absolute_uri(challenge.get_absolute_url()) if hasattr(challenge, 'get_absolute_url') else "https://hub.centauron.io/",
 
@@ -228,6 +236,9 @@ class PreviewView(LoginRequiredMixin, ChallengeContextMixin, TemplateView):
 
             # Clinical Endpoints from Ground Truth Schema
             'clinical_endpoints': clinical_endpoints,
+
+            # Dataset Statistics
+            'dataset_statistics': dataset_statistics,
         }
 
         ctx.update({
@@ -247,3 +258,222 @@ class PreviewView(LoginRequiredMixin, ChallengeContextMixin, TemplateView):
             }
         })
         return ctx
+
+    def _generate_dataset_statistics(self, challenge):
+        """
+        Generate comprehensive dataset statistics for both public and hidden datasets.
+        Public dataset: is_public=True
+        Hidden dataset: is_public=False and type='validation'
+        """
+        from apps.challenge.challenge_dataset.models import Dataset
+
+        statistics = {
+            'public': None,
+            'hidden': None,
+        }
+
+        # Get public dataset (is_public=True)
+        public_dataset = challenge.datasets.filter(is_public=True).first()
+        if public_dataset:
+            statistics['public'] = self._generate_single_dataset_statistics(public_dataset)
+
+        # Get hidden/validation dataset (is_public=False, type='validation')
+        hidden_dataset = challenge.datasets.filter(is_public=False, type=Dataset.Type.VALIDATION).first()
+        if hidden_dataset:
+            statistics['hidden'] = self._generate_single_dataset_statistics(hidden_dataset)
+
+        return statistics
+
+    def _generate_single_dataset_statistics(self, dataset):
+        """
+        Generate statistics for a single dataset.
+        """
+        from collections import Counter
+        from apps.terminology.models import Code
+
+        files_qs = dataset.files.all()
+        cases_qs = dataset.cases.all()
+
+        stats = {
+            'name': dataset.name,
+            'type': dataset.type,
+            'is_public': dataset.is_public,
+            'file_types': [],
+            'terminology': {
+                'disease': [],
+                'tissue': [],
+                'biomarkers': [],
+            },
+            'all_terms': [],
+            'case_statistics': {
+                'total_cases': 0,
+                'cases_per_contributor': [],
+                'files_per_case': {
+                    'min': 0,
+                    'max': 0,
+                    'avg': 0,
+                    'distribution': []
+                }
+            },
+            'overview': {
+                'total_files': files_qs.count(),
+                'total_cases': cases_qs.count(),
+                'total_size_gb': 0,
+            }
+        }
+
+        # Calculate total size in GB
+        total_size_bytes = files_qs.filter(size__gte=0).aggregate(models.Sum('size'))['size__sum'] or 0
+        stats['overview']['total_size_gb'] = round(total_size_bytes / (1024**3), 2) if total_size_bytes > 0 else 0
+
+        # File type statistics - using content_type field
+        file_type_counter = Counter()
+        for file in files_qs.only('content_type', 'name'):
+            if file.content_type:
+                file_type_counter[file.content_type] += 1
+            else:
+                # Get file extension from filename as fallback
+                if file.name:
+                    ext = file.name.split('.')[-1].upper() if '.' in file.name else 'Unknown'
+                    file_type_counter[ext] += 1
+                else:
+                    file_type_counter['Unknown'] += 1
+
+        # Sort by count (descending)
+        for file_type, count in file_type_counter.most_common():
+            percentage = round((count / stats['overview']['total_files'] * 100), 1) if stats['overview']['total_files'] > 0 else 0
+            stats['file_types'].append({
+                'name': file_type,
+                'count': count,
+                'percentage': percentage
+            })
+
+        # Get terminology from cases (disease, tissue, biomarkers from project level)
+        if cases_qs.count() > 0:
+            project = dataset.challenge.project
+
+            # Get disease codes from project-level disease field
+            disease_codes = project.disease.all()
+            tissue_codes = project.tissue.all()
+            biomarker_codes = project.biomarkers.all()
+
+            # Count how many cases have each disease code
+            disease_counter = Counter()
+            for disease_code in disease_codes:
+                count = cases_qs.filter(codes=disease_code).count()
+                if count > 0:
+                    disease_name = disease_code.get_readable_str() if hasattr(disease_code, 'get_readable_str') else getattr(disease_code, 'code', str(disease_code))
+                    disease_counter[disease_name] = count
+
+            for disease_name, count in disease_counter.most_common():
+                percentage = round((count / stats['overview']['total_cases'] * 100), 1) if stats['overview']['total_cases'] > 0 else 0
+                stats['terminology']['disease'].append({
+                    'name': disease_name,
+                    'file_count': count,
+                    'percentage': percentage
+                })
+
+            # Count how many cases have each tissue code
+            tissue_counter = Counter()
+            for tissue_code in tissue_codes:
+                count = cases_qs.filter(codes=tissue_code).count()
+                if count > 0:
+                    tissue_name = tissue_code.get_readable_str() if hasattr(tissue_code, 'get_readable_str') else getattr(tissue_code, 'code', str(tissue_code))
+                    tissue_counter[tissue_name] = count
+
+            for tissue_name, count in tissue_counter.most_common():
+                percentage = round((count / stats['overview']['total_cases'] * 100), 1) if stats['overview']['total_cases'] > 0 else 0
+                stats['terminology']['tissue'].append({
+                    'name': tissue_name,
+                    'file_count': count,
+                    'percentage': percentage
+                })
+
+            # Count how many cases have each biomarker code
+            biomarker_counter = Counter()
+            for biomarker_code in biomarker_codes:
+                count = cases_qs.filter(codes=biomarker_code).count()
+                if count > 0:
+                    biomarker_name = biomarker_code.get_readable_str() if hasattr(biomarker_code, 'get_readable_str') else getattr(biomarker_code, 'code', str(biomarker_code))
+                    biomarker_counter[biomarker_name] = count
+
+            for biomarker_name, count in biomarker_counter.most_common():
+                percentage = round((count / stats['overview']['total_cases'] * 100), 1) if stats['overview']['total_cases'] > 0 else 0
+                stats['terminology']['biomarkers'].append({
+                    'name': biomarker_name,
+                    'file_count': count,
+                    'percentage': percentage
+                })
+
+            # Get ALL terms in the dataset (from both cases and files)
+            term_counter = Counter()
+
+            # Get terms from cases
+            case_code_ids = cases_qs.values_list('codes', flat=True).distinct()
+            case_codes = Code.objects.filter(id__in=case_code_ids)
+            for code in case_codes:
+                code_name = code.get_readable_str() if hasattr(code, 'get_readable_str') else getattr(code, 'code', str(code))
+                count = cases_qs.filter(codes=code).count()
+                term_counter[code_name] += count
+
+            # Get terms from files
+            file_code_ids = files_qs.values_list('codes', flat=True).distinct()
+            file_codes = Code.objects.filter(id__in=file_code_ids)
+            for code in file_codes:
+                code_name = code.get_readable_str() if hasattr(code, 'get_readable_str') else getattr(code, 'code', str(code))
+                count = files_qs.filter(codes=code).count()
+                term_counter[code_name] += count
+
+            # Sort by count and add to statistics
+            for term_name, count in term_counter.most_common():
+                stats['all_terms'].append({
+                    'name': term_name,
+                    'count': count,
+                })
+
+            # Calculate case statistics
+            stats['case_statistics']['total_cases'] = cases_qs.count()
+
+            # Files per case distribution
+            from django.db.models import Count
+            cases_with_file_counts = cases_qs.annotate(file_count=Count('files')).values_list('file_count', flat=True)
+            file_counts_list = list(cases_with_file_counts)
+
+            if file_counts_list:
+                stats['case_statistics']['files_per_case']['min'] = min(file_counts_list)
+                stats['case_statistics']['files_per_case']['max'] = max(file_counts_list)
+                stats['case_statistics']['files_per_case']['avg'] = round(sum(file_counts_list) / len(file_counts_list), 1)
+
+                # Create distribution buckets
+                file_count_counter = Counter(file_counts_list)
+                for file_count, case_count in sorted(file_count_counter.items()):
+                    percentage = round((case_count / stats['case_statistics']['total_cases'] * 100), 1)
+                    stats['case_statistics']['files_per_case']['distribution'].append({
+                        'file_count': file_count,
+                        'case_count': case_count,
+                        'percentage': percentage
+                    })
+
+            # Cases per contributor
+            contributor_case_counts = cases_qs.values('origin').annotate(case_count=Count('id')).order_by('-case_count')
+            for contrib in contributor_case_counts[:10]:  # Top 10 contributors
+                origin_id = contrib['origin']
+                case_count = contrib['case_count']
+                percentage = round((case_count / stats['case_statistics']['total_cases'] * 100), 1)
+
+                # Get contributor name
+                from apps.user.user_profile.models import Profile
+                try:
+                    contributor = Profile.objects.get(id=origin_id)
+                    contributor_name = contributor.human_readable if hasattr(contributor, 'human_readable') else 'Unknown'
+                except Profile.DoesNotExist:
+                    contributor_name = 'Unknown'
+
+                stats['case_statistics']['cases_per_contributor'].append({
+                    'contributor': contributor_name,
+                    'case_count': case_count,
+                    'percentage': percentage
+                })
+
+        return stats
+

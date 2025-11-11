@@ -66,7 +66,7 @@ class CreateView(LoginRequiredMixin, ChallengeContextMixin, DjangoCreateView):
         obj.challenge_id = self.get_challenge_id()
         obj.origin = self.request.user.profile
         obj.encrypted = False
-        obj.is_public = True
+        # obj.is_public = True
         obj.save()
         obj.broadcast_create_event()
         return redirect(obj)

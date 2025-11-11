@@ -15,17 +15,19 @@ class DataSetCreateForm(forms.ModelForm):
 
     class Meta:
         model = Dataset
-        fields = ['name', 'description', 'type']
+        fields = ['name', 'description', 'type', 'is_public']
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+        self.fields['is_public'].help_text = 'If set to private and type is validation this dataset is the hidden evaluation set.'
         self.helper = FormHelper(self)
         self.fields['content'].label = 'Content. One file identifier string rep per line (system#value).'
         self.helper.layout = Layout(
             'name',
             'type',
             # 'encrypted',
-            # 'is_public',
+            'is_public',
             'description',
             Submit('submit', 'Create')
         )

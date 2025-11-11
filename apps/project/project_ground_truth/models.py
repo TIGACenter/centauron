@@ -1,4 +1,5 @@
 from django.db import models, transaction
+import yaml
 
 from apps.core.managers import BaseManager
 from apps.core.models import CreatedByMixin, IdentifieableMixin, Base
@@ -35,6 +36,32 @@ class GroundTruthSchema(CreatedByMixin, IdentifieableMixin, Base):
 
     def __str__(self):
         return self.id_as_str
+
+    def get_endpoints(self):
+        """
+        Extract clinical endpoints from the YAML schema.
+        Returns a list of dictionaries with 'name' and 'description' keys.
+        Only includes columns where is_endpoint is True.
+        """
+        endpoints = []
+        if not self.yaml:
+            return endpoints
+
+        try:
+            schema_data = yaml.safe_load(self.yaml)
+            if isinstance(schema_data, dict):
+                # Iterate through each column (top-level keys in the schema)
+                for column_id, column_props in schema_data.items():
+                    if isinstance(column_props, dict) and column_props.get('is_endpoint', False):
+                        endpoints.append({
+                            'name': column_props.get('name', column_id),
+                            'description': column_props.get('description', ''),
+                        })
+        except yaml.YAMLError:
+            # If YAML parsing fails, return empty list
+            pass
+
+        return endpoints
 
     def to_message_object(self) -> GroundTruthSchemaObject:
         return GroundTruthSchemaObject(content=GroundTruthSchemaContent(identifier=self.identifier,

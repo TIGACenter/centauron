@@ -11,6 +11,9 @@ class ChallengeWebsite(CreatedByMixin, IdentifieableMixin, Base):
     hero = models.TextField(blank=True, null=True)
     contact_email = models.EmailField(blank=True, null=True)
     affiliation = models.TextField(blank=True, null=True)
+    selected_endpoints = models.JSONField(default=list, blank=True, help_text="List of selected endpoint names to display on the website")
+    citation = models.TextField(blank=True, null=True, help_text="Citation text for the challenge/dataset")
+    bibtex = models.TextField(blank=True, null=True, help_text="BibTeX citation for the challenge/dataset")
 
     def get_absolute_url(self):
-        return reverse('project:website:preview', kwargs={'pk': self.project_id, 'website_pk': self.pk})
+        return reverse('challenge:website:preview', kwargs={'pk': self.challenge_id, 'website_pk': self.pk})

@@ -76,7 +76,7 @@
     }
   </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50" id="top">
 
 <!-- Navigation Header -->
 <nav class="nav-header fixed top-0 left-0 right-0 z-50 shadow-lg">
@@ -100,7 +100,9 @@
         <a href="#team" class="nav-link text-gray-300 hover:text-white font-medium">Team</a>
         <a href="#datasets" class="nav-link text-gray-300 hover:text-white font-medium">Datasets</a>
         <a href="#challenge" class="nav-link text-gray-300 hover:text-white font-medium">Participate</a>
-        <a href="#citation" class="nav-link text-gray-300 hover:text-white font-medium">Citation</a>
+        {% if website.bibtex or website.zitation %}
+          <a href="#citation" class="nav-link text-gray-300 hover:text-white font-medium">Citation</a>
+        {% endif %}
         <a href="https://hub.centauron.io/" target="_blank"
            class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg">
           Join Challenge
@@ -166,15 +168,15 @@
         </div>
       </div>
 
-      <!-- Main Title -->
-      <div class="text-center mb-8">
-        <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
-          {{ challenge.title|default:"AI Challenge for Clinical Prediction" }}
-        </h1>
-        <p class="text-xl md:text-2xl text-gray-100 mb-8 leading-relaxed max-w-3xl mx-auto">
-          {{ challenge.description|default:"Advance medical AI by developing models on real-world clinical data. Evaluate your algorithms on private datasets through secure federated evaluation." }}
-        </p>
-      </div>
+      <!-- Challenge Title -->
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-center mb-6">
+        {{ challenge.title|default:"Challenge Title" }}
+      </h1>
+
+      <!-- Challenge Description -->
+      <p class="text-xl md:text-2xl text-center text-gray-100 mb-8 max-w-3xl mx-auto">
+        {{ challenge.short_description|default:"Join this exciting challenge to advance medical AI research through privacy-preserving federated learning." }}
+      </p>
 
       <!-- Key Stats -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
@@ -414,23 +416,10 @@
           </p>
           <div class="space-y-4">
             {% for endpoint in challenge.clinical_endpoints %}
-              <div
-                class="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4 border-l-4 {% if endpoint.required %}border-yellow-400{% else %}border-blue-400{% endif %}">
-                <div class="flex items-start justify-between mb-2">
-                  <h4 class="font-semibold text-xl text-white">{{ endpoint.name }}</h4>
-                  <div class="flex gap-2">
-                    {% if endpoint.required %}
-                      <span class="text-xs px-2 py-1 rounded bg-yellow-500 text-gray-900 font-semibold">REQUIRED</span>
-                    {% else %}
-                      <span class="text-xs px-2 py-1 rounded bg-blue-500 text-white">OPTIONAL</span>
-                    {% endif %}
-                    {% if endpoint.type %}
-                      <span class="text-xs px-2 py-1 rounded bg-gray-700 text-white">{{ endpoint.type }}</span>
-                    {% endif %}
-                  </div>
-                </div>
+              <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4 border-l-4 border-blue-400">
+                <h4 class="font-semibold text-xl text-white mb-2">{{ endpoint.name }}</h4>
                 {% if endpoint.description %}
-                  <p class="text-blue-100 text-sm">{{ endpoint.description }}</p>
+                  <p class="text-blue-100">{{ endpoint.description }}</p>
                 {% endif %}
               </div>
             {% endfor %}
@@ -610,9 +599,19 @@
         </div>
         <div class="flex-1 text-center md:text-left">
           <h4
-            class="text-3xl font-bold text-gray-900 mb-2">{{ challenge.pi_name|default:"Dr. Principal Investigator" }}</h4>
-          <p class="text-xl text-blue-600 mb-4">{{ challenge.pi_title|default:"Professor of Medicine" }}</p>
-          <div class="text-gray-700 mb-4 prose prose-sm max-w-none">
+            class="text-3xl font-bold text-gray-900 mb-2">{{ challenge.pi_name }}</h4>
+          <p class="text-xl text-blue-600 mb-4">{{ challenge.pi_title }}</p>
+          <style>
+            .affiliation a {
+              text-decoration: underline;
+              color: rgb(37 99 235)
+            }
+
+            .affiliation a:hover {
+              text-decoration: none;
+            }
+          </style>
+          <div class="affiliation text-gray-700 mb-4 prose prose-sm max-w-none">
             {{ challenge.pi_affiliation|markdownify|safe }}
           </div>
           <p class="text-gray-600 mb-4">
@@ -620,17 +619,18 @@
           </p>
           <div class="flex flex-wrap gap-3 justify-center md:justify-start">
             {% if challenge.pi_email %}
-              <a href="mailto:{{ challenge.pi_email }}" class="text-blue-600 hover:text-blue-800 flex items-center">
+              <a href="mailto:{{ challenge.pi_email }}"
+                 class="text-blue-600 hover:text-blue-800 underline hover:no-underline flex items-center">
                 <svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
                   <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
                 </svg>
-                Email
+                {{ challenge.pi_email }}
               </a>
             {% endif %}
             {% if challenge.pi_website %}
               <a href="{{ challenge.pi_website }}" target="_blank"
-                 class="text-blue-600 hover:text-blue-800 flex items-center">
+                 class="text-blue-600 hover:text-blue-800 underline hover:no-underline flex items-center">
                 <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
@@ -646,9 +646,9 @@
     <!-- Contributors -->
     <div class="max-w-6xl mx-auto">
       <h3 class="text-2xl font-semibold mb-8 text-center text-blue-600">Contributors</h3>
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="flex flex-wrap justify-center gap-8">
         {% for contributor in contributors %}
-          <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+          <div class="bg-white rounded-lg shadow-lg p-6 text-center w-80">
             <div
               class="w-24 h-24 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">
               {{ contributor.initials }}
@@ -657,32 +657,23 @@
             <p class="text-blue-600 mb-2">Contributor</p>
             <p class="text-gray-600 text-sm">{{ contributor.organization|default:"Research Institution" }}</p>
             {% if contributor.orcid or contributor.pubmed or contributor.google_scholar %}
-              <div class="flex justify-center gap-2 mt-3">
+              <div class="flex flex-wrap justify-center gap-2 mt-3 text-xs">
                 {% if contributor.orcid %}
-                  <a href="{{ contributor.orcid }}" target="_blank" class="text-gray-500 hover:text-blue-600"
-                     title="ORCID">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path
-                        d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.016-5.325 5.016h-3.919V7.416zm1.444 1.303v7.444h2.297c2.359 0 4.078-1.456 4.078-3.722 0-2.072-1.297-3.722-4.078-3.722h-2.297z"/>
-                    </svg>
+                  <a href="{{ contributor.orcid }}" target="_blank"
+                     class="text-blue-600 hover:text-blue-800 underline hover:no-underline">
+                    ORCID
                   </a>
                 {% endif %}
                 {% if contributor.pubmed %}
-                  <a href="{{ contributor.pubmed }}" target="_blank" class="text-gray-500 hover:text-blue-600"
-                     title="PubMed">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path
-                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                    </svg>
+                  <a href="{{ contributor.pubmed }}" target="_blank"
+                     class="text-blue-600 hover:text-blue-800 underline hover:no-underline">
+                    PubMed
                   </a>
                 {% endif %}
                 {% if contributor.google_scholar %}
-                  <a href="{{ contributor.google_scholar }}" target="_blank" class="text-gray-500 hover:text-blue-600"
-                     title="Google Scholar">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path
-                        d="M12 24a7 7 0 110-14 7 7 0 010 14zm0-24L0 9.5l4.838 3.94A8 8 0 0112 9a8 8 0 017.162 4.44L24 9.5z"/>
-                    </svg>
+                  <a href="{{ contributor.google_scholar }}" target="_blank"
+                     class="text-blue-600 hover:text-blue-800 underline hover:no-underline">
+                    Google Scholar
                   </a>
                 {% endif %}
               </div>
@@ -694,7 +685,7 @@
           </div>
         {% empty %}
           <!-- Fallback if no contributors -->
-          <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+          <div class="bg-white rounded-lg shadow-lg p-6 text-center w-80">
             <div
               class="w-24 h-24 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">
               C1
@@ -704,35 +695,6 @@
             <p class="text-gray-600 text-sm">Various Institutions</p>
           </div>
         {% endfor %}
-      </div>
-    </div>
-
-    <!-- Institutional Support -->
-    <div class="max-w-4xl mx-auto mt-12">
-      <div class="bg-white rounded-lg shadow-lg p-8">
-        <h3 class="text-2xl font-semibold mb-6 text-center text-gray-900">Institutional Support</h3>
-        <div class="grid md:grid-cols-2 gap-6 text-gray-700">
-          <div>
-            <h4 class="font-semibold text-lg mb-2 text-blue-600">Academic Partners</h4>
-            <ul class="space-y-1">
-              {% for contributor in contributors|slice:":3" %}
-                <li>{{ contributor.organization|default:"Research Institution" }}</li>
-              {% empty %}
-                <li>Partner Institution 1</li>
-                <li>Partner Institution 2</li>
-                <li>Partner Institution 3</li>
-              {% endfor %}
-            </ul>
-          </div>
-          <div>
-            <h4 class="font-semibold text-lg mb-2 text-blue-600">Data Contributions</h4>
-            <ul class="space-y-1">
-              <li>{{ stats.case_count }} total cases</li>
-              <li>{{ stats.file_count }} data files</li>
-              <li>{{ contributors|length }} contributing sites</li>
-            </ul>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -813,91 +775,308 @@
       </div>
     </div>
 
-    <!-- Docker Submission Instructions -->
-    <div class="bg-gray-900 text-white rounded-lg p-8 shadow-lg">
-      <h3 class="text-2xl font-bold mb-6 flex items-center">
-        <svg class="w-8 h-8 mr-3 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
-          <path
-            d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.186.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.186.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.186.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338 0-.676.03-1.01.09-.808-1.197-1.96-2.03-3.292-2.376.08-.238.126-.49.126-.757a2.3 2.3 0 00-2.3-2.3 2.3 2.3 0 00-2.298 2.3c0 .268.046.52.127.758-1.332.345-2.484 1.178-3.291 2.376a8.918 8.918 0 00-1.01-.09c-1.282 0-1.89.46-1.955.51a.19.19 0 00-.071.14v1.717c0 .104.084.188.188.188h.984c.103 0 .188-.084.188-.188v-1.023c.152-.076.756-.338 1.629-.338.194 0 .383.016.569.047a.19.19 0 00.217-.217 5.35 5.35 0 00-.041-.59c-.015-.123.03-.245.124-.327.096-.082.226-.113.35-.082.177.045.357.068.536.068.179 0 .36-.023.536-.068.124-.03.255 0 .35.082.095.082.14.204.125.327a5.27 5.27 0 00-.04.59.19.19 0 00.216.217c.186-.031.375-.047.57-.047.872 0 1.476.262 1.628.338v1.023c0 .104.084.188.188.188h.984c.104 0 .188-.084.188-.188v-1.717a.19.19 0 00-.07-.14"></path>
-        </svg>
-        How to Submit Your Dockerized AI Model
-      </h3>
+    <!-- Dataset Statistics -->
+    {% if challenge.dataset_statistics %}
+    <div class="mt-12">
+      <h3 class="text-2xl font-bold text-center mb-8 text-gray-900">Dataset Statistics</h3>
 
-      <div class="space-y-6">
-        <div>
-          <h4 class="text-xl font-semibold mb-3 text-blue-400">1. Prepare Your Model</h4>
-          <p class="text-gray-300 mb-2">
-            Ensure your AI model is trained and ready for deployment. Your model should accept the standard input format
-            specified in our documentation.
-          </p>
+      <!-- Public Dataset Statistics -->
+      {% if challenge.dataset_statistics.public %}
+      <div class="mb-12">
+        <div class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-t-lg">
+          <h4 class="text-xl font-bold">📂 Public Dataset</h4>
+          <p class="text-sm opacity-90">{{ challenge.dataset_statistics.public.name }}</p>
         </div>
-
-        <div>
-          <h4 class="text-xl font-semibold mb-3 text-blue-400">2. Create a Dockerfile</h4>
-          <p class="text-gray-300 mb-3">
-            Package your model into a Docker container. Here's a basic example:
-          </p>
-          <pre class="bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm">
-<code class="text-green-400">FROM python:3.9-slim
-
-WORKDIR /app
-
-# Install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy model files
-COPY . .
-
-# Define the entrypoint
-ENTRYPOINT ["python", "predict.py"]</code></pre>
-        </div>
-
-        <div>
-          <h4 class="text-xl font-semibold mb-3 text-blue-400">3. Build and Test Locally</h4>
-          <p class="text-gray-300 mb-3">
-            Build your Docker image and test it with sample data:
-          </p>
-          <pre class="bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm">
-<code class="text-green-400">docker build -t my-challenge-model:latest .
-docker run my-challenge-model:latest --input sample_data.csv</code></pre>
-        </div>
-
-        <div>
-          <h4 class="text-xl font-semibold mb-3 text-blue-400">4. Push to a Registry</h4>
-          <p class="text-gray-300 mb-3">
-            Tag and push your image to a container registry (Docker Hub, GitHub Container Registry, etc.):
-          </p>
-          <pre class="bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm">
-<code class="text-green-400">docker tag my-challenge-model:latest username/my-challenge-model:v1
-docker push username/my-challenge-model:v1</code></pre>
-        </div>
-
-        <div>
-          <h4 class="text-xl font-semibold mb-3 text-blue-400">5. Submit via Centauron Platform</h4>
-          <p class="text-gray-300 mb-2">
-            Log in to <a href="https://hub.centauron.io/" target="_blank" class="text-blue-400 hover:underline">hub.centauron.io</a>
-            and submit your Docker image URL. The platform will:
-          </p>
-          <ul class="list-disc list-inside text-gray-300 space-y-1 ml-4">
-            <li>Pull your container</li>
-            <li>Run it on the private dataset</li>
-            <li>Compute performance metrics</li>
-            <li>Return results to your dashboard</li>
-          </ul>
-        </div>
-
-        <div class="bg-blue-900 bg-opacity-50 p-4 rounded-lg border-l-4 border-blue-400">
-          <p class="text-sm text-gray-200">
-            <strong>💡 Tip:</strong> Make sure your Docker image is publicly accessible or share appropriate credentials
-            with the platform. For detailed technical specifications and API documentation, visit our <a
-            href="https://centauron.net/docs" target="_blank" class="text-blue-400 hover:underline">documentation</a>.
-          </p>
+        <div class="bg-white border border-green-200 rounded-b-lg p-6">
+          {% with stats=challenge.dataset_statistics.public %}
+            {% include "challenge/website/partials/dataset_stats.html" %}
+          {% endwith %}
         </div>
       </div>
+      {% endif %}
+
+      <!-- Hidden/Validation Dataset Statistics -->
+      {% if challenge.dataset_statistics.hidden %}
+      <div class="mb-12">
+        <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-t-lg">
+          <h4 class="text-xl font-bold">🔒 Hidden Dataset (Validation)</h4>
+          <p class="text-sm opacity-90">{{ challenge.dataset_statistics.hidden.name }}</p>
+        </div>
+        <div class="bg-white border border-purple-200 rounded-b-lg p-6">
+          {% with stats=challenge.dataset_statistics.hidden %}
+            {% include "challenge/website/partials/dataset_stats.html" %}
+          {% endwith %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Case Statistics -->
+      {% if challenge.dataset_statistics.case_statistics %}
+      <div class="mb-8">
+        <h4 class="text-xl font-bold mb-4 text-gray-900">Case Statistics</h4>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+          <!-- Files per Case Distribution -->
+          <div class="bg-white rounded-lg shadow-lg p-6">
+            <h5 class="text-lg font-semibold mb-4 text-gray-800">Files per Case</h5>
+            <div class="grid grid-cols-3 gap-4 mb-4">
+              <div class="text-center">
+                <div class="text-2xl font-bold text-blue-600">{{ challenge.dataset_statistics.case_statistics.files_per_case.min }}</div>
+                <div class="text-xs text-gray-600">Min</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-green-600">{{ challenge.dataset_statistics.case_statistics.files_per_case.avg }}</div>
+                <div class="text-xs text-gray-600">Avg</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-purple-600">{{ challenge.dataset_statistics.case_statistics.files_per_case.max }}</div>
+                <div class="text-xs text-gray-600">Max</div>
+              </div>
+            </div>
+            {% if challenge.dataset_statistics.case_statistics.files_per_case.distribution %}
+            <div class="space-y-2 mt-4">
+              <div class="text-sm font-semibold text-gray-700 mb-2">Distribution:</div>
+              {% for bucket in challenge.dataset_statistics.case_statistics.files_per_case.distribution|slice:":10" %}
+              <div class="flex items-center text-sm">
+                <span class="w-24 text-gray-700">{{ bucket.file_count }} file{% if bucket.file_count != 1 %}s{% endif %}:</span>
+                <div class="flex-1 ml-2">
+                  <div class="flex items-center">
+                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                      <div class="bg-indigo-600 h-1.5 rounded-full" style="width: {{ bucket.percentage }}%"></div>
+                    </div>
+                    <span class="ml-2 text-xs text-gray-600 w-20">{{ bucket.case_count }} cases</span>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Cases per Contributor -->
+          {% if challenge.dataset_statistics.case_statistics.cases_per_contributor %}
+          <div class="bg-white rounded-lg shadow-lg p-6">
+            <h5 class="text-lg font-semibold mb-4 text-gray-800">Cases per Contributor</h5>
+            <div class="space-y-2">
+              {% for contrib in challenge.dataset_statistics.case_statistics.cases_per_contributor %}
+              <div class="border-b border-gray-200 pb-2 last:border-0">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-sm font-medium text-gray-800 truncate flex-1">{{ contrib.contributor }}</span>
+                  <span class="text-xs text-gray-600 ml-2 whitespace-nowrap">{{ contrib.case_count }} cases</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-1.5">
+                  <div class="bg-green-600 h-1.5 rounded-full" style="width: {{ contrib.percentage }}%"></div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Terminology Distribution -->
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Disease Distribution -->
+        {% if challenge.dataset_statistics.terminology.disease %}
+        <div>
+          <h4 class="text-lg font-bold mb-4 text-gray-900">Disease Distribution</h4>
+          <div class="bg-white rounded-lg shadow-lg p-4">
+            <div class="space-y-2">
+              {% for disease in challenge.dataset_statistics.terminology.disease|slice:":5" %}
+              <div class="border-b border-gray-200 pb-2 last:border-0">
+                <div class="flex justify-between items-start">
+                  <span class="text-sm font-medium text-gray-800">{{ disease.name }}</span>
+                  <span class="text-xs text-gray-600 ml-2">{{ disease.file_count }} cases</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                  <div class="bg-red-500 h-1.5 rounded-full" style="width: {{ disease.percentage }}%"></div>
+                </div>
+              </div>
+              {% endfor %}
+              {% if challenge.dataset_statistics.terminology.disease|length > 5 %}
+              <div class="text-xs text-gray-500 text-center pt-2">
+                +{{ challenge.dataset_statistics.terminology.disease|length|add:"-5" }} more
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Tissue Distribution -->
+        {% if challenge.dataset_statistics.terminology.tissue %}
+        <div>
+          <h4 class="text-lg font-bold mb-4 text-gray-900">Tissue Distribution</h4>
+          <div class="bg-white rounded-lg shadow-lg p-4">
+            <div class="space-y-2">
+              {% for tissue in challenge.dataset_statistics.terminology.tissue|slice:":5" %}
+              <div class="border-b border-gray-200 pb-2 last:border-0">
+                <div class="flex justify-between items-start">
+                  <span class="text-sm font-medium text-gray-800">{{ tissue.name }}</span>
+                  <span class="text-xs text-gray-600 ml-2">{{ tissue.file_count }} cases</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                  <div class="bg-green-500 h-1.5 rounded-full" style="width: {{ tissue.percentage }}%"></div>
+                </div>
+              </div>
+              {% endfor %}
+              {% if challenge.dataset_statistics.terminology.tissue|length > 5 %}
+              <div class="text-xs text-gray-500 text-center pt-2">
+                +{{ challenge.dataset_statistics.terminology.tissue|length|add:"-5" }} more
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Biomarker Distribution -->
+        {% if challenge.dataset_statistics.terminology.biomarkers %}
+        <div>
+          <h4 class="text-lg font-bold mb-4 text-gray-900">Biomarker Distribution</h4>
+          <div class="bg-white rounded-lg shadow-lg p-4">
+            <div class="space-y-2">
+              {% for biomarker in challenge.dataset_statistics.terminology.biomarkers|slice:":5" %}
+              <div class="border-b border-gray-200 pb-2 last:border-0">
+                <div class="flex justify-between items-start">
+                  <span class="text-sm font-medium text-gray-800">{{ biomarker.name }}</span>
+                  <span class="text-xs text-gray-600 ml-2">{{ biomarker.file_count }} cases</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                  <div class="bg-purple-500 h-1.5 rounded-full" style="width: {{ biomarker.percentage }}%"></div>
+                </div>
+              </div>
+              {% endfor %}
+              {% if challenge.dataset_statistics.terminology.biomarkers|length > 5 %}
+              <div class="text-xs text-gray-500 text-center pt-2">
+                +{{ challenge.dataset_statistics.terminology.biomarkers|length|add:"-5" }} more
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- All Terms Distribution -->
+      {% if challenge.dataset_statistics.all_terms %}
+      <div class="mt-12">
+        <h4 class="text-xl font-bold mb-4 text-gray-900">All Terms in Dataset</h4>
+        <div class="bg-white rounded-lg shadow-lg p-6">
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {% for term in challenge.dataset_statistics.all_terms %}
+            <div class="border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow">
+              <div class="flex justify-between items-start">
+                <span class="text-sm font-medium text-gray-800 flex-1">{{ term.name }}</span>
+                <span class="text-lg font-bold text-blue-600 ml-2 whitespace-nowrap">{{ term.count }}</span>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
     </div>
+    {% endif %}
+
   </div>
 </section>
+{##}
+{#<!-- Team Section -->#}
+{#<section id="team" class="py-20 bg-gray-50">#}
+{#  <div class="container mx-auto px-6">#}
+{#    <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">Challenge Team</h2>#}
+{##}
+{#    <!-- Team Members -->#}
+{#    <div class="flex flex-wrap justify-center gap-8">#}
+{#      {% for team_member in challenge.team_members.all %}#}
+{#        <!-- Team member cards would go here -->#}
+{#      {% empty %}#}
+{#        <p class="text-gray-600">Team information coming soon.</p>#}
+{#      {% endfor %}#}
+{#    </div>#}
+{#  </div>#}
+{#</section>#}
+
+
+<!-- Challenge Overview Section -->
+{##}
+{#      <div class="space-y-6">#}
+{#        <div>#}
+{#          <h4 class="text-xl font-semibold mb-3 text-blue-400">1. Prepare Your Model</h4>#}
+{#          <p class="text-gray-300 mb-2">#}
+{#            Ensure your AI model is trained and ready for deployment. Your model should accept the standard input format#}
+{#            specified in our documentation.#}
+{#          </p>#}
+{#        </div>#}
+{##}
+{#        <div>#}
+{#          <h4 class="text-xl font-semibold mb-3 text-blue-400">2. Create a Dockerfile</h4>#}
+{#          <p class="text-gray-300 mb-3">#}
+{#            Package your model into a Docker container. Here's a basic example:#}
+{#          </p>#}
+{#          <pre class="bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm">#}
+{#<code class="text-green-400">FROM python:3.9-slim#}
+{##}
+{#WORKDIR /app#}
+{##}
+{## Install dependencies#}
+{#COPY requirements.txt .#}
+{#RUN pip install --no-cache-dir -r requirements.txt#}
+{##}
+{## Copy model files#}
+{#COPY . .#}
+{##}
+{## Define the entrypoint#}
+{#ENTRYPOINT ["python", "predict.py"]</code></pre>#}
+{#        </div>#}
+{##}
+{#        <div>#}
+{#          <h4 class="text-xl font-semibold mb-3 text-blue-400">3. Build and Test Locally</h4>#}
+{#          <p class="text-gray-300 mb-3">#}
+{#            Build your Docker image and test it with sample data:#}
+{#          </p>#}
+{#          <pre class="bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm">#}
+{#<code class="text-green-400">docker build -t my-challenge-model:latest .#}
+{#docker run my-challenge-model:latest --input sample_data.csv</code></pre>#}
+{#        </div>#}
+{##}
+{#        <div>#}
+{#          <h4 class="text-xl font-semibold mb-3 text-blue-400">4. Push to a Registry</h4>#}
+{#          <p class="text-gray-300 mb-3">#}
+{#            Tag and push your image to a container registry (Docker Hub, GitHub Container Registry, etc.):#}
+{#          </p>#}
+{#          <pre class="bg-gray-800 p-4 rounded-lg overflow-x-auto text-sm">#}
+{#<code class="text-green-400">docker tag my-challenge-model:latest username/my-challenge-model:v1#}
+{#docker push username/my-challenge-model:v1</code></pre>#}
+{#        </div>#}
+{##}
+{#        <div>#}
+{#          <h4 class="text-xl font-semibold mb-3 text-blue-400">5. Submit via Centauron Platform</h4>#}
+{#          <p class="text-gray-300 mb-2">#}
+{#            Log in to <a href="https://hub.centauron.io/" target="_blank" class="text-blue-400 hover:underline">hub.centauron.io</a>#}
+{#            and submit your Docker image URL. The platform will:#}
+{#          </p>#}
+{#          <ul class="list-disc list-inside text-gray-300 space-y-1 ml-4">#}
+{#            <li>Pull your container</li>#}
+{#            <li>Run it on the private dataset</li>#}
+{#            <li>Compute performance metrics</li>#}
+{#            <li>Return results to your dashboard</li>#}
+{#          </ul>#}
+{#        </div>#}
+{##}
+{#        <div class="bg-blue-900 bg-opacity-50 p-4 rounded-lg border-l-4 border-blue-400">#}
+{#          <p class="text-sm text-gray-200">#}
+{#            <strong>💡 Tip:</strong> Make sure your Docker image is publicly accessible or share appropriate credentials#}
+{#            with the platform. For detailed technical specifications and API documentation, visit our <a#}
+{#            href="https://centauron.net/docs" target="_blank" class="text-blue-400 hover:underline">documentation</a>.#}
+{#          </p>#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
 
 <!-- Challenge Overview Section -->
 <section id="challenge" class="py-20 bg-gray-900 text-white">
@@ -944,94 +1123,75 @@ docker push username/my-challenge-model:v1</code></pre>
   </div>
 </section>
 
-<!-- Citation Section -->
-<section id="citation" class="py-20 bg-white">
-  <div class="container mx-auto px-6">
-    <h2 class="text-3xl font-bold text-center mb-4 text-gray-900">How to Cite</h2>
-    <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
-      If you use this challenge or datasets in your research, please cite the following:
-    </p>
 
-    <div class="max-w-4xl mx-auto space-y-6">
-      <!-- Challenge Citation -->
-      <div class="bg-gray-50 rounded-lg p-8 shadow-lg">
-        <h3 class="text-xl font-bold mb-4 text-gray-900 flex items-center">
-          <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-          </svg>
-          Challenge Citation
-        </h3>
-        <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm mb-4 overflow-x-auto">
-          <code>{{ challenge.citation|default:"Author Name et al. (2025). Challenge Title: A Multi-Institutional AI Challenge for Disease Prediction. Centauron Platform. https://hub.centauron.io/challenge/xyz" }}</code>
-        </div>
-        <button onclick="copyCitation('challenge')"
-                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-          Copy Citation
-        </button>
-      </div>
+{% if challenge.citation or challenge.bibtex %}
+  <!-- Citation Section -->
+  <section id="citation" class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+      <h2 class="text-3xl font-bold text-center mb-4 text-gray-900">How to Cite</h2>
+      <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
+        If you use this challenge or datasets in your research, please cite the following:
+      </p>
 
-      <!-- Dataset Citation -->
-      {% if challenge.dataset_citation %}
-        <div class="bg-gray-50 rounded-lg p-8 shadow-lg">
-          <h3 class="text-xl font-bold mb-4 text-gray-900 flex items-center">
-            <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
-            </svg>
-            Dataset Citation
-          </h3>
-          <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm mb-4 overflow-x-auto">
-            <code>{{ challenge.dataset_citation }}</code>
+      <div class="max-w-4xl mx-auto space-y-6">
+        {% if challenge.citation %}
+          <!-- Challenge Citation -->
+          <div class="bg-gray-50 rounded-lg p-8 shadow-lg">
+            <h3 class="text-xl font-bold mb-4 text-gray-900 flex items-center">
+              <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+              Challenge Citation
+            </h3>
+            <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm mb-4 overflow-x-auto">
+              <code>{{ challenge.citation }}</code>
+            </div>
+            <button onclick="copyCitation('challenge')"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+              Copy Citation
+            </button>
           </div>
-          <button onclick="copyCitation('dataset')"
-                  class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
-            Copy Citation
-          </button>
-        </div>
-      {% endif %}
+        {% endif %}
 
-      <!-- BibTeX -->
-      <div class="bg-gray-50 rounded-lg p-8 shadow-lg">
-        <h3 class="text-xl font-bold mb-4 text-gray-900 flex items-center">
-          <svg class="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-          </svg>
-          BibTeX
-        </h3>
-        <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm mb-4 overflow-x-auto">
-                        <pre><code>@misc{challenge{{ challenge.year|default:"2025" }},
-  title={<nowiki>{{ challenge.title|default:"Challenge Title" }}</nowiki>},
-  author={<nowiki>{{ challenge.authors|default:"Author Name and Contributors" }}</nowiki>},
-  year={<nowiki>{{ challenge.year|default:"2025" }}</nowiki>},
-  publisher={Centauron Platform},
-  url={<nowiki>{{ challenge.url|default:"https://hub.centauron.io/" }}</nowiki>}
-}</code></pre>
-        </div>
-        <button onclick="copyCitation('bibtex')"
-                class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
-          Copy BibTeX
-        </button>
+        <!-- BibTeX -->
+        {% if challenge.bibtex %}
+          <div class="bg-gray-50 rounded-lg p-8 shadow-lg">
+            <h3 class="text-xl font-bold mb-4 text-gray-900 flex items-center">
+              <svg class="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+              </svg>
+              BibTeX
+            </h3>
+            <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm mb-4 overflow-x-auto">
+              <pre><code>{{ challenge.bibtex }}</code></pre>
+            </div>
+            <button onclick="copyCitation('bibtex')"
+                    class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+              Copy BibTeX
+            </button>
+          </div>
+        {% endif %}
+
+        <!-- Related Publications -->
+        {% if challenge.related_publications %}
+          <div class="bg-blue-50 rounded-lg p-8 border-l-4 border-blue-600">
+            <h3 class="text-xl font-bold mb-4 text-gray-900">Related Publications</h3>
+            <ul class="space-y-3 text-gray-700">
+              {% for publication in challenge.related_publications %}
+                <li class="flex items-start">
+                  <span class="text-blue-600 mr-2 mt-1">📄</span>
+                  <span>{{ publication }}</span>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
       </div>
-
-      <!-- Related Publications -->
-      {% if challenge.related_publications %}
-        <div class="bg-blue-50 rounded-lg p-8 border-l-4 border-blue-600">
-          <h3 class="text-xl font-bold mb-4 text-gray-900">Related Publications</h3>
-          <ul class="space-y-3 text-gray-700">
-            {% for publication in challenge.related_publications %}
-              <li class="flex items-start">
-                <span class="text-blue-600 mr-2 mt-1">📄</span>
-                <span>{{ publication }}</span>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-      {% endif %}
     </div>
-  </div>
-</section>
+  </section>
+{% endif %}
 
 <!-- Footer -->
 <footer class="bg-gray-900 text-white py-12">
